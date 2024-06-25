@@ -1,43 +1,17 @@
 import 'package:flutter/material.dart';
+import 'signup.dart';
 import '../src/MyContainer.dart';
-import 'loginPage.dart';
 
-class Signup extends StatefulWidget {
-  const Signup({super.key});
-
-  @override
-  State<Signup> createState() => _SignupState();
-}
-
-class _SignupState extends State<Signup> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Signup'),
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: const Icon(Icons.arrow_back_ios),
-        ),
-      ),
-      body: const SignUpPage(), // Add the SignUpForm as the body of Scaffold
-    );
-  }
-}
-
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key, this.title});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key, this.title});
 
   final String? title;
 
   @override
-  _SignUpPageState createState() => _SignUpPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _LoginPageState extends State<LoginPage> {
   Widget _backButton() {
     return InkWell(
       onTap: () {
@@ -102,17 +76,61 @@ class _SignUpPageState extends State<SignUpPage> {
               end: Alignment.centerRight,
               colors: [Color(0xfffbb448), Color(0xfff7892b)])),
       child: const Text(
-        'Register Now',
+        'Login',
         style: TextStyle(fontSize: 20, color: Colors.white),
       ),
     );
   }
 
-  Widget _loginAccountLabel() {
+  Widget _divider() {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      child: const Row(
+        children: <Widget>[
+          SizedBox(
+            width: 20,
+          ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Divider(
+                thickness: 1,
+              ),
+            ),
+          ),
+          Text('or'),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Divider(
+                thickness: 1,
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _facebookButton() {
+    return Container(
+      height: 50,
+      margin: const EdgeInsets.symmetric(vertical: 20),
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      
+      ),
+    );
+  }
+
+  Widget _createAccountLabel() {
     return InkWell(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const LoginPage()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const SignUpPage()));
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 20),
@@ -122,14 +140,14 @@ class _SignUpPageState extends State<SignUpPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Already have an account ?',
+              'Don\'t have an account ?',
               style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
             ),
             SizedBox(
               width: 10,
             ),
             Text(
-              'Login',
+              'Register',
               style: TextStyle(
                   color: Color(0xfff79c4f),
                   fontSize: 13,
@@ -149,7 +167,8 @@ class _SignUpPageState extends State<SignUpPage> {
           style: TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.w700,
-              color: Color(0xffe46b10)),
+              color: Color(0xffe46b10)
+          ),
           children: [
             TextSpan(
               text: 'STO',
@@ -166,7 +185,6 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _emailPasswordWidget() {
     return Column(
       children: <Widget>[
-        _entryField("Username"),
         _entryField("Email id"),
         _entryField("Password", isPassword: true),
       ],
@@ -177,42 +195,45 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: SizedBox(
-        height: height,
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-              top: -MediaQuery.of(context).size.height * .15,
+        body: SizedBox(
+      height: height,
+      child: Stack(
+        children: <Widget>[
+          Positioned(
+              top: -height * .15,
               right: -MediaQuery.of(context).size.width * .4,
-              child: const Mycontainer(),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(height: height * .2),
-                    _title(),
-                    const SizedBox(
-                      height: 50,
-                    ),
-                    _emailPasswordWidget(),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    _submitButton(),
-                    SizedBox(height: height * .14),
-                    _loginAccountLabel(),
-                  ],
-                ),
+              child:const Mycontainer()),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(height: height * .2),
+                  _title(),
+                  const SizedBox(height: 50),
+                  _emailPasswordWidget(),
+                  const SizedBox(height: 20),
+                  _submitButton(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    alignment: Alignment.centerRight,
+                    child: const Text('Forgot Password ?',
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w500)),
+                  ),
+                  _divider(),
+                  _facebookButton(),
+                  SizedBox(height: height * .055),
+                  _createAccountLabel(),
+                ],
               ),
             ),
-            Positioned(top: 40, left: 0, child: _backButton()),
-          ],
-        ),
+          ),
+          Positioned(top: 40, left: 0, child: _backButton()),
+        ],
       ),
-    );
+    ));
   }
 }
