@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'hall.dart';
 
 class Student extends StatefulWidget {
   const Student({Key? key}) : super(key: key);
@@ -74,7 +75,8 @@ class _StudentState extends State<Student> {
                 ),
                 TextFormField(
                   controller: _registrationController,
-                  decoration: const InputDecoration(labelText: 'Registration Number'),
+                  decoration:
+                      const InputDecoration(labelText: 'Registration Number'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your registration number';
@@ -123,7 +125,8 @@ class _StudentState extends State<Student> {
                     });
                   },
                   items: const [
-                    DropdownMenuItem(value: 'Government', child: Text('Government')),
+                    DropdownMenuItem(
+                        value: 'Government', child: Text('Government')),
                     DropdownMenuItem(value: 'Private', child: Text('Private')),
                   ],
                   decoration: const InputDecoration(labelText: 'Student Type'),
@@ -161,26 +164,15 @@ class _StudentState extends State<Student> {
                     });
                   },
                 ),
-                
                 ElevatedButton(
+                  
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // Form is valid, handle submission
-                      final firstName = _firstNameController.text;
-                      final lastName = _lastNameController.text;
-                      final sex = _sexController.text;
-                      final registration = _registrationController.text;
-                      final email = _emailController.text;
-                      final yearOfStudy = _yearOfStudyController.text;
-                      final college = _collegeController.text;
-                      final studentType = _selectedStudentType;
-                      final hasDisability = _hasDisability;
-                      final isContinuingResident = _isContinuingResident;
-                      final hasAppliedBefore = _hasAppliedBefore;
-                      
-                      // Process the student information as needed
-                    }
-                  },
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (BuildContext context) {
+                    return const Hall();
+                  }),
+                );
+              },
                   child: const Text('Submit'),
                 ),
               ],
@@ -192,8 +184,4 @@ class _StudentState extends State<Student> {
   }
 }
 
-void main() {
-  runApp(MaterialApp(
-    home: Student(),
-  ));
-}
+
