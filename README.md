@@ -1,2 +1,3 @@
 # Rental-hub
-This is our project for developing arental mobile app with flutter
+This is our repository  for developing a rental mobile app with flutter
+
