@@ -11,16 +11,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'RentalHub',
+    return MaterialApp( 
       theme: ThemeData( 
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(70, 0, 119, 1)),
          useMaterial3: true,
       ),
       
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('RentalHub'),
+        appBar: AppBar( 
         ),
         body: const Home(),
         )
