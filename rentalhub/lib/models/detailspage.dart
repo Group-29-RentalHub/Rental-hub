@@ -28,7 +28,7 @@ class DetailsPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
+                Icon(Icons.location_on),                Text(
                   house.title,
                   style: TextStyle(
                     fontSize: 24.0,
