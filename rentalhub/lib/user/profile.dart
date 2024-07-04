@@ -19,7 +19,8 @@ class Profile extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 50,
-              backgroundImage: AssetImage('assets/user_image.png'), // Replace with actual image
+              backgroundImage: AssetImage(
+                  'assets/user_image.png'), // Replace with actual image
             ),
             SizedBox(height: 16),
             Text(
@@ -48,35 +49,20 @@ class Profile extends StatelessWidget {
             Expanded(
               child: ListView(
                 children: [
-                  Center(
-                    child: Container(
-                      width: 300, // Adjust the width as needed
-                      child: ListTile(
-                        leading: Icon(Icons.location_on),
-                        title: Text('Address'),
-                        subtitle: Text('123 Main St, Bugolobi Lule Ug'),
-                      ),
-                    ),
+                  ListTile(
+                    leading: Icon(Icons.location_on),
+                    title: Text('Address'),
+                    subtitle: Text('123 Main St, Bugolobi Lule Ug'),
                   ),
-                  Center(
-                    child: Container(
-                      width: 300, // Adjust the width as needed
-                      child: ListTile(
-                        leading: Icon(Icons.phone),
-                        title: Text('Phone'),
-                        subtitle: Text('+256 776 567 890'),
-                      ),
-                    ),
+                  ListTile(
+                    leading: Icon(Icons.phone),
+                    title: Text('Phone'),
+                    subtitle: Text('+256 776 567 890'),
                   ),
-                  Center(
-                    child: Container(
-                      width: 300, // Adjust the width as needed
-                      child: ListTile(
-                        leading: Icon(Icons.calendar_today),
-                        title: Text('Date of Birth'),
-                        subtitle: Text('January 1, 1990'),
-                      ),
-                    ),
+                  ListTile(
+                    leading: Icon(Icons.calendar_today),
+                    title: Text('Date of Birth'),
+                    subtitle: Text('January 1, 1990'),
                   ),
                 ],
               ),
