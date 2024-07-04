@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:rentalhub/user/notifications.dart';
+import 'package:rentalhub/user/profile.dart';
 
 class Navigation extends StatelessWidget {
   const Navigation({super.key});
@@ -12,39 +14,50 @@ class Navigation extends StatelessWidget {
             
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.spaceAround, 
-             children: [
-            Container(
-              height: 100,
-              child: const Icon(
+             children: [ 
+           
+              FilledButton( 
+               onPressed: () {
+                 Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Profile()),
+                );
+              }, 
+                child: const Icon(
                 Icons.flash_on_sharp,
                 color: Colors.white,
                 size: 30.0, 
-              ),
-            ),
-            
-            Container(
-              height: 100,
-              child: Container(  
-                 decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
-                  color: Color.fromARGB(255, 82, 7, 136),
-                ),
-                // color: const Color.fromARGB(255, 82, 7, 136),
-                child:  const Icon(
+                
+              ) 
+              
+            ), 
+            FilledButton( 
+              child: const Icon(
                 Icons.home,
                 color: Colors.white,
-                size: 40.0, 
-                )
+                size: 30.0, 
+                
               ),
-            ),
-           
-            Container(
-              height: 100,
+              onPressed: () {
+                 Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Profile()),
+                );
+              },
+            ), 
+            FilledButton( 
               child: const Icon(
                 Icons.notifications,
                 color: Colors.white,
                 size: 30.0, 
+                
               ),
+              onPressed: () {
+                 Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Profile()),
+                );
+              },
             ), 
           ],
           ),
