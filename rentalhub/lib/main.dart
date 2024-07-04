@@ -1,43 +1,101 @@
 import 'package:flutter/material.dart';
-import 'package:rentalhub/layout/home.dart';
-import 'package:rentalhub/user/profile.dart';
+import 'package:rentalhub/user/notifications.dart'; // Import your NotificationHistoryPage
+import 'package:rentalhub/user/profile.dart'; // Import your Profile page
+import 'package:rentalhub/layout/home.dart'; // Import your Home page
 
 void main() {
-  runApp(const MyApp());
+  runApp(RentalHub());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+class RentalHub extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'RentalHub',
+      title: 'Rental Hub',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromRGBO(70, 0, 119, 1),
-        ),
-        useMaterial3: true,
+        primarySwatch: Colors.blue,
+        
       ),
-      home: MyHomePage(),
+      
+      initialRoute: '/',
+      routes: {
+        '/': (context) => MainPage(),
+        '/notifications': (context) => NotificationHistoryPage(),
+        '/profile': (context) => Profile(),
+      },
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
+class MainPage extends StatefulWidget {
+  @override
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  int _currentIndex = 0;
+  String _title = 'Home'; // Default title
+
+  final List<Widget> _pages = [
+    HomePage(),
+    NotificationHistoryPage(),
+    Profile(),
+  ];
+
+  void _onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+      _updateTitle(index);
+    });
+  }
+
+  void _updateTitle(int index) {
+    switch (index) {
+      case 0:
+        setState(() {
+          _title = 'Home';
+        });
+        break;
+      case 1:
+        setState(() {
+          _title = 'Notifications';
+        });
+        break;
+      case 2:
+        setState(() {
+          _title = 'Profile';
+        });
+        break;
+      default:
+        setState(() {
+          _title = 'Home';
+        });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('RentalHub'),
+        backgroundColor: Color.fromRGBO(70, 0, 119, 1) ,
+        title: Text(_title, style: TextStyle(
+          color: Colors.white
+        ),),   
+        
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+               
+            },
+          ),
+        ],
       ),
-      body: const Home(),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
+      drawer: Drawer( 
+        child: Container(
+          color: Colors.white,
+          child: ListView(
+          padding: EdgeInsets.zero, 
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(
@@ -55,7 +113,11 @@ class MyHomePage extends StatelessWidget {
               leading: const Icon(Icons.home),
               title: const Text('Home'),
               onTap: () {
-                Navigator.pop(context); // Close the drawer
+                Navigator.pop(context); 
+                setState(() {
+                  _currentIndex = 0;
+                  _title = 'Home';  
+                });
               },
             ),
             ListTile(
@@ -63,35 +125,55 @@ class MyHomePage extends StatelessWidget {
               title: const Text('Profile'),
               onTap: () {
                 Navigator.pop(context); // Close the drawer before navigating
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Profile()),
-                );
+                setState(() {
+                  _currentIndex = 2;
+                  _title = 'Profile'; // Update title when navigating from drawer
+                });
               },
             ),
             ListTile(
               leading: const Icon(Icons.settings),
               title: const Text('Settings'),
               onTap: () {
-                Navigator.pop(context); // Close the drawer
+                Navigator.pop(context);  
               },
             ),
             ListTile(
               leading: const Icon(Icons.info),
               title: const Text('About'),
               onTap: () {
-                Navigator.pop(context); // Close the drawer
+                Navigator.pop(context);  
               },
             ),
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Log Out'),
               onTap: () {
-                Navigator.pop(context); // Close the drawer
+                Navigator.pop(context);  
               },
             ),
           ],
         ),
+        ),
+        ),
+      body: _pages[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+         currentIndex: _currentIndex,
+        onTap: _onTabTapped,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            label: 'Notifications',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }

@@ -3,14 +3,7 @@ import 'package:flutter/material.dart';
 class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Profile',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Color.fromRGBO(116, 62, 155, 1),
-      ),
+    return Scaffold( 
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
