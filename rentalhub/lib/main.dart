@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rentalhub/layout/navigation.dart';
+import 'package:rentalhub/layout/home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,49 +12,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'RentalHub',
-      theme: ThemeData( 
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(70, 0, 119, 1)),
-         useMaterial3: true,
-      ),
-      
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('RentalHub'),
+        debugShowCheckedModeBanner: false,
+        title: 'RentalHub',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color.fromRGBO(70, 0, 119, 1)),
+          useMaterial3: true,
         ),
-        body: const Home(),
-        )
-        
-    );
-    
-  }
-}
-
-
-
-class Home extends StatelessWidget {
-  const Home({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-       
-        decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color.fromRGBO(70, 0, 119, 0),
-                Color.fromRGBO(70, 0, 119, 1),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
+        home: Scaffold(
+          appBar: AppBar(
+            title: const Text('RentalHub'),
           ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(),
-            const Navigation()
-          ],),
-    );
+          body: const Home(),
+        ));
   }
 }
