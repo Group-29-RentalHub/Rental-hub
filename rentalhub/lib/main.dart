@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rentalhub/layout/home.dart';
 
+
 void main() {
   runApp(const MyApp());
 }
