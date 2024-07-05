@@ -13,6 +13,7 @@ class RentalHub extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Rental Hub',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -94,6 +95,7 @@ class _MainPageState extends State<MainPage> {
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () {},
+            color: Colors.white,
           ),
         ],
       ),
@@ -124,6 +126,14 @@ class _MainPageState extends State<MainPage> {
                     _currentIndex = 0;
                     _title = 'Home';
                   });
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.message),
+                title: const Text('Chats'),
+                onTap: () {
+                  Navigator.pop(context); // Close the drawer before navigating
+                  Navigator.pushNamed(context, '/settings'); // Navigate to SettingsPage
                 },
               ),
               ListTile(
