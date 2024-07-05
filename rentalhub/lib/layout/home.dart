@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rentalhub/chat/chatpage.dart';
 import 'package:rentalhub/models/detailspage.dart';
 import 'package:rentalhub/models/house_model.dart';
 
@@ -44,7 +45,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Explore Houses', style: TextStyle(fontWeight: FontWeight.bold),),
+        title: Text(
+          'Explore Houses',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
       body: ListView.builder(
         itemCount: houses.length,
@@ -70,8 +74,8 @@ class HouseCard extends StatelessWidget {
         children: [
           AspectRatio(
             aspectRatio: 16 / 9,
-            child:ClipRRect(
-              borderRadius: BorderRadius.circular(16.0), 
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16.0),
               child: Image.asset(
                 house.imageUrl,
                 fit: BoxFit.cover,
@@ -150,57 +154,62 @@ class HouseCard extends StatelessWidget {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
-            child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DetailPage(house: house),
+              margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailPage(house: house),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromRGBO(70, 0, 119, 1),
+                      elevation: 3.0,
+                      textStyle: const TextStyle(color: Colors.white),
                     ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromRGBO(70, 0, 119, 1),
-                  elevation: 3.0,
-                  textStyle: const TextStyle(color: Colors.white),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.phone, size: 20, color: Colors.white),
-                    SizedBox(width: 4.0),
-                    Text(
-                      'Details',
-                      style: TextStyle(color: Colors.white),
-                    )
-                  ],
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromRGBO(70, 0, 119, 1),
-                  elevation: 3.0,
-                  textStyle: const TextStyle(color: Colors.white),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.chat, size: 20, color: Colors.white),
-                    SizedBox(width: 4.0),
-                    Text(
-                      'Chat',
-                      style: TextStyle(color: Colors.white),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          )
-          )
+                    child: Row(
+                      children: [
+                        Icon(Icons.phone, size: 20, color: Colors.white),
+                        SizedBox(width: 4.0),
+                        Text(
+                          'Details',
+                          style: TextStyle(color: Colors.white),
+                        )
+                      ],
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChatPage(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromRGBO(70, 0, 119, 1),
+                      elevation: 3.0,
+                      textStyle: const TextStyle(color: Colors.white),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.chat, size: 20, color: Colors.white),
+                        SizedBox(width: 4.0),
+                        Text(
+                          'Chat',
+                          style: TextStyle(color: Colors.white),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ))
         ],
       ),
     );
