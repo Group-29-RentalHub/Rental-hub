@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rentalhub/models/detailspage.dart';
 import 'package:rentalhub/models/house_model.dart';
 
 // Sample data (replace with your actual data or fetch from API)
@@ -42,6 +43,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Explore Houses', style: TextStyle(fontWeight: FontWeight.bold),),
+      ),
       body: ListView.builder(
         itemCount: houses.length,
         itemBuilder: (context, index) {
@@ -65,10 +69,13 @@ class HouseCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AspectRatio(
-            aspectRatio: 16 / 9, // Adjust aspect ratio as needed
-            child: Image.asset(
-              house.imageUrl,
-              fit: BoxFit.cover,
+            aspectRatio: 16 / 9,
+            child:ClipRRect(
+              borderRadius: BorderRadius.circular(16.0), 
+              child: Image.asset(
+                house.imageUrl,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           Padding(
@@ -82,6 +89,7 @@ class HouseCard extends StatelessWidget {
                     Row(
                       children: [
                         Icon(Icons.thumb_up_alt, size: 20),
+                        SizedBox(width: 4.0),
                         Text(
                           house.title,
                           style: TextStyle(
@@ -98,6 +106,7 @@ class HouseCard extends StatelessWidget {
                           Icons.location_on,
                           size: 20,
                         ),
+                        SizedBox(width: 4.0),
                         Text(house.location,
                             style: TextStyle(
                               color: Colors.grey,
@@ -105,7 +114,7 @@ class HouseCard extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 4.0),
-                    const Row(
+                    Row(
                       children: [
                         Icon(
                           Icons.star,
@@ -140,24 +149,57 @@ class HouseCard extends StatelessWidget {
               ],
             ),
           ),
-          Row(
+          Container(
+            margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+            child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ElevatedButton(
-                onPressed: () {},
-                style: FilledButton.styleFrom(
-                  
-                    backgroundColor:  Color.fromRGBO(70, 0, 119, 1),
-                    elevation: 3.0,
-                    textStyle: const TextStyle(color: Colors.white)),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetailPage(house: house),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromRGBO(70, 0, 119, 1),
+                  elevation: 3.0,
+                  textStyle: const TextStyle(color: Colors.white),
+                ),
                 child: Row(
                   children: [
-                    Icon(Icons.phone, size: 20, color: Colors.white,),
-                      Text('Details', style: TextStyle(color: Colors.white), )
+                    Icon(Icons.phone, size: 20, color: Colors.white),
+                    SizedBox(width: 4.0),
+                    Text(
+                      'Details',
+                      style: TextStyle(color: Colors.white),
+                    )
+                  ],
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromRGBO(70, 0, 119, 1),
+                  elevation: 3.0,
+                  textStyle: const TextStyle(color: Colors.white),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.chat, size: 20, color: Colors.white),
+                    SizedBox(width: 4.0),
+                    Text(
+                      'Chat',
+                      style: TextStyle(color: Colors.white),
+                    )
                   ],
                 ),
               ),
             ],
+          )
           )
         ],
       ),

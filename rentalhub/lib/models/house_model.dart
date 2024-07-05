@@ -1,4 +1,3 @@
- 
 class House {
   final String id;
   final String title;
@@ -14,5 +13,3 @@ class House {
     required this.price,
   });
 }
- 
-
