@@ -127,15 +127,7 @@ class _MainPageState extends State<MainPage> {
                     _title = 'Home';
                   });
                 },
-              ),
-              ListTile(
-                leading: const Icon(Icons.message),
-                title: const Text('Chats'),
-                onTap: () {
-                  Navigator.pop(context); // Close the drawer before navigating
-                  Navigator.pushNamed(context, '/settings'); // Navigate to SettingsPage
-                },
-              ),
+              ), 
               ListTile(
                 leading: const Icon(Icons.person),
                 title: const Text('Profile'),
