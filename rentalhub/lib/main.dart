@@ -27,6 +27,7 @@ class RentalHub extends StatelessWidget {
         '/profile': (context) => Profile(),
         '/about': (context) => AboutPage(), // Add the AboutPage route
         '/settings': (context) => SettingsPage(), // Add the SettingsPage route
+        '/login': (context) => LoginPage(),
       },
     );
   }
