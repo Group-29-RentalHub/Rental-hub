@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'nkurumahA.dart';
 class Nkrumah extends StatefulWidget {
   const Nkrumah({super.key});
 
@@ -18,7 +19,8 @@ class _NkrumahState extends State<Nkrumah> {
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),
-        title: const Text("CHOOSE A ROOM"),
+        title: const Text("CHOOSE A BLOCK "),
+        backgroundColor: Colors.green,
       ),
       body: Center(
         child: ListView(
@@ -26,144 +28,48 @@ class _NkrumahState extends State<Nkrumah> {
           children: [
             TextButton(
               onPressed: () {
-                
+                  Navigator.of(context).push(
+                  MaterialPageRoute(builder: (BuildContext context) {
+                    return const BlockARooms();
+                  }),
+                );
+
               },
-              child: const Text("ROOM A"),
+              child: const Text("BLOCK A"),
             ),
             const SizedBox(
-              height: 10,
+              height: 50,
             ),
             TextButton(
               onPressed: () {
           
               },
-              child: const Text("ROOM B"),
+              child: const Text("BLOCK B"),
             ),
             const SizedBox(
-              height: 10,
+              height: 50,
             ),
             TextButton(
               onPressed: () {
               },
-              child: const Text("ROOM C"),
+              child: const Text("BLOCK C"),
             ),
             const SizedBox(
-              height: 10,
+              height: 50,
             ),
             TextButton(
               onPressed: () {
         
               },
-              child: const Text("ROOM D"),
+              child: const Text("BLOCK D"),
             ),
             const SizedBox(
-              height: 10,
+              height: 50,
             ),
-            TextButton(
-              onPressed: () {
-                
-              },
-              child: const Text("ROOM E"),
+           
+           const SizedBox(
+              height: 60,
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {
-                
-              },
-              child: const Text("ROOM F"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {
-                
-              },
-              child: const Text("ROOM G"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {
-              },
-              child: const Text("ROOM H"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {
-              
-              },
-              child: const Text("ROOM I"),
-            ),
-             const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {
-              
-              },
-              child: const Text("ROOM J"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {
-              
-              },
-              child: const Text("ROOM K"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {
-              
-              },
-              child: const Text("ROOM L"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {
-              
-              },
-              child: const Text("ROOM M"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {
-              
-              },
-              child: const Text("ROOM N"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {
-              
-              },
-              child: const Text("ROOM O"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {
-              
-              },
-              child: const Text("ROOM P"),
-            ),
-
           ],
         ),
       ),
