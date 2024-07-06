@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'student.dart';
+import 'Application_form.dart';
 
 void main() {
   runApp(const MyApp());

@@ -17,6 +17,7 @@ class _StudentState extends State<Student> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _yearOfStudyController = TextEditingController();
   final TextEditingController _collegeController = TextEditingController();
+    final TextEditingController  _hallOfAttachmentController = TextEditingController();
 
   String? _selectedStudentType; // Initialize as null
   bool _hasDisability = false;
@@ -34,7 +35,7 @@ class _StudentState extends State<Student> {
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),
-        title: const Text("Student Information"),
+        title: const Text("Hall Application Form"),
         backgroundColor: Colors.green,
       ),
       body: Padding(
@@ -194,7 +195,7 @@ class _StudentState extends State<Student> {
                   controller: _collegeController,
                   decoration: const InputDecoration(
                     labelText: 'College',
-                    hintText: "Name of your College",
+                    hintText: "Name of your college",
                     labelStyle:TextStyle(
                     fontSize: 16,
                     color:Colors.black
@@ -203,7 +204,30 @@ class _StudentState extends State<Student> {
                     ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your college';
+                      return 'Please enter your College name';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(
+                  height:16
+                ),
+
+                
+                TextFormField(
+                  controller: _hallOfAttachmentController,
+                  decoration: const InputDecoration(
+                    labelText: 'Hall Of Attachment',
+                    hintText: "Name of the hall you are attached to",
+                    labelStyle:TextStyle(
+                    fontSize: 16,
+                    color:Colors.black
+                    ),
+                    border:OutlineInputBorder()
+                    ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your Hall of attachment';
                     }
                     return null;
                   },
@@ -278,7 +302,22 @@ class _StudentState extends State<Student> {
                   }),
                 );
               },
-                  child: const Text('Submit'),
+              style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                    ),
+                  ),
+                  child: SizedBox(
+                    width: 200,
+                    height: 50,
+                    child: Center(
+                      child: const Text(
+                        'Submit',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
