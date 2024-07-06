@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:halls/Halls/AfricaB.dart';
-import 'AfricaA.dart';
-import 'AfricaC.dart';
-import 'AfricaD.dart';
-import 'AfricaE.dart';
-
+import 'package:halls/Blocks/AfricaA.dart';
+import 'package:halls/Blocks/AfricaB.dart';
+import 'package:halls/Blocks/AfricaC.dart';
+import 'package:halls/Blocks/AfricaD.dart';
+import 'package:halls/Blocks/AfricaE.dart';
 class Africa extends StatefulWidget {
   const Africa({super.key});
 

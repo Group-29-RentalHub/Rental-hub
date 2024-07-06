@@ -1,77 +1,77 @@
 import 'package:flutter/material.dart';
-class BlockARooms extends StatelessWidget {
-  const BlockARooms({super.key});
+class BlockBRooms extends StatelessWidget {
+  const BlockBRooms({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('BLOCK A ROOMS'),
+        title: const Text('BLOCK B ROOMS'),
         backgroundColor: Colors.green,
       ),
       body: Center(
         child: ListView(
           children: const [
             ListTile(
-              title: Text('Room 1'),
+              title: Text('B1'),
             ),
             ListTile(
-              title: Text('Room 2'),
+              title: Text(' B2'),
             ),
             ListTile(
-              title: Text('Room 3'),
+              title: Text(' B3'),
             ),
             ListTile(
-              title: Text('Room 4'),
+              title: Text(' B4'),
             ),
             ListTile(
-              title: Text('Room 5'),
+              title: Text('B5'),
             ),
             ListTile(
-              title: Text('Room 6'),
+              title: Text('B6'),
             ),
              ListTile(
-              title: Text('Room 7'),
+              title: Text('B7'),
             ),
              ListTile(
-              title: Text('Room 8'),
+              title: Text(' B8'),
             ),
              ListTile(
-              title: Text('Room 9'),
+              title: Text('B9'),
             ),
              ListTile(
-              title: Text('Room 10'),
+              title: Text('B10'),
             ),
              ListTile(
-              title: Text('Room 11'),
+              title: Text('B11'),
             ),
              ListTile(
-              title: Text('Room 12'),
+              title: Text('B12'),
             ),
              ListTile(
-              title: Text('Room 13'),
+              title: Text('B13'),
             ),
              ListTile(
-              title: Text('Room 14'),
+              title: Text('B4'),
             ),
              ListTile(
-              title: Text('Room 15'),
+              title: Text('B15'),
             ),
              ListTile(
-              title: Text('Room 16'),
+              title: Text('B16'),
             ),
              ListTile(
-              title: Text('Room 17'),
+              title: Text('B17'),
             
             ),
              ListTile(
-              title: Text('Room 18'),
+              title: Text('B18'),
             ),
              ListTile(
-              title: Text('Room 19'),
+              title: Text('B19'),
             ),
              ListTile(
-              title: Text('Room 20'),
+              title: Text('B20'),
             )    
           ],
         

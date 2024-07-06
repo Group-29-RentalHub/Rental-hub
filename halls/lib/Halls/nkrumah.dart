@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'nkurumahA.dart';
+import 'package:halls/Blocks/nkurumahA.dart';
+import 'package:halls/Blocks/nkurumahB.dart';
+import 'package:halls/Blocks/nkurumahC.dart';
+import 'package:halls/Blocks/nkurumahD.dart';
 class Nkrumah extends StatefulWidget {
   const Nkrumah({super.key});
 
@@ -42,7 +45,11 @@ class _NkrumahState extends State<Nkrumah> {
             ),
             TextButton(
               onPressed: () {
-          
+               Navigator.of(context).push(
+                  MaterialPageRoute(builder: (BuildContext context) {
+                    return const BlockBRooms();
+                  }),
+                );
               },
               child: const Text("BLOCK B"),
             ),
@@ -51,6 +58,11 @@ class _NkrumahState extends State<Nkrumah> {
             ),
             TextButton(
               onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (BuildContext context) {
+                    return const BlockCRooms();
+                  }),
+                );
               },
               child: const Text("BLOCK C"),
             ),
@@ -59,7 +71,11 @@ class _NkrumahState extends State<Nkrumah> {
             ),
             TextButton(
               onPressed: () {
-        
+                 Navigator.of(context).push(
+                  MaterialPageRoute(builder: (BuildContext context) {
+                    return const BlockDRooms();
+                  }),
+                );
               },
               child: const Text("BLOCK D"),
             ),
