@@ -1,18 +1,8 @@
 import 'package:flutter/material.dart';
-import 'marystuartA.dart';
-import 'marystuartB.dart';
-import 'marystuartC.dart';
-import 'marystuartD.dart';
-import 'marystuartE.dart';
-import 'marystuartF.dart';
-import 'marystuartG.dart';
-import 'marystuartH.dart';
-import 'marystuartJ.dart';
-import 'marystuartK.dart';
-import 'marystuartL.dart';
-import 'marystuartM.dart';
-import 'marystuartN.dart';
-import 'marystuartP.dart';
+import '../Blocks/marystuartA.dart';
+import '../Blocks/marystuartB.dart';
+import '../Blocks/marystuartC.dart';
+import '../Blocks/marystuartD.dart';
 
 class Marystuart extends StatefulWidget {
   const Marystuart({super.key});
@@ -34,6 +24,7 @@ class _MarystuartState extends State<Marystuart> {
           icon: const Icon(Icons.arrow_back_ios),
         ),
         title: const Text("CHOOSE A BLOCK"),
+        backgroundColor: Colors.green,
       ),
       body: Center(
         child: ListView(
@@ -87,136 +78,6 @@ class _MarystuartState extends State<Marystuart> {
                 );
               },
               child: const Text("BLOCK D"),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (BuildContext context) {
-                    return const BlockERooms();
-                  }),
-                );
-              },
-              child: const Text("BLOCK E"),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (BuildContext context) {
-                    return const BlockFRooms();
-                  }),
-                );
-              },
-              child: const Text("BLOCK F"),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (BuildContext context) {
-                    return const BlockGRooms();
-                  }),
-                );
-              },
-              child: const Text("BLOCK G"),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (BuildContext context) {
-                    return const BlockHRooms();
-                  }),
-                );
-              },
-              child: const Text("BLOCK H"),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (BuildContext context) {
-                    return const BlockJRooms();
-                  }),
-                );
-              },
-              child: const Text("BLOCK J"),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (BuildContext context) {
-                    return const BlockKRooms();
-                  }),
-                );
-              },
-              child: const Text("BLOCK K"),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-           TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (BuildContext context) {
-                    return const BlockLRooms();
-                  }),
-                );
-              },
-              child: const Text("BLOCK L"),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (BuildContext context) {
-                    return const BlockMRooms();
-                  }),
-                );
-              },
-              child: const Text("BLOCK M"),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (BuildContext context) {
-                    return const BlockNRooms();
-                  }),
-                );
-              },
-              child: const Text("BLOCK N"),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (BuildContext context) {
-                    return const BlockPRooms();
-                  }),
-                );
-              },
-              child: const Text("BLOCK P"),
             ),
             const SizedBox(
               height: 40,
