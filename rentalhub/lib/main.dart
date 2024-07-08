@@ -16,7 +16,19 @@ class RentalHub extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Rental Hub',
+      ticlass SignupPage extends StatelessWidget {
+        @override
+        Widget build(BuildContext context) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Signup'),
+            ),
+            body: Center(
+              child: Text('Signup Page'),
+            ),
+          );
+        }
+      }tle: 'Rental Hub',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
