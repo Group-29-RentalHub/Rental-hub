@@ -33,7 +33,7 @@ class RentalHub extends StatelessWidget {
           },),
         '/about': (context) => AboutPage(), // Add the AboutPage route
         '/settings': (context) => SettingsPage(), 
-        '/home': (context) => HomePage(), 
+        '/home': (context) => MainPage(), 
 
        },
     );
@@ -57,7 +57,7 @@ class _MainPageState extends State<MainPage> {
     HomePage(),
     NotificationHistoryPage(),
     Profile(),
-  LandingPage(),
+    LandingPage(),
   ];
 
   void _onTabTapped(int index) {
