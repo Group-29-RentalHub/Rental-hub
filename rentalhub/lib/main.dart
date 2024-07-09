@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rentalhub/user/notifications.dart'; // Import your NotificationHistoryPage
 import 'package:rentalhub/user/profile.dart'; // Import your Profile page
-import 'package:rentalhub/layout/home.dart'; // Import your Home page
+import 'package:rentalhub/layout/home.dart';
+import 'package:rentalhub/user/profile_form.dart'; // Import your Home page
 
 void main() {
   runApp(RentalHub());
@@ -22,6 +23,8 @@ class RentalHub extends StatelessWidget {
         '/': (context) => MainPage(),
         '/notifications': (context) => NotificationHistoryPage(),
         '/profile': (context) => Profile(),
+        '/profileForm': (context) => ProfileFormPage(),
+
       },
     );
   }
