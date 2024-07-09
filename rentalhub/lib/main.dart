@@ -4,6 +4,8 @@ import 'package:rentalhub/user/profile.dart'; // Import your Profile page
 import 'package:rentalhub/layout/home.dart'; // Import your Home page
 import 'package:rentalhub/about/about.dart'; // Import your About page
 import 'package:rentalhub/settings/settings.dart'; // Import your Settings page
+import 'package:rentalhub/user/login.dart';
+import 'package:rentalhub/user/signup.dart';
 
 void main() {
   runApp(RentalHub());
@@ -157,7 +159,7 @@ class _MainPageState extends State<MainPage> {
                     _title = 'Home';
                   });
                 },
-              ), 
+              ),
               ListTile(
                 leading: const Icon(Icons.person),
                 title: const Text('Profile'),
@@ -175,7 +177,8 @@ class _MainPageState extends State<MainPage> {
                 title: const Text('Settings'),
                 onTap: () {
                   Navigator.pop(context); // Close the drawer before navigating
-                  Navigator.pushNamed(context, '/settings'); // Navigate to SettingsPage
+                  Navigator.pushNamed(
+                      context, '/settings'); // Navigate to SettingsPage
                 },
               ),
               ListTile(
@@ -183,7 +186,8 @@ class _MainPageState extends State<MainPage> {
                 title: const Text('About'),
                 onTap: () {
                   Navigator.pop(context); // Close the drawer before navigating
-                  Navigator.pushNamed(context, '/about'); // Navigate to AboutPage
+                  Navigator.pushNamed(
+                      context, '/about'); // Navigate to AboutPage
                 },
               ),
               ListTile(
