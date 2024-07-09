@@ -5,7 +5,6 @@ import 'package:rentalhub/layout/home.dart'; // Import your Home page
 import 'package:rentalhub/about/about.dart'; // Import your About page
 import 'package:rentalhub/settings/settings.dart'; // Import your Settings page
 import 'package:rentalhub/user/login.dart';
-import 'package:rentalhub/user/signup.dart';
 
 void main() {
   runApp(RentalHub());
@@ -27,6 +26,7 @@ class RentalHub extends StatelessWidget {
         '/profile': (context) => Profile(),
         '/about': (context) => AboutPage(), // Add the AboutPage route
         '/settings': (context) => SettingsPage(), // Add the SettingsPage route
+        '/login': (context) => LoginPage(), // Add the LoginPage route
       },
     );
   }
@@ -106,14 +106,12 @@ class _MainPageState extends State<MainPage> {
                 style: const TextStyle(color: Colors.white),
                 onSubmitted: (query) {
                   // Perform search operation
-                  ('Search query: $query');
+                  print('Search query: $query');
                   setState(() {
                     _isSearching = false;
                   });
                 },
               ),
-
-        //
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -197,7 +195,9 @@ class _MainPageState extends State<MainPage> {
                 leading: const Icon(Icons.logout),
                 title: const Text('Log Out'),
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.pop(context); // Close the drawer
+                  Navigator.pushReplacementNamed(
+                      context, '/login'); // Navigate to LoginPage
                 },
               ),
             ],
@@ -220,6 +220,10 @@ class _MainPageState extends State<MainPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
       ),
