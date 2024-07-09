@@ -31,8 +31,10 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             children: [
               Text(
-                'Welcome Back!',
-                style: TextStyle(fontSize: 20.0),
+                'RentalHub welcomes you back',
+                style: TextStyle(
+                    fontSize: 15.0,
+                    color: const Color.fromARGB(255, 122, 65, 132)),
               ),
               SizedBox(height: 20.0),
               TextFormField(
