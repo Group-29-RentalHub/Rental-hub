@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ProfileFormPage extends StatefulWidget {
   final VoidCallback onSubmit;
@@ -13,44 +14,113 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
   PageController _pageController = PageController();
   int _currentPage = 0;
 
+  String? _selectedBudget;
+  String? _selectedHouseType;
+  LatLng? _selectedLocation;
+
   List<Widget> _buildSteps() {
     return [
       _buildStep(
-        question: 'What type of house are you looking for?',
-        child: TextField(
-          decoration: InputDecoration(
-            labelText: 'House Type',
-          ),
-        ),
-        icon: Icons.home, // Using relevant icons
+        question: 'Select your preferred location on the map',
+        child: _buildMap(),
+        icon: Icons.location_on,
       ),
       _buildStep(
-        question: 'What is your budget?',
-        child: TextField(
-          decoration: InputDecoration(
-            labelText: 'Budget',
-          ),
-        ),
-        icon: Icons.attach_money, // Using relevant icons
+        question: 'Choose your budget range',
+        child: _buildBudgetOptions(),
+        icon: Icons.attach_money,
       ),
       _buildStep(
-        question: 'What is your preferred location?',
-        child: TextField(
-          decoration: InputDecoration(
-            labelText: 'Location',
-          ),
-        ),
-        icon: Icons.location_on, // Using relevant icons
+        question: 'Choose the type of house',
+        child: _buildHouseTypeOptions(),
+        icon: Icons.home,
       ),
-      // Add more steps as needed
     ];
+  }
+
+  Widget _buildMap() {
+    return Container(
+      height: 300,
+      child: GoogleMap(
+        initialCameraPosition: CameraPosition(
+          target: LatLng(0.3476, 32.5825), // Centered on Kampala, Uganda
+          zoom: 12,
+        ),
+        onTap: (LatLng position) {
+          setState(() {
+            _selectedLocation = position;
+          });
+        },
+        markers: _selectedLocation != null
+            ? {
+                Marker(
+                  markerId: MarkerId('selectedLocation'),
+                  position: _selectedLocation!,
+                )
+              }
+            : {},
+      ),
+    );
+  }
+
+  Widget _buildBudgetOptions() {
+    List<String> budgets = [
+      '300,000 - 600,000 UGX',
+      '650,000 - 850,000 UGX',
+      '850,000 - 1,200,000 UGX',
+      '1,300,000 - 1,500,000 UGX',
+    ];
+    return Column(
+      children: budgets
+          .map(
+            (budget) => RadioListTile<String>(
+              title: Text(budget),
+              value: budget,
+              groupValue: _selectedBudget,
+              onChanged: (value) {
+                setState(() {
+                  _selectedBudget = value;
+                  _pageController.nextPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                });
+              },
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  Widget _buildHouseTypeOptions() {
+    List<String> houseTypes = [
+      'Double Self-Contained',
+      'Double Non-Self-Contained',
+      'Single Self-Contained',
+      'Single Non-Self-Contained',
+    ];
+    return Column(
+      children: houseTypes
+          .map(
+            (houseType) => RadioListTile<String>(
+              title: Text(houseType),
+              value: houseType,
+              groupValue: _selectedHouseType,
+              onChanged: (value) {
+                setState(() {
+                  _selectedHouseType = value;
+                });
+              },
+            ),
+          )
+          .toList(),
+    );
   }
 
   Widget _buildStep({
     required String question,
     required Widget child,
     required IconData icon,
-    //required String iconPath,
   }) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -63,10 +133,6 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
             size: 100.0,
             color: Color.fromRGBO(70, 0, 119, 1), // Theme color
           ),
-          // Image.asset(
-          //   iconPath,
-          //   height: 150.0,
-          // ),
           SizedBox(height: 16.0),
           Text(
             question,
@@ -74,7 +140,7 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
             style: TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.bold,
-             ),
+            ),
           ),
           SizedBox(height: 16.0),
           child,
@@ -142,9 +208,7 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
                           ),
                         )
                       : ElevatedButton(
-                          onPressed: () {
-                            widget.onSubmit(); // Trigger callback to navigate to HomePage
-                          },
+                          onPressed: widget.onSubmit,
                           child: Text('Submit', style: TextStyle(color: Colors.white)),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color.fromRGBO(70, 0, 119, 1), // Theme color
@@ -157,7 +221,7 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 'Step ${_currentPage + 1} of 3', // Adjust according to the number of steps
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.black),
               ),
             ),
           ],
