@@ -16,7 +16,19 @@ class RentalHub extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Rental Hub',
+      ticlass SignupPage extends StatelessWidget {
+        @override
+        Widget build(BuildContext context) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Signup'),
+            ),
+            body: Center(
+              child: Text('Signup Page'),
+            ),
+          );
+        }
+      }tle: 'Rental Hub',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -27,13 +39,13 @@ class RentalHub extends StatelessWidget {
         '/profile': (context) => Profile(),
         '/about': (context) => AboutPage(), // Add the AboutPage route
         '/settings': (context) => SettingsPage(), // Add the SettingsPage route
+        '/login': (context) => LoginPage(),
       },
     );
   }
 }
 
 class MainPage extends StatefulWidget {
-  
   @override
   _MainPageState createState() => _MainPageState();
 }
@@ -93,32 +105,36 @@ class _MainPageState extends State<MainPage> {
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(70, 0, 119, 1),
         title: !_isSearching
-        ?Text(
-          _title,
-          style: TextStyle(color: Colors.white),
-        ):
-        TextField(
-          controller: _searchController,
+            ? Text(
+                _title,
+                style: TextStyle(color: Colors.white),
+              )
+            : TextField(
+                controller: _searchController,
                 decoration: const InputDecoration(
                   hintText: 'Search...',
+                  hintStyle: TextStyle(color: Colors.white),
                   border: InputBorder.none,
                 ),
-                style: const TextStyle(color: Colors.black),
-                onSubmitted: (query) {  
+                style: const TextStyle(color: Colors.white),
+                onSubmitted: (query) {
                   // Perform search operation
                   ('Search query: $query');
                   setState(() {
                     _isSearching = false;
                   });
                 },
-        ),
-        
-        // 
+              ),
+
+        //
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
-              icon: Icon(_isSearching ? Icons.close : Icons.search_outlined, color: Colors.white,),
+              icon: Icon(
+                _isSearching ? Icons.close : Icons.search_outlined,
+                color: Colors.white,
+              ),
               onPressed: () {
                 setState(() {
                   _isSearching = !_isSearching;
