@@ -1,52 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:rentalhub/chat/chatpage.dart';
+import 'package:rentalhub/models/detailspage.dart';
 import 'package:rentalhub/models/house_model.dart';
-
-// Assuming you have a House model defined (house_model.dart)
 
 // Sample data (replace with your actual data or fetch from API)
 List<House> houses = [
   House(
-    id: '1',
-    title: 'Modern Apartment in City Center',
-    location: 'New York, USA',
-    imageUrl: 'assets/user_image.png', // Replace with actual image URL or path
-    price: '\$150 per night',
-
+    id: '2',
+    title: 'Dream World Hostel',
+    location: 'Makerere Kikoni',
+    price: 'Ugx 800,000 per Semester',
+    imageUrl: 'assets/room2.jpg',
   ),
   House(
-    id: '2',
-    title: 'Cozy Cottage by the Lake',
-    location: 'Geneva, Switzerland',
-        price: '\$150 per night',
-
-    imageUrl: 'assets/user_image.png', // Replace with actual image URL or path
+    id: '3',
+    title: 'Dream World Hostel',
+    location: 'Makerere Kikoni',
+    price: 'Ugx 800,000 per Semester',
+    imageUrl: 'assets/room3.jpg',
   ),
-  // Add more listings as needed
+  House(
+    id: '4',
+    title: 'Dream World Hostel',
+    location: 'Makerere Kikoni',
+    price: 'Ugx 800,000 per Semester',
+    imageUrl: 'assets/room4.jpg',
+  ),
+  House(
+    id: '5',
+    title: 'Dream World Hostel',
+    location: 'Makerere Kikoni',
+    price: 'Ugx 800,000 per Semester',
+    imageUrl: 'assets/room2.jpg',
+  ),
 ];
 
-void main() {
-  runApp(RentalHub());
-}
-
-class RentalHub extends StatelessWidget {
+class HomePage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Rental Hub',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: HomePage(),
-    );
-  }
+  _HomePageState createState() => _HomePageState();
 }
 
-class HomePage extends StatelessWidget {
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Explore Houses'),
+        title: Text(
+          'Explore Houses',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
       body: ListView.builder(
         itemCount: houses.length,
@@ -71,34 +73,143 @@ class HouseCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AspectRatio(
-            aspectRatio: 16 / 9, // Adjust aspect ratio as needed
-            child: Image.asset(
-              house.imageUrl,
-              fit: BoxFit.cover,
+            aspectRatio: 16 / 9,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16.0),
+              child: Image.asset(
+                house.imageUrl,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           Padding(
             padding: EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  house.title,
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.thumb_up_alt, size: 20),
+                        SizedBox(width: 4.0),
+                        Text(
+                          house.title,
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 4.0),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.location_on,
+                          size: 20,
+                        ),
+                        SizedBox(width: 4.0),
+                        Text(house.location,
+                            style: TextStyle(
+                              color: Colors.grey,
+                            ))
+                      ],
+                    ),
+                    SizedBox(height: 4.0),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.star,
+                          size: 20,
+                        ),
+                        Icon(
+                          Icons.star,
+                          size: 20,
+                        ),
+                        Icon(
+                          Icons.star,
+                          size: 20,
+                        ),
+                        Icon(
+                          Icons.star,
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 4.0),
+                    Text(
+                      house.price,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 4.0),
-                Text(
-                  house.location,
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
+                Column(
+                  children: [Icon(Icons.heart_broken), Text('72')],
                 ),
               ],
             ),
           ),
+          Container(
+              margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailPage(house: house),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromRGBO(70, 0, 119, 1),
+                      elevation: 3.0,
+                      textStyle: const TextStyle(color: Colors.white),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.phone, size: 20, color: Colors.white),
+                        SizedBox(width: 4.0),
+                        Text(
+                          'Details',
+                          style: TextStyle(color: Colors.white),
+                        )
+                      ],
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChatPage(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromRGBO(70, 0, 119, 1),
+                      elevation: 3.0,
+                      textStyle: const TextStyle(color: Colors.white),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.chat, size: 20, color: Colors.white),
+                        SizedBox(width: 4.0),
+                        Text(
+                          'Chat',
+                          style: TextStyle(color: Colors.white),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ))
         ],
       ),
     );
