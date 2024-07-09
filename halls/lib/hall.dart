@@ -119,7 +119,7 @@ class _HallState extends State<Hall> {
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return const Universityhall();
+                  return const UniversityHall();
                 }));
               },
               child: const Text("University Hall"),

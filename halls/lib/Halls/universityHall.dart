@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import '../Blocks/universityHallA.dart';
+import '../Blocks/universityHallB.dart';
+import '../Blocks/universityHallC.dart';
+import '../Blocks/universityHallD.dart';
 
-class Universityhall extends StatefulWidget {
-  const Universityhall({super.key});
+class UniversityHall extends StatefulWidget {
+  const UniversityHall({super.key});
 
   @override
-  State<Universityhall> createState() => _UniversityhallState();
+  State<UniversityHall> createState() => _UniversityHallState();
 }
 
-class _UniversityhallState extends State<Universityhall> {
+class _UniversityHallState extends State<UniversityHall> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,120 +23,69 @@ class _UniversityhallState extends State<Universityhall> {
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),
-        title: const Text("CHOOSE A ROOM"),
+        title: const Text("CHOOSE A BLOCK "),
+        backgroundColor: Colors.green,
       ),
       body: Center(
         child: ListView(
           scrollDirection: Axis.vertical,
           children: [
             TextButton(
-              onPressed: () {},
-              child: const Text("ROOM A"),
+              onPressed: () {
+                  Navigator.of(context).push(
+                  MaterialPageRoute(builder: (BuildContext context) {
+                    return const BlockARooms();
+                  }),
+                );
+
+              },
+              child: const Text("BLOCK A"),
             ),
             const SizedBox(
-              height: 10,
+              height: 50,
             ),
             TextButton(
-              onPressed: () {},
-              child: const Text("ROOM B"),
+              onPressed: () {
+               Navigator.of(context).push(
+                  MaterialPageRoute(builder: (BuildContext context) {
+                    return const BlockBRooms();
+                  }),
+                );
+              },
+              child: const Text("BLOCK B"),
             ),
             const SizedBox(
-              height: 10,
+              height: 50,
             ),
             TextButton(
-              onPressed: () {},
-              child: const Text("ROOM C"),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (BuildContext context) {
+                    return const BlockCRooms();
+                  }),
+                );
+              },
+              child: const Text("BLOCK C"),
             ),
             const SizedBox(
-              height: 10,
+              height: 50,
             ),
             TextButton(
-              onPressed: () {},
-              child: const Text("ROOM D"),
+              onPressed: () {
+                 Navigator.of(context).push(
+                  MaterialPageRoute(builder: (BuildContext context) {
+                    return const BlockDRooms();
+                  }),
+                );
+              },
+              child: const Text("BLOCK D"),
             ),
             const SizedBox(
-              height: 10,
+              height: 50,
             ),
-            TextButton(
-              onPressed: () {},
-              child: const Text("ROOM E"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {},
-              child: const Text("ROOM F"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {},
-              child: const Text("ROOM G"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {},
-              child: const Text("ROOM H"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {},
-              child: const Text("ROOM I"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {},
-              child: const Text("ROOM J"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {},
-              child: const Text("ROOM K"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {},
-              child: const Text("ROOM L"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {},
-              child: const Text("ROOM M"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {},
-              child: const Text("ROOM N"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {},
-              child: const Text("ROOM O"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {},
-              child: const Text("ROOM P"),
+           
+           const SizedBox(
+              height: 60,
             ),
           ],
         ),
