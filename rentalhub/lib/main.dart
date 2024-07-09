@@ -46,11 +46,14 @@ class RentalHub extends StatelessWidget {
 }
 
 class MainPage extends StatefulWidget {
+  
   @override
   _MainPageState createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
+  bool _isSearching = false;
+  final TextEditingController _searchController = TextEditingController();
   int _currentIndex = 0;
   String _title = 'Home'; // Default title
 
@@ -102,15 +105,42 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(70, 0, 119, 1),
-        title: Text(
+        title: !_isSearching
+        ?Text(
           _title,
           style: TextStyle(color: Colors.white),
+        ):
+        TextField(
+          controller: _searchController,
+                decoration: const InputDecoration(
+                  hintText: 'Search...',
+                  border: InputBorder.none,
+                ),
+                style: const TextStyle(color: Colors.black),
+                onSubmitted: (query) {  
+                  // Perform search operation
+                  ('Search query: $query');
+                  setState(() {
+                    _isSearching = false;
+                  });
+                },
         ),
+        
+        // 
         actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {},
-            color: Colors.white,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              icon: Icon(_isSearching ? Icons.close : Icons.search_outlined, color: Colors.white,),
+              onPressed: () {
+                setState(() {
+                  _isSearching = !_isSearching;
+                  if (!_isSearching) {
+                    _searchController.clear();
+                  }
+                });
+              },
+            ),
           ),
         ],
       ),
