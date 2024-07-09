@@ -4,10 +4,10 @@ class BlockCRooms extends StatefulWidget {
   const BlockCRooms({super.key});
 
   @override
-  State<BlockCRooms> createState() => _BlockCRoomsState();
+  State<BlockCRooms> createState() => _BlockBRoomsState();
 }
 
-class _BlockCRoomsState extends State<BlockCRooms> {
+class _BlockBRoomsState extends State<BlockCRooms> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,6 +20,7 @@ class _BlockCRoomsState extends State<BlockCRooms> {
           icon: const Icon(Icons.arrow_back_ios),
         ),
         title: const Text("CHOOSE A ROOM"),
+        backgroundColor: Colors.green,
       ),
       body: Center(
         child: ListView(
@@ -29,7 +30,7 @@ class _BlockCRoomsState extends State<BlockCRooms> {
               onPressed: () {
                 
               },
-              child: const Text("ROOM A"),
+              child: const Text("ROOM C1"),
             ),
             const SizedBox(
               height: 10,
@@ -38,7 +39,7 @@ class _BlockCRoomsState extends State<BlockCRooms> {
               onPressed: () {
           
               },
-              child: const Text("ROOM B"),
+              child: const Text("ROOM C2"),
             ),
             const SizedBox(
               height: 10,
@@ -46,7 +47,7 @@ class _BlockCRoomsState extends State<BlockCRooms> {
             TextButton(
               onPressed: () {
               },
-              child: const Text("ROOM C"),
+              child: const Text("ROOM C3"),
             ),
             const SizedBox(
               height: 10,
@@ -55,7 +56,7 @@ class _BlockCRoomsState extends State<BlockCRooms> {
               onPressed: () {
         
               },
-              child: const Text("ROOM D"),
+              child: const Text("ROOM C4"),
             ),
             const SizedBox(
               height: 10,
@@ -64,7 +65,7 @@ class _BlockCRoomsState extends State<BlockCRooms> {
               onPressed: () {
                 
               },
-              child: const Text("ROOM E"),
+              child: const Text("ROOM C5"),
             ),
             const SizedBox(
               height: 10,
@@ -73,7 +74,7 @@ class _BlockCRoomsState extends State<BlockCRooms> {
               onPressed: () {
                 
               },
-              child: const Text("ROOM F"),
+              child: const Text("ROOM C6"),
             ),
             const SizedBox(
               height: 10,
@@ -82,7 +83,7 @@ class _BlockCRoomsState extends State<BlockCRooms> {
               onPressed: () {
                 
               },
-              child: const Text("ROOM G"),
+              child: const Text("ROOM C7"),
             ),
             const SizedBox(
               height: 10,
@@ -90,7 +91,7 @@ class _BlockCRoomsState extends State<BlockCRooms> {
             TextButton(
               onPressed: () {
               },
-              child: const Text("ROOM H"),
+              child: const Text("ROOM C8"),
             ),
             const SizedBox(
               height: 10,
@@ -99,7 +100,7 @@ class _BlockCRoomsState extends State<BlockCRooms> {
               onPressed: () {
               
               },
-              child: const Text("ROOM I"),
+              child: const Text("ROOM C9"),
             ),
              const SizedBox(
               height: 10,
@@ -108,63 +109,12 @@ class _BlockCRoomsState extends State<BlockCRooms> {
               onPressed: () {
               
               },
-              child: const Text("ROOM J"),
+              child: const Text("ROOM C10"),
             ),
             const SizedBox(
               height: 10,
             ),
-            TextButton(
-              onPressed: () {
-              
-              },
-              child: const Text("ROOM K"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {
-              
-              },
-              child: const Text("ROOM L"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {
-              
-              },
-              child: const Text("ROOM M"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {
-              
-              },
-              child: const Text("ROOM N"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {
-              
-              },
-              child: const Text("ROOM O"),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              onPressed: () {
-              
-              },
-              child: const Text("ROOM P"),
-            ),
-
+            
           ],
         ),
       ),

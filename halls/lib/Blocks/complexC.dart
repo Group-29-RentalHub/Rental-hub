@@ -1,80 +1,121 @@
 import 'package:flutter/material.dart';
-class BlockCRooms extends StatelessWidget {
+
+class BlockCRooms extends StatefulWidget {
   const BlockCRooms({super.key});
 
+  @override
+  State<BlockCRooms> createState() => _BlockBRoomsState();
+}
+
+class _BlockBRoomsState extends State<BlockCRooms> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('BLOCK C ROOMS'),
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: const Icon(Icons.arrow_back_ios),
+        ),
+        title: const Text("CHOOSE A ROOM"),
         backgroundColor: Colors.green,
       ),
       body: Center(
         child: ListView(
-          children: const [
-            ListTile(
-              title: Text('C1'),
+          scrollDirection: Axis.vertical,
+          children: [
+            TextButton(
+              onPressed: () {
+                
+              },
+              child: const Text("ROOM C1"),
             ),
-            ListTile(
-              title: Text(' C2'),
+            const SizedBox(
+              height: 10,
             ),
-            ListTile(
-              title: Text(' C3'),
+            TextButton(
+              onPressed: () {
+          
+              },
+              child: const Text("ROOM C2"),
             ),
-            ListTile(
-              title: Text(' C4'),
+            const SizedBox(
+              height: 10,
             ),
-            ListTile(
-              title: Text('C5'),
+            TextButton(
+              onPressed: () {
+              },
+              child: const Text("ROOM C3"),
             ),
-            ListTile(
-              title: Text('C6'),
+            const SizedBox(
+              height: 10,
             ),
-             ListTile(
-              title: Text('C7'),
-            ),
-             ListTile(
-              title: Text(' C8'),
-            ),
-             ListTile(
-              title: Text('C9'),
-            ),
-             ListTile(
-              title: Text('C10'),
-            ),
-             ListTile(
-              title: Text('C11'),
-            ),
-             ListTile(
-              title: Text('C12'),
-            ),
-             ListTile(
-              title: Text('C13'),
-            ),
-             ListTile(
-              title: Text('C4'),
-            ),
-             ListTile(
-              title: Text('C15'),
-            ),
-             ListTile(
-              title: Text('C16'),
-            ),
-             ListTile(
-              title: Text('C17'),
-            
-            ),
-             ListTile(
-              title: Text('C18'),
-            ),
-             ListTile(
-              title: Text('C19'),
-            ),
-             ListTile(
-              title: Text('C20'),
-            )    
-          ],
+            TextButton(
+              onPressed: () {
         
+              },
+              child: const Text("ROOM C4"),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            TextButton(
+              onPressed: () {
+                
+              },
+              child: const Text("ROOM C5"),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            TextButton(
+              onPressed: () {
+                
+              },
+              child: const Text("ROOM C6"),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            TextButton(
+              onPressed: () {
+                
+              },
+              child: const Text("ROOM C7"),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            TextButton(
+              onPressed: () {
+              },
+              child: const Text("ROOM C8"),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            TextButton(
+              onPressed: () {
+              
+              },
+              child: const Text("ROOM C9"),
+            ),
+             const SizedBox(
+              height: 10,
+            ),
+            TextButton(
+              onPressed: () {
+              
+              },
+              child: const Text("ROOM C10"),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            
+          ],
         ),
       ),
     );

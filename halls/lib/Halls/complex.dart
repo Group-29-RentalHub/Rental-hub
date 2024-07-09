@@ -23,6 +23,7 @@ class _ComplexState extends State<Complex> {
           icon: const Icon(Icons.arrow_back_ios),
         ),
         title: const Text("CHOOSE A BLOCK"),
+        backgroundColor: Colors.green,
       ),
       body: Center(
         child: ListView(

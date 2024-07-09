@@ -41,7 +41,7 @@ class _NkrumahState extends State<Nkrumah> {
               child: const Text("BLOCK A"),
             ),
             const SizedBox(
-              height: 50,
+              height: 70,
             ),
             TextButton(
               onPressed: () {
@@ -54,7 +54,7 @@ class _NkrumahState extends State<Nkrumah> {
               child: const Text("BLOCK B"),
             ),
             const SizedBox(
-              height: 50,
+              height: 70,
             ),
             TextButton(
               onPressed: () {
@@ -67,7 +67,7 @@ class _NkrumahState extends State<Nkrumah> {
               child: const Text("BLOCK C"),
             ),
             const SizedBox(
-              height: 50,
+              height: 70,
             ),
             TextButton(
               onPressed: () {
@@ -80,11 +80,11 @@ class _NkrumahState extends State<Nkrumah> {
               child: const Text("BLOCK D"),
             ),
             const SizedBox(
-              height: 50,
+              height: 70,
             ),
            
            const SizedBox(
-              height: 60,
+              height: 70,
             ),
           ],
         ),

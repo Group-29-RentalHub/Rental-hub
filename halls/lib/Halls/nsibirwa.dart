@@ -23,6 +23,7 @@ class _NsibirwaState extends State<Nsibirwa> {
           icon: const Icon(Icons.arrow_back_ios),
         ),
         title: const Text("CHOOSE A BLOCK"),
+        backgroundColor: Colors.green,
       ),
       body: Center(
         child: ListView(
@@ -39,7 +40,7 @@ class _NsibirwaState extends State<Nsibirwa> {
               child: const Text("BLOCK A"),
             ),
             const SizedBox(
-              height: 60,
+              height: 70,
             ),
             TextButton(
               onPressed: () {
@@ -52,7 +53,7 @@ class _NsibirwaState extends State<Nsibirwa> {
               child: const Text("BLOCK B"),
             ),
             const SizedBox(
-              height: 60,
+              height: 70,
             ),
             TextButton(
               onPressed: () {
@@ -65,7 +66,7 @@ class _NsibirwaState extends State<Nsibirwa> {
               child: const Text("BLOCK C"),
             ),
             const SizedBox(
-              height: 60,
+              height: 70,
             ),
           ],
         ),
