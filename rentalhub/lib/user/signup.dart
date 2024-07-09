@@ -20,6 +20,43 @@ class _SignupPageState extends State<SignupPage> {
     super.dispose();
   }
 
+  String? _validateUsername(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your username';
+    } else if (value.length < 4) {
+      return 'Username must be at least 4 characters long';
+    } else if (!RegExp(r'^[a-zA-Z0-9]+$').hasMatch(value)) {
+      return 'Username can only contain alphanumeric characters';
+    }
+    return null;
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your email';
+    } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+      return 'Please enter a valid email';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your password';
+    } else if (value.length < 8) {
+      return 'Password must be at least 8 characters long';
+    } else if (!RegExp(r'[A-Z]').hasMatch(value)) {
+      return 'Password must contain at least one uppercase letter';
+    } else if (!RegExp(r'[a-z]').hasMatch(value)) {
+      return 'Password must contain at least one lowercase letter';
+    } else if (!RegExp(r'[0-9]').hasMatch(value)) {
+      return 'Password must contain at least one digit';
+    } else if (!RegExp(r'[!@#\$&*~]').hasMatch(value)) {
+      return 'Password must contain at least one special character';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,12 +93,7 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                   ),
                 ),
-                validator: (value) {
-                  if (value?.isEmpty ?? true) {
-                    return 'Please enter your username';
-                  }
-                  return null;
-                },
+                validator: _validateUsername,
               ),
               SizedBox(height: 20.0),
               TextFormField(
@@ -83,12 +115,7 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                   ),
                 ),
-                validator: (value) {
-                  if (value?.isEmpty ?? true || !value!.contains('@')) {
-                    return 'Please enter a valid email';
-                  }
-                  return null;
-                },
+                validator: _validateEmail,
               ),
               SizedBox(height: 20.0),
               TextFormField(
@@ -111,12 +138,7 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                   ),
                 ),
-                validator: (value) {
-                  if (value?.isEmpty ?? true) {
-                    return 'Please enter your password';
-                  }
-                  return null;
-                },
+                validator: _validatePassword,
               ),
               SizedBox(height: 20.0),
               ElevatedButton(
