@@ -41,7 +41,7 @@ class _AfricaState extends State<Africa> {
               child: const Text("BLOCK A"),
             ),
             const SizedBox(
-              height: 40,
+              height: 55,
             ),
             TextButton(
               onPressed: () {
@@ -54,7 +54,7 @@ class _AfricaState extends State<Africa> {
               child: const Text("BLOCK B"),
             ),
             const SizedBox(
-              height: 50,
+              height: 55,
             ),
             TextButton(
               onPressed: () {
@@ -67,7 +67,7 @@ class _AfricaState extends State<Africa> {
               child: const Text("BLOCK C"),
             ),
             const SizedBox(
-              height: 50,
+              height: 55,
             ),
             TextButton(
               onPressed: () {
@@ -80,7 +80,7 @@ class _AfricaState extends State<Africa> {
               child: const Text("BLOCK D"),
             ),
             const SizedBox(
-              height: 50,
+              height: 55,
             ),
             TextButton(
               onPressed: () {
@@ -93,7 +93,7 @@ class _AfricaState extends State<Africa> {
               child: const Text("BLOCK E"),
             ),
             const SizedBox(
-              height: 50,
+              height: 55,
             ),
           ],
         ),
