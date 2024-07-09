@@ -30,7 +30,8 @@ class RentalHub extends StatelessWidget {
          '/profileForm': (context) => ProfileFormPage(
           onSubmit: () {
             navigateToHomePage(context); // Pass callback to ProfileFormPage
-          },),
+          },
+          ),
         '/about': (context) => AboutPage(), // Add the AboutPage route
         '/settings': (context) => SettingsPage(), 
         '/home': (context) => MainPage(), 

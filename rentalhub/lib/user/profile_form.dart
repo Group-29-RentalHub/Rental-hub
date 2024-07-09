@@ -73,8 +73,8 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
     return Column(
       children: budgets
           .map(
-            (budget) => RadioListTile<String>(
-              title: Text(budget),
+            (budget) => _buildCustomRadioButton(
+              label: budget,
               value: budget,
               groupValue: _selectedBudget,
               onChanged: (value) {
@@ -102,8 +102,8 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
     return Column(
       children: houseTypes
           .map(
-            (houseType) => RadioListTile<String>(
-              title: Text(houseType),
+            (houseType) => _buildCustomRadioButton(
+              label: houseType,
               value: houseType,
               groupValue: _selectedHouseType,
               onChanged: (value) {
@@ -114,6 +114,46 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
             ),
           )
           .toList(),
+    );
+  }
+
+  Widget _buildCustomRadioButton({
+    required String label,
+    required String value,
+    required String? groupValue,
+    required void Function(String?) onChanged,
+  }) {
+    bool isSelected = value == groupValue;
+    return InkWell(
+      onTap: () => onChanged(value),
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 8.0),
+        padding: EdgeInsets.all(12.0),
+        decoration: BoxDecoration(
+          color: isSelected ? Color.fromRGBO(70, 0, 119, 1) : Colors.white,
+          borderRadius: BorderRadius.circular(8.0),
+          border: Border.all(
+            color: Color.fromRGBO(70, 0, 119, 1),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(
+              isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+              color: isSelected ? Colors.white : Color.fromRGBO(70, 0, 119, 1),
+            ),
+            SizedBox(width: 8.0),
+            Text(
+              label,
+              style: TextStyle(
+                color: isSelected ? Colors.white : Color.fromRGBO(70, 0, 119, 1),
+                fontSize: 16.0,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
