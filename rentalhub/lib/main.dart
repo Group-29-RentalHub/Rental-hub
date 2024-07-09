@@ -4,8 +4,8 @@ import 'package:rentalhub/user/profile.dart'; // Import your Profile page
 import 'package:rentalhub/layout/home.dart'; // Import your Home page
 import 'package:rentalhub/about/about.dart'; // Import your About page
 import 'package:rentalhub/settings/settings.dart'; // Import your Settings page
-import 'package:rentalhub/user/login.dart';
-import 'package:rentalhub/user/signup.dart';
+//import 'package:rentalhub/user/login.dart';
+//import 'package:rentalhub/user/signup.dart';
 
 void main() {
   runApp(RentalHub());
