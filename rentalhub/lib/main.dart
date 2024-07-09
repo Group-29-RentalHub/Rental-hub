@@ -5,7 +5,6 @@ import 'package:rentalhub/layout/home.dart'; // Import your Home page
 import 'package:rentalhub/about/about.dart'; // Import your About page
 import 'package:rentalhub/settings/settings.dart'; // Import your Settings page
 import 'package:rentalhub/user/login.dart';
-import 'package:rentalhub/user/signup.dart';
 
 void main() {
   runApp(RentalHub());
@@ -16,19 +15,7 @@ class RentalHub extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      ticlass SignupPage extends StatelessWidget {
-        @override
-        Widget build(BuildContext context) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text('Signup'),
-            ),
-            body: Center(
-              child: Text('Signup Page'),
-            ),
-          );
-        }
-      }tle: 'Rental Hub',
+      title: 'Rental Hub',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -39,7 +26,7 @@ class RentalHub extends StatelessWidget {
         '/profile': (context) => Profile(),
         '/about': (context) => AboutPage(), // Add the AboutPage route
         '/settings': (context) => SettingsPage(), // Add the SettingsPage route
-        '/login': (context) => LoginPage(),
+        '/login': (context) => LoginPage(), // Add the LoginPage route
       },
     );
   }
@@ -119,14 +106,12 @@ class _MainPageState extends State<MainPage> {
                 style: const TextStyle(color: Colors.white),
                 onSubmitted: (query) {
                   // Perform search operation
-                  ('Search query: $query');
+                  print('Search query: $query');
                   setState(() {
                     _isSearching = false;
                   });
                 },
               ),
-
-        //
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -183,8 +168,7 @@ class _MainPageState extends State<MainPage> {
                   Navigator.pop(context); // Close the drawer before navigating
                   setState(() {
                     _currentIndex = 2;
-                    _title =
-                        'Profile'; // Update title when navigating from drawer
+                    _title = 'Profile'; // Update title when navigating from drawer
                   });
                 },
               ),
@@ -193,8 +177,7 @@ class _MainPageState extends State<MainPage> {
                 title: const Text('Settings'),
                 onTap: () {
                   Navigator.pop(context); // Close the drawer before navigating
-                  Navigator.pushNamed(
-                      context, '/settings'); // Navigate to SettingsPage
+                  Navigator.pushNamed(context, '/settings'); // Navigate to SettingsPage
                 },
               ),
               ListTile(
@@ -202,15 +185,15 @@ class _MainPageState extends State<MainPage> {
                 title: const Text('About'),
                 onTap: () {
                   Navigator.pop(context); // Close the drawer before navigating
-                  Navigator.pushNamed(
-                      context, '/about'); // Navigate to AboutPage
+                  Navigator.pushNamed(context, '/about'); // Navigate to AboutPage
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.logout),
                 title: const Text('Log Out'),
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.pop(context); // Close the drawer
+                  Navigator.pushReplacementNamed(context, '/login'); // Navigate to LoginPage
                 },
               ),
             ],
@@ -233,6 +216,10 @@ class _MainPageState extends State<MainPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
       ),

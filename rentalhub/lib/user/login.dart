@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:rentalhub/user/signup.dart';
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -30,13 +30,31 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             children: [
               Text(
-                'Welcome Back!',
-                style: TextStyle(fontSize: 20.0),
+                'RentalHub welcomes you back',
+                style: TextStyle(
+                    fontSize: 15.0,
+                    color: const Color.fromARGB(255, 122, 65, 132)),
               ),
               SizedBox(height: 20.0),
               TextFormField(
                 controller: _usernameController,
-                decoration: InputDecoration(labelText: 'Username'),
+                decoration: InputDecoration(
+                  labelText: 'Username',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.blue,
+                      width: 2.0,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.green,
+                      width: 2.0,
+                    ),
+                  ),
+                ),
                 validator: (value) {
                   if (value?.isEmpty ?? true) {
                     return 'Please enter your username';
@@ -44,13 +62,30 @@ class _LoginPageState extends State<LoginPage> {
                   return null;
                 },
               ),
+              SizedBox(height: 20.0),
               TextFormField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: InputDecoration(labelText: 'Password'),
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.blue,
+                      width: 2.0,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.green,
+                      width: 2.0,
+                    ),
+                  ),
+                ),
                 validator: (value) {
                   if (value?.isEmpty ?? true) {
-                    return 'Please enter your username or password';
+                    return 'Please enter your password';
                   }
                   return null;
                 },
@@ -82,7 +117,12 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   Text('New User?'),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SignupPage()),
+                      );
+                    },
                     child: Text('Register'),
                   ),
                 ],
