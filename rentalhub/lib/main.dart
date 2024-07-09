@@ -4,11 +4,11 @@ import 'package:rentalhub/user/notifications.dart'; // Import your NotificationH
 import 'package:rentalhub/user/profile.dart'; // Import your Profile page
 import 'package:rentalhub/layout/home.dart';
 import 'package:rentalhub/user/profile_form.dart'; // Import your Home page
- import 'package:rentalhub/about/about.dart'; // Import your About page
+import 'package:rentalhub/about/about.dart'; // Import your About page
 import 'package:rentalhub/settings/settings.dart'; // Import your Settings page
 // import 'package:rentalhub/user/login.dart';
 // import 'package:rentalhub/user/signup.dart';
- 
+
 void main() {
   runApp(RentalHub());
 }
@@ -27,18 +27,19 @@ class RentalHub extends StatelessWidget {
         '/': (context) => LandingPage(),
         '/notifications': (context) => NotificationHistoryPage(),
         '/profile': (context) => Profile(),
-         '/profileForm': (context) => ProfileFormPage(
-          onSubmit: () {
-            navigateToHomePage(context); // Pass callback to ProfileFormPage
-          },),
+        '/profileForm': (context) => ProfileFormPage(
+              onSubmit: () {
+                navigateToHomePage(context); // Pass callback to ProfileFormPage
+              },
+            ),
         '/about': (context) => AboutPage(), // Add the AboutPage route
-        '/settings': (context) => SettingsPage(), 
-        '/home': (context) => MainPage(), 
-
-       },
+        '/settings': (context) => SettingsPage(),
+        '/home': (context) => MainPage(),
+      },
     );
   }
-   void navigateToHomePage(BuildContext context) {
+
+  void navigateToHomePage(BuildContext context) {
     // Handle any necessary logic here before navigating
     Navigator.of(context).pushReplacementNamed('/home');
   }
@@ -168,8 +169,7 @@ class _MainPageState extends State<MainPage> {
                 title: const Text('About'),
                 onTap: () {
                   Navigator.pop(context); // Close the drawer before navigating
-                  Navigator.pushNamed(
-                      context, '/'); // Navigate to AboutPage
+                  Navigator.pushNamed(context, '/'); // Navigate to AboutPage
                 },
               ),
               ListTile(
