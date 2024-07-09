@@ -22,7 +22,8 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat'),
+        backgroundColor: Colors.purple,
+        title: Text('Chat',style: TextStyle(color: Colors.white),),
       ),
       body: Column(
         children: [
@@ -34,7 +35,7 @@ class _ChatPageState extends State<ChatPage> {
                 return Align(
                   alignment: Alignment.centerRight,
                   child: Card(
-                    color: Colors.blue,
+                    color: Colors.purple,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
