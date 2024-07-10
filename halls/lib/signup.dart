@@ -62,6 +62,7 @@ class _SignupScreenState extends State<SignupScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
+        child: SingleChildScrollView(
           child: SizedBox(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -111,6 +112,6 @@ class _SignupScreenState extends State<SignupScreen> {
           ],
         ),
       )),
-    );
+    ));
   }
 }

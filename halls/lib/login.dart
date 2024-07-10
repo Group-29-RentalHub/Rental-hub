@@ -58,6 +58,7 @@ class _SignupScreenState extends State<LoginScreen> {
       // resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: SafeArea(
+        child: SingleChildScrollView(
           child: SizedBox(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -69,7 +70,7 @@ class _SignupScreenState extends State<LoginScreen> {
             TextFieldInput(
                 icon: Icons.person,
                 textEditingController: emailController,
-                hintText: 'Enter your email',
+                hintText: 'Enter your webmail',
                 textInputType: TextInputType.text),
             TextFieldInput(
               icon: Icons.lock,
@@ -120,6 +121,6 @@ class _SignupScreenState extends State<LoginScreen> {
           ],
         ),
       )),
-    );
+     ) );
   }
 }
