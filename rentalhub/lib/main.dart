@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:rentalhub/user/notifications.dart'; // Import your NotificationHistoryPage
 import 'package:rentalhub/user/profile.dart'; // Import your Profile page
 import 'package:rentalhub/layout/home.dart'; // Import your Home page
@@ -6,8 +7,18 @@ import 'package:rentalhub/about/about.dart'; // Import your About page
 import 'package:rentalhub/settings/settings.dart'; // Import your Settings page
 import 'package:rentalhub/user/login.dart';
 
-void main() {
-  runApp(RentalHub());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: FirebaseOptions(
+      apiKey: "AIzaSyCv3L7b04n5_86waJE0sDSN-53TQOHHWTk",
+      appId: "1:52847626874:android:b190a976c9db8ff51849c3",
+      messagingSenderId: "52847626874",
+      projectId: "rentalhub-fd89e",
+      // Other optional parameters such as storageBucket
+    ),
+  );
+  runApp(RentalHub()); // Replace with MyApp() or your custom class
 }
 
 class RentalHub extends StatelessWidget {
@@ -24,9 +35,9 @@ class RentalHub extends StatelessWidget {
         '/': (context) => MainPage(),
         '/notifications': (context) => NotificationHistoryPage(),
         '/profile': (context) => Profile(),
-        '/about': (context) => AboutPage(), // Add the AboutPage route
-        '/settings': (context) => SettingsPage(), // Add the SettingsPage route
-        '/login': (context) => LoginPage(), // Add the LoginPage route
+        '/about': (context) => AboutPage(),
+        '/settings': (context) => SettingsPage(),
+        '/login': (context) => LoginPage(),
       },
     );
   }
@@ -47,7 +58,7 @@ class _MainPageState extends State<MainPage> {
     HomePage(),
     NotificationHistoryPage(),
     Profile(),
-    SettingsPage(), // Add the SettingsPage to the list
+    SettingsPage(),
   ];
 
   void _onTabTapped(int index) {
@@ -165,11 +176,10 @@ class _MainPageState extends State<MainPage> {
                 leading: const Icon(Icons.person),
                 title: const Text('Profile'),
                 onTap: () {
-                  Navigator.pop(context); // Close the drawer before navigating
+                  Navigator.pop(context);
                   setState(() {
                     _currentIndex = 2;
-                    _title =
-                        'Profile'; // Update title when navigating from drawer
+                    _title = 'Profile';
                   });
                 },
               ),
@@ -177,27 +187,24 @@ class _MainPageState extends State<MainPage> {
                 leading: const Icon(Icons.settings),
                 title: const Text('Settings'),
                 onTap: () {
-                  Navigator.pop(context); // Close the drawer before navigating
-                  Navigator.pushNamed(
-                      context, '/settings'); // Navigate to SettingsPage
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/settings');
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.info),
                 title: const Text('About'),
                 onTap: () {
-                  Navigator.pop(context); // Close the drawer before navigating
-                  Navigator.pushNamed(
-                      context, '/about'); // Navigate to AboutPage
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/about');
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.logout),
                 title: const Text('Log Out'),
                 onTap: () {
-                  Navigator.pop(context); // Close the drawer
-                  Navigator.pushReplacementNamed(
-                      context, '/login'); // Navigate to LoginPage
+                  Navigator.pop(context);
+                  Navigator.pushReplacementNamed(context, '/login');
                 },
               ),
             ],
