@@ -1,20 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rentalhub/user/signup.dart';
+import 'package:rentalhub/main.dart'; // Adjust the import path as needed
+
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _login() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+
+        print('Login successful!');
+        // Navigate to HomePage upon successful login
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainPage()), // Replace HomePage with your main screen
+        );
+      } on FirebaseAuthException catch (e) {
+        print('Login failed: $e');
+        // Show error message to the user
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Login failed: ${e.message}'),
+        ));
+      }
+    }
   }
 
   @override
@@ -32,14 +60,15 @@ class _LoginPageState extends State<LoginPage> {
               Text(
                 'RentalHub welcomes you back',
                 style: TextStyle(
-                    fontSize: 15.0,
-                    color: const Color.fromARGB(255, 122, 65, 132)),
+                  fontSize: 15.0,
+                  color: const Color.fromARGB(255, 122, 65, 132),
+                ),
               ),
               SizedBox(height: 20.0),
               TextFormField(
-                controller: _usernameController,
+                controller: _emailController,
                 decoration: InputDecoration(
-                  labelText: 'Username',
+                  labelText: 'Email',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     borderSide: BorderSide(
@@ -57,7 +86,9 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 validator: (value) {
                   if (value?.isEmpty ?? true) {
-                    return 'Please enter your username';
+                    return 'Please enter your email';
+                  } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value!)) {
+                    return 'Please enter a valid email';
                   }
                   return null;
                 },
@@ -95,18 +126,13 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      // Implement forgot password logic here
+                    },
                     child: Text('Forgot Password'),
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState?.validate() ?? false) {
-                        // Implement login logic here
-                        // Access user data using the controllers
-                        // _usernameController.text, _passwordController.text
-                        print('Login successful!');
-                      }
-                    },
+                    onPressed: _login,
                     child: Text('Login'),
                   ),
                 ],
@@ -118,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
                   Text('New User?'),
                   TextButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => SignupPage()),
                       );
