@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rentalhub/main.dart'; // Import the main.dart file
 import 'package:rentalhub/user/login.dart';
 
 class SignupPage extends StatefulWidget {
@@ -11,6 +13,7 @@ class _SignupPageState extends State<SignupPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
@@ -55,6 +58,34 @@ class _SignupPageState extends State<SignupPage> {
       return 'Password must contain at least one special character';
     }
     return null;
+  }
+
+  Future<void> _signup() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+
+        // Update the user's display name
+        await userCredential.user?.updateDisplayName(_usernameController.text);
+
+        print('Signup successful!');
+        
+        // Navigate to HomePage upon successful signup
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainPage()), // Replace HomePage with your main screen
+        );
+      } on FirebaseAuthException catch (e) {
+        print('Signup failed: $e');
+        // Show error message to the user
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Signup failed: ${e.message}'),
+        ));
+      }
+    }
   }
 
   @override
@@ -142,14 +173,7 @@ class _SignupPageState extends State<SignupPage> {
               ),
               SizedBox(height: 20.0),
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    // Implement signup logic here
-                    // Access user data using the controllers
-                    // _usernameController.text, _emailController.text, _passwordController.text
-                    print('Signup successful!');
-                  }
-                },
+                onPressed: _signup,
                 child: Text('Signup'),
               ),
               SizedBox(height: 20.0),
