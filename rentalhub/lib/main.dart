@@ -170,7 +170,7 @@ class _MainPageState extends State<MainPage> {
                 onTap: () {
                   Navigator.pop(context); // Close the drawer before navigating
                   Navigator.pushNamed(
-                      context, '/'); // Navigate to AboutPage
+                      context, '/about'); // Navigate to AboutPage
                 },
               ),
               ListTile(
