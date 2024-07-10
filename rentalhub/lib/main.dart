@@ -8,33 +8,37 @@ import 'package:rentalhub/user/login.dart';
 import 'package:rentalhub/user/signup.dart';
 
 void main() {
-  runApp(RentalHub());
+  runApp(const RentalHub());
 }
 
 class RentalHub extends StatelessWidget {
+  const RentalHub({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      ticlass SignupPage extends StatelessWidget {
-        @override
-        Widget build(BuildContext context) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text('Signup'),
-            ),
-            body: Center(
-              child: Text('Signup Page'),
-            ),
-          );
-        }
-      }tle: 'Rental Hub',
+
+
+class SignupPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Signup'),
+      ),
+      body: Center(
+        child: Text('Signup Page'),
+      ),
+    );
+  }
+},
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => MainPage(),
+        '/': (context) => const MainPage(),
         '/notifications': (context) => NotificationHistoryPage(),
         '/profile': (context) => Profile(),
         '/about': (context) => AboutPage(), // Add the AboutPage route
@@ -46,6 +50,8 @@ class RentalHub extends StatelessWidget {
 }
 
 class MainPage extends StatefulWidget {
+  const MainPage({super.key});
+
   
   @override
   _MainPageState createState() => _MainPageState();
@@ -104,11 +110,11 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(70, 0, 119, 1),
+        backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
         title: !_isSearching
         ?Text(
           _title,
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ):
         TextField(
           controller: _searchController,
