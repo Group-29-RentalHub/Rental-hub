@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'Halls/africa.dart';
 import 'Halls/complex.dart';
-import 'Halls/Livingstone.dart';
+import 'Halls/livingstone.dart';
 import 'Halls/lumumba.dart';
 import 'Halls/marystuart.dart';
 import 'Halls/mitchell.dart';
 import 'Halls/nkrumah.dart';
 import 'Halls/nsibirwa.dart';
 import 'Halls/universityHall.dart';
-
 
 class Hall extends StatefulWidget {
   const Hall({super.key});

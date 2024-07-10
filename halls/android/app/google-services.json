@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "318432616758",
+    "project_id": "halls-bccf0",
+    "storage_bucket": "halls-bccf0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:318432616758:android:3560f35f0678f83d691397",
+        "android_client_info": {
+          "package_name": "com.example.halls"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGtdD8JWgN6R03p1xJoxCJ7ua-lKnmMX8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
