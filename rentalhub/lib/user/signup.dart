@@ -9,7 +9,6 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -17,21 +16,9 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   void dispose() {
-    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
-  }
-
-  String? _validateUsername(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your username';
-    } else if (value.length < 4) {
-      return 'Username must be at least 4 characters long';
-    } else if (!RegExp(r'^[a-zA-Z0-9]+$').hasMatch(value)) {
-      return 'Username can only contain alphanumeric characters';
-    }
-    return null;
   }
 
   String? _validateEmail(String? value) {
@@ -63,23 +50,17 @@ class _SignupPageState extends State<SignupPage> {
   Future<void> _signup() async {
     if (_formKey.currentState?.validate() ?? false) {
       try {
-        UserCredential userCredential =
-            await _auth.createUserWithEmailAndPassword(
+        UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
           email: _emailController.text,
           password: _passwordController.text,
         );
 
-        // Update the user's display name
-        await userCredential.user?.updateDisplayName(_usernameController.text);
-
         print('Signup successful!');
 
-        // Navigate to HomePage upon successful signup
+        // Navigate to MainPage upon successful signup
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  MainPage()), // Replace HomePage with your main screen
+          MaterialPageRoute(builder: (context) => MainPage()), // Replace MainPage with your main screen
         );
       } on FirebaseAuthException catch (e) {
         print('Signup failed: $e');
@@ -106,28 +87,6 @@ class _SignupPageState extends State<SignupPage> {
               Text(
                 'Create an Account',
                 style: TextStyle(fontSize: 20.0),
-              ),
-              SizedBox(height: 20.0),
-              TextFormField(
-                controller: _usernameController,
-                decoration: InputDecoration(
-                  labelText: 'Username',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide(
-                      color: Colors.blue,
-                      width: 2.0,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide(
-                      color: Colors.green,
-                      width: 2.0,
-                    ),
-                  ),
-                ),
-                validator: _validateUsername,
               ),
               SizedBox(height: 20.0),
               TextFormField(

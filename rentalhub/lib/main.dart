@@ -6,6 +6,7 @@ import 'package:rentalhub/layout/home.dart'; // Import your Home page
 import 'package:rentalhub/about/about.dart'; // Import your About page
 import 'package:rentalhub/settings/settings.dart'; // Import your Settings page
 import 'package:rentalhub/user/login.dart';
+import 'package:rentalhub/user/ForgotPassword.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +39,8 @@ class RentalHub extends StatelessWidget {
         '/about': (context) => AboutPage(),
         '/settings': (context) => SettingsPage(),
         '/login': (context) => LoginPage(),
+        '/forgot_password': (context) =>
+            ForgotPasswordPage(), // Ensure the route name matches the one used in the LoginPage
       },
     );
   }

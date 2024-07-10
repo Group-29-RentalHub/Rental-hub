@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rentalhub/user/signup.dart';
-import 'package:rentalhub/main.dart'; // Adjust the import path as needed
+import 'package:rentalhub/main.dart';
+import 'package:rentalhub/user/ForgotPassword.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -30,10 +31,12 @@ class _LoginPageState extends State<LoginPage> {
         );
 
         print('Login successful!');
-        // Navigate to HomePage upon successful login
+        // Navigate to MainPage upon successful login
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => MainPage()), // Replace HomePage with your main screen
+          MaterialPageRoute(
+              builder: (context) =>
+                  MainPage()), // Replace MainPage with your main screen
         );
       } on FirebaseAuthException catch (e) {
         print('Login failed: $e');
@@ -128,6 +131,12 @@ class _LoginPageState extends State<LoginPage> {
                   TextButton(
                     onPressed: () {
                       // Implement forgot password logic here
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ForgotPasswordPage(),
+                        ),
+                      );
                     },
                     child: Text('Forgot Password'),
                   ),
