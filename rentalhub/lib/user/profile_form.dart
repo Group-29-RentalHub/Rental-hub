@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ProfileFormPage extends StatefulWidget {
   final VoidCallback onSubmit;
@@ -16,13 +15,25 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
 
   String? _selectedBudget;
   String? _selectedHouseType;
-  LatLng? _selectedLocation;
+  String? _selectedHostelType;
+  String? _selectedNationality;
+  bool _allowDrugs = false;
+  bool _allowVisitors = false;
 
   List<Widget> _buildSteps() {
     return [
       _buildStep(
         question: 'Select your preferred location on the map',
-        child: _buildMap(),
+        child: Container(
+          height: 300,
+          color: Colors.grey[300],
+          child: Center(
+            child: Text(
+              'Map Placeholder',
+              style: TextStyle(color: Colors.black45, fontSize: 20.0),
+            ),
+          ),
+        ),
         icon: Icons.location_on,
       ),
       _buildStep(
@@ -35,32 +46,32 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
         child: _buildHouseTypeOptions(),
         icon: Icons.home,
       ),
-    ];
-  }
-
-  Widget _buildMap() {
-    return Container(
-      height: 300,
-      child: GoogleMap(
-        initialCameraPosition: CameraPosition(
-          target: LatLng(0.3476, 32.5825), // Centered on Kampala, Uganda
-          zoom: 12,
-        ),
-        onTap: (LatLng position) {
-          setState(() {
-            _selectedLocation = position;
-          });
-        },
-        markers: _selectedLocation != null
-            ? {
-                Marker(
-                  markerId: MarkerId('selectedLocation'),
-                  position: _selectedLocation!,
-                )
-              }
-            : {},
+      _buildStep(
+        question: 'Choose the type of hostel',
+        child: _buildHostelTypeOptions(),
+        icon: Icons.hotel,
       ),
-    );
+      _buildStep(
+        question: 'Select your nationality',
+        child: _buildNationalityDropdown(),
+        icon: Icons.flag,
+      ),
+      _buildStep(
+        question: 'Enter your name',
+        child: _buildNameInput(),
+        icon: Icons.person,
+      ),
+      _buildStep(
+        question: 'Enter your year of study',
+        child: _buildYearOfStudyInput(),
+        icon: Icons.school,
+      ),
+      _buildStep(
+        question: 'Allow drugs and visitors to sleep over',
+        child: _buildAllowanceCheckboxes(),
+        icon: Icons.check,
+      ),
+    ];
   }
 
   Widget _buildBudgetOptions() {
@@ -109,11 +120,117 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
               onChanged: (value) {
                 setState(() {
                   _selectedHouseType = value;
+                  _pageController.nextPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
                 });
               },
             ),
           )
           .toList(),
+    );
+  }
+
+  Widget _buildHostelTypeOptions() {
+    List<String> hostelTypes = [
+      'Mixed',
+      'Boys',
+      'Girls',
+    ];
+    return Column(
+      children: hostelTypes
+          .map(
+            (type) => _buildCustomRadioButton(
+              label: type,
+              value: type,
+              groupValue: _selectedHostelType,
+              onChanged: (value) {
+                setState(() {
+                  _selectedHostelType = value;
+                  _pageController.nextPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                });
+              },
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  Widget _buildNationalityDropdown() {
+    List<String> nationalities = [
+      'Ugandan',
+      'Kenyan',
+      'Tanzanian',
+      'Others',
+    ];
+    return DropdownButtonFormField<String>(
+      value: _selectedNationality,
+      items: nationalities.map((nationality) {
+        return DropdownMenuItem<String>(
+          value: nationality,
+          child: Text(nationality),
+        );
+      }).toList(),
+      onChanged: (value) {
+        setState(() {
+          _selectedNationality = value;
+          _pageController.nextPage(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        });
+      },
+    );
+  }
+
+  Widget _buildNameInput() {
+    return TextFormField(
+      decoration: InputDecoration(
+        labelText: 'Enter your name',
+      ),
+      onChanged: (value) {
+        // Handle name input
+      },
+    );
+  }
+
+  Widget _buildYearOfStudyInput() {
+    return TextFormField(
+      decoration: InputDecoration(
+        labelText: 'Enter your year of study',
+      ),
+      onChanged: (value) {
+        // Handle year of study input
+      },
+    );
+  }
+
+  Widget _buildAllowanceCheckboxes() {
+    return Column(
+      children: [
+        CheckboxListTile(
+          title: Text('Allow drugs'),
+          value: _allowDrugs,
+          onChanged: (value) {
+            setState(() {
+              _allowDrugs = value ?? false;
+            });
+          },
+        ),
+        CheckboxListTile(
+          title: Text('Allow visitors to sleep over'),
+          value: _allowVisitors,
+          onChanged: (value) {
+            setState(() {
+              _allowVisitors = value ?? false;
+            });
+          },
+        ),
+      ],
     );
   }
 
@@ -200,7 +317,7 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
         child: Column(
           children: [
             LinearProgressIndicator(
-              value: (_currentPage + 1) / 3, // Adjust according to the number of steps
+              value: (_currentPage + 1) / 8, // Adjust according to the number of steps
               backgroundColor: Colors.grey[300],
               valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
             ),
@@ -234,7 +351,7 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
                           ),
                         )
                       : Container(),
-                  _currentPage < 2
+                  _currentPage < 7
                       ? ElevatedButton(
                           onPressed: () {
                             _pageController.nextPage(
@@ -255,13 +372,6 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
                           ),
                         ),
                 ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Step ${_currentPage + 1} of 3', // Adjust according to the number of steps
-                style: TextStyle(color: Colors.black),
               ),
             ),
           ],

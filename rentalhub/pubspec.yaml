@@ -31,8 +31,7 @@ dependencies:
   flutter: 
     sdk: flutter
   flutter_map: ^3.1.0
-  latlong2: ^0.8.1
-  flutter_form_builder: ^9.3.0
+  latlong2: ^0.8.1 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -40,8 +39,7 @@ dependencies:
 
 dev_dependencies:
   flutter_test:
-    sdk: flutter
-  google_maps_flutter: ^2.1.1 
+    sdk: flutter 
 
 
   # The "flutter_lints" package below contains a set of recommended lints to
