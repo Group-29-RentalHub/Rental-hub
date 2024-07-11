@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rentalhub/user/signup.dart';
+import 'package:rentalhub/main.dart';
+import 'package:rentalhub/user/ForgotPassword.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -6,15 +10,42 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _login() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+
+        print('Login successful!');
+        // Navigate to MainPage upon successful login
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  MainPage()), // Replace MainPage with your main screen
+        );
+      } on FirebaseAuthException catch (e) {
+        print('Login failed: $e');
+        // Show error message to the user
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Login failed: ${e.message}'),
+        ));
+      }
+    }
   }
 
   @override
@@ -30,27 +61,65 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             children: [
               Text(
-                'Welcome Back!',
-                style: TextStyle(fontSize: 20.0),
+                'RentalHub welcomes you back',
+                style: TextStyle(
+                  fontSize: 15.0,
+                  color: const Color.fromARGB(255, 122, 65, 132),
+                ),
               ),
               SizedBox(height: 20.0),
               TextFormField(
-                controller: _usernameController,
-                decoration: InputDecoration(labelText: 'Username'),
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.blue,
+                      width: 2.0,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.green,
+                      width: 2.0,
+                    ),
+                  ),
+                ),
                 validator: (value) {
                   if (value?.isEmpty ?? true) {
-                    return 'Please enter your username';
+                    return 'Please enter your email';
+                  } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value!)) {
+                    return 'Please enter a valid email';
                   }
                   return null;
                 },
               ),
+              SizedBox(height: 20.0),
               TextFormField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: InputDecoration(labelText: 'Password'),
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.blue,
+                      width: 2.0,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.green,
+                      width: 2.0,
+                    ),
+                  ),
+                ),
                 validator: (value) {
                   if (value?.isEmpty ?? true) {
-                    return 'Please enter your username or password';
+                    return 'Please enter your password';
                   }
                   return null;
                 },
@@ -60,18 +129,19 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      // Implement forgot password logic here
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ForgotPasswordPage(),
+                        ),
+                      );
+                    },
                     child: Text('Forgot Password'),
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState?.validate() ?? false) {
-                        // Implement login logic here
-                        // Access user data using the controllers
-                        // _usernameController.text, _passwordController.text
-                        print('Login successful!');
-                      }
-                    },
+                    onPressed: _login,
                     child: Text('Login'),
                   ),
                 ],
@@ -82,7 +152,12 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   Text('New User?'),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => SignupPage()),
+                      );
+                    },
                     child: Text('Register'),
                   ),
                 ],
