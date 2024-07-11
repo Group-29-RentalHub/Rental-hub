@@ -1,14 +1,5 @@
 import 'package:flutter/material.dart';
-import 'Halls/africa.dart';
-import 'Halls/complex.dart';
-import 'Halls/livingstone.dart';
-import 'Halls/lumumba.dart';
-import 'Halls/marystuart.dart';
-import 'Halls/mitchell.dart';
-import 'Halls/nkrumah.dart';
-import 'Halls/nsibirwa.dart';
-import 'Halls/universityHall.dart';
-
+import 'Application_form.dart';
 class Hall extends StatefulWidget {
   const Hall({super.key});
 
@@ -38,7 +29,7 @@ class _HallState extends State<Hall> {
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return const Nkrumah();
+                  return const Student();
                 }));
               },
               child: const Text("Nkrumah"),
@@ -57,7 +48,7 @@ class _HallState extends State<Hall> {
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return const Livingstone();
+                  return const Student();
                 }));
               },
               child: const Text("Livingstone"),
@@ -77,7 +68,7 @@ class _HallState extends State<Hall> {
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return const Mitchell();
+                  return const Student();
                 }));
               },
               child: const Text("Mitchell"),
@@ -97,7 +88,7 @@ class _HallState extends State<Hall> {
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return const Nsibirwa();
+                  return const Student();
                 }));
               },
               child: const Text("Nsibirwa"),
@@ -117,7 +108,7 @@ class _HallState extends State<Hall> {
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return const UniversityHall();
+                  return const Student();
                 }));
               },
               child: const Text("University Hall"),
@@ -137,7 +128,7 @@ class _HallState extends State<Hall> {
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return const Lumumba();
+                  return const Student();
                 }));
               },
               child: const Text("Lumumba"),
@@ -157,7 +148,7 @@ class _HallState extends State<Hall> {
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return const Africa();
+                  return const Student();
                 }));
               },
               child: const Text("Africa"),
@@ -177,7 +168,7 @@ class _HallState extends State<Hall> {
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return const Complex();
+                  return const Student();
                 }));
               },
               child: const Text("Complex"),
@@ -197,7 +188,7 @@ class _HallState extends State<Hall> {
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return const Marystuart();
+                  return const Student();
                 }));
               },
               child: const Text("Mary Stuart"),
