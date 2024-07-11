@@ -3,7 +3,7 @@ import 'widget/button.dart';
 
 import 'services/authentication.dart';
 import 'widget/text_field.dart';
-import 'homepage.dart';
+import 'hall.dart';
 import 'login.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -45,7 +45,7 @@ class _SignupScreenState extends State<SignupScreen> {
       //navigate to the next screen
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => const HomePage(),
+          builder: (context) => const Hall(),
         ),
       );
     } else {
