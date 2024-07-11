@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'dart:io';
 import 'package:image_picker/image_picker.dart'; // for image selection
-//import 'package:mime/mime.dart' as mime; // for image handling
 
 class HostelRegistrationPage extends StatefulWidget {
   @override
