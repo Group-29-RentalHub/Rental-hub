@@ -9,6 +9,9 @@ import 'package:rentalhub/about/about.dart'; // Import your About page
 import 'package:rentalhub/settings/settings.dart'; // Import your Settings page
 import 'package:rentalhub/user/login.dart';
 import 'package:rentalhub/user/ForgotPassword.dart';
+//import 'profile_screen.dart'; 
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
