@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class ProfileFormPage extends StatefulWidget {
   final VoidCallback onSubmit;
@@ -27,11 +29,31 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
         child: Container(
           height: 300,
           color: Colors.grey[300],
-          child: Center(
-            child: Text(
-              'Map Placeholder',
-              style: TextStyle(color: Colors.black45, fontSize: 20.0),
+          child: FlutterMap(
+            options: MapOptions(
+              center: LatLng(0.3152, 32.5816),
+              zoom: 10.0,
             ),
+            children: [
+              TileLayer(
+                urlTemplate:
+                    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                subdomains: const ['a', 'b', 'c'],
+              ),
+              MarkerLayer(
+                markers: [
+                  Marker(
+                    width: 80.0,
+                    height: 80.0,
+                    point: LatLng(0.3152, 32.5816),
+                    builder: (ctx) => const Icon(
+                      Icons.location_pin,
+                      color: Colors.red,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
         icon: Icons.location_on,
@@ -257,14 +279,17 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Icon(
-              isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+              isSelected
+                  ? Icons.radio_button_checked
+                  : Icons.radio_button_unchecked,
               color: isSelected ? Colors.white : Color.fromRGBO(70, 0, 119, 1),
             ),
             SizedBox(width: 8.0),
             Text(
               label,
               style: TextStyle(
-                color: isSelected ? Colors.white : Color.fromRGBO(70, 0, 119, 1),
+                color:
+                    isSelected ? Colors.white : Color.fromRGBO(70, 0, 119, 1),
                 fontSize: 16.0,
               ),
             ),
@@ -317,7 +342,8 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
         child: Column(
           children: [
             LinearProgressIndicator(
-              value: (_currentPage + 1) / 8, // Adjust according to the number of steps
+              value: (_currentPage + 1) /
+                  8, // Adjust according to the number of steps
               backgroundColor: Colors.grey[300],
               valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
             ),
@@ -345,9 +371,11 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
                               curve: Curves.easeInOut,
                             );
                           },
-                          child: Text('Previous', style: TextStyle(color: Colors.white)),
+                          child: Text('Previous',
+                              style: TextStyle(color: Colors.white)),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromRGBO(70, 0, 119, 1), // Theme color
+                            backgroundColor:
+                                Color.fromRGBO(70, 0, 119, 1), // Theme color
                           ),
                         )
                       : Container(),
@@ -359,16 +387,20 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
                               curve: Curves.easeInOut,
                             );
                           },
-                          child: Text('Next', style: TextStyle(color: Colors.white)),
+                          child: Text('Next',
+                              style: TextStyle(color: Colors.white)),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromRGBO(70, 0, 119, 1), // Theme color
+                            backgroundColor:
+                                Color.fromRGBO(70, 0, 119, 1), // Theme color
                           ),
                         )
                       : ElevatedButton(
                           onPressed: widget.onSubmit,
-                          child: Text('Submit', style: TextStyle(color: Colors.white)),
+                          child: Text('Submit',
+                              style: TextStyle(color: Colors.white)),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromRGBO(70, 0, 119, 1), // Theme color
+                            backgroundColor:
+                                Color.fromRGBO(70, 0, 119, 1), // Theme color
                           ),
                         ),
                 ],
