@@ -65,7 +65,6 @@ class _ProfileState extends State<Profile> {
               SizedBox(height: 16),
               Text(
                 'Leah Diane',
-                
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,

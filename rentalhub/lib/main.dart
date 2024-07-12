@@ -8,7 +8,8 @@ import 'package:rentalhub/user/profile_form.dart'; // Import your ProfileForm pa
 import 'package:rentalhub/about/about.dart'; // Import your About page
 import 'package:rentalhub/settings/settings.dart'; // Import your Settings page
 import 'package:rentalhub/user/login.dart';
-import 'package:rentalhub/user/signup.dart';
+//import 'package:rentalhub/user/signup.dart';
+//import 'package:rentalhub/profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,7 +41,7 @@ class RentalHub extends StatelessWidget {
         '/about': (context) => AboutPage(),
         '/settings': (context) => SettingsPage(),
         '/login': (context) => LoginPage(),
-        '/forgot_password': (context) => ForgotPasswordPage(),
+       // '/forgot_password': (context) => ForgotPasswordPage(),
         '/profileForm': (context) => ProfileFormPage(
           onSubmit: () {
             navigateToHomePage(context); // Pass callback to ProfileFormPage

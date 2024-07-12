@@ -19,14 +19,38 @@ class EditProfilePage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 3),
-            
+
             TextField(
               decoration: InputDecoration(
                 labelText: 'Email',
                 border: OutlineInputBorder(borderRadius:BorderRadius.all(Radius.circular(10))),
               ),
             ),
-            // Add more TextFields or DropdownButtons for other profile information
+            SizedBox(height: 3),
+
+            TextField(
+              decoration: InputDecoration(
+                labelText: 'Date Of Birth',
+                border: OutlineInputBorder(borderRadius:BorderRadius.all(Radius.circular(10))),
+              ),
+            ),
+            SizedBox(height: 3),
+
+            TextField(
+              decoration: InputDecoration(
+                labelText: 'Phone',
+                border: OutlineInputBorder(borderRadius:BorderRadius.all(Radius.circular(10))),
+              ),
+            ),
+            SizedBox(height: 3),
+
+            TextField(
+              decoration: InputDecoration(
+                labelText: 'Address',
+                border: OutlineInputBorder(borderRadius:BorderRadius.all(Radius.circular(10))),
+              ),
+            ),
+            SizedBox(height: 3),
             ElevatedButton(
               onPressed: () {
                 // Add logic to save the edited profile information
