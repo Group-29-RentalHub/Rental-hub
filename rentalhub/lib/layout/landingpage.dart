@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rentalhub/tenant/hostelRegForm.dart';
 import 'package:rentalhub/user/profile_form.dart';
 
 class LandingPage extends StatelessWidget {
@@ -55,7 +56,11 @@ class LandingPage extends StatelessWidget {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  // Implement navigation or action for registering a hostel
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => HostelRegistrationPage( ),
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color.fromRGBO(116, 62, 155, 1),
