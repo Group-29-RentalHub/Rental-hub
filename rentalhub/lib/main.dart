@@ -27,11 +27,11 @@ class RentalHub extends StatelessWidget {
         '/': (context) => LandingPage(),
         '/notifications': (context) => NotificationHistoryPage(),
         '/profile': (context) => Profile(),
-        '/profileForm': (context) => ProfileFormPage(
-              onSubmit: () {
-                navigateToHomePage(context); // Pass callback to ProfileFormPage
-              },
-            ),
+         '/profileForm': (context) => ProfileFormPage(
+          onSubmit: () {
+            navigateToHomePage(context); // Pass callback to ProfileFormPage
+          },
+          ),
         '/about': (context) => AboutPage(), // Add the AboutPage route
         '/settings': (context) => SettingsPage(),
         '/home': (context) => MainPage(),
@@ -169,7 +169,8 @@ class _MainPageState extends State<MainPage> {
                 title: const Text('About'),
                 onTap: () {
                   Navigator.pop(context); // Close the drawer before navigating
-                  Navigator.pushNamed(context, '/'); // Navigate to AboutPage
+                  Navigator.pushNamed(
+                      context, '/about'); // Navigate to AboutPage
                 },
               ),
               ListTile(
