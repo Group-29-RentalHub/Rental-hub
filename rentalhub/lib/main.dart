@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:rentalhub/layout/landingpage.dart';
 import 'package:rentalhub/user/notifications.dart'; // Import your NotificationHistoryPage
 import 'package:rentalhub/user/profile.dart'; // Import your Profile page
-import 'package:rentalhub/layout/home.dart'; // Import your Home page
+import 'package:rentalhub/layout/home.dart';
+import 'package:rentalhub/user/profile_form.dart'; // Import your Home page
 import 'package:rentalhub/about/about.dart'; // Import your About page
 import 'package:rentalhub/settings/settings.dart'; // Import your Settings page
+<<<<<<< HEAD
 import 'package:rentalhub/user/login.dart';
+=======
+// import 'package:rentalhub/user/login.dart';
+// import 'package:rentalhub/user/signup.dart';
+>>>>>>> beris
 
 void main() async {
   runApp(RentalHub());
@@ -21,14 +28,24 @@ class RentalHub extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => MainPage(),
+        '/': (context) => LandingPage(),
         '/notifications': (context) => NotificationHistoryPage(),
         '/profile': (context) => Profile(),
+         '/profileForm': (context) => ProfileFormPage(
+          onSubmit: () {
+            navigateToHomePage(context); // Pass callback to ProfileFormPage
+          },
+          ),
         '/about': (context) => AboutPage(), // Add the AboutPage route
-        '/settings': (context) => SettingsPage(), // Add the SettingsPage route
-        '/login': (context) => LoginPage(), // Add the LoginPage route
+        '/settings': (context) => SettingsPage(),
+        '/home': (context) => MainPage(),
       },
     );
+  }
+
+  void navigateToHomePage(BuildContext context) {
+    // Handle any necessary logic here before navigating
+    Navigator.of(context).pushReplacementNamed('/home');
   }
 }
 
@@ -47,7 +64,7 @@ class _MainPageState extends State<MainPage> {
     HomePage(),
     NotificationHistoryPage(),
     Profile(),
-    SettingsPage(), // Add the SettingsPage to the list
+    LandingPage(),
   ];
 
   void _onTabTapped(int index) {
