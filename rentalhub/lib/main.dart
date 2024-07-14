@@ -6,12 +6,8 @@ import 'package:rentalhub/layout/home.dart';
 import 'package:rentalhub/user/profile_form.dart'; // Import your Home page
 import 'package:rentalhub/about/about.dart'; // Import your About page
 import 'package:rentalhub/settings/settings.dart'; // Import your Settings page
-<<<<<<< HEAD
-import 'package:rentalhub/user/login.dart';
-=======
 // import 'package:rentalhub/user/login.dart';
 // import 'package:rentalhub/user/signup.dart';
->>>>>>> beris
 
 void main() async {
   runApp(RentalHub());
