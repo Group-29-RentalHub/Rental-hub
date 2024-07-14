@@ -1,8 +1,13 @@
+buildscript {
+    ext.k
+}
+
 allprojects {
     repositories {
         google()
         mavenCentral()
     }
+    
 }
 
 rootProject.buildDir = "../build"
