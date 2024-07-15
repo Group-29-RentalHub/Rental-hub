@@ -4,6 +4,10 @@ import 'package:rentalhub/main.dart'; // Import the main.dart file
 import 'package:rentalhub/user/login.dart';
 
 class SignupPage extends StatefulWidget {
+  final Widget Function(BuildContext context) navigateToMainPage;
+
+  const SignupPage({required this.navigateToMainPage});
+
   @override
   _SignupPageState createState() => _SignupPageState();
 }
@@ -62,8 +66,8 @@ class _SignupPageState extends State<SignupPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => MyApp
-                .mainPage(), // Replace with the correct way to access MainPage
+            builder: (context) => widget.navigateToMainPage(
+                context), // Replace with the correct way to access MainPage
           ),
         );
       } on FirebaseAuthException catch (e) {

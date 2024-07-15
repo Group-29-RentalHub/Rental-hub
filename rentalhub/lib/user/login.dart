@@ -1,13 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:rentalhub/user/signup.dart';
+import 'package:rentalhub/main.dart';
+import 'package:rentalhub/user/signup.dart'
+    as userSignup; // Import signup page from user folder
 import 'package:rentalhub/user/ForgotPassword.dart';
 
 class MainPage extends StatelessWidget {
+  final VoidCallback onRegistrationSuccess;
+
+  const MainPage({Key? key, required this.onRegistrationSuccess})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         // Your main page content
+        );
+  }
+}
+
+class SignupPage extends StatelessWidget {
+  final VoidCallback onRegistrationSuccess;
+
+  const SignupPage({Key? key, required this.onRegistrationSuccess})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        // Your signup page content
         );
   }
 }
@@ -22,6 +43,11 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  void onRegistrationSuccess() {
+    // Your logic to be executed after successful registration (optional)
+    print('User registered successfully!'); // Example usage
+  }
 
   @override
   void dispose() {
@@ -54,7 +80,16 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => MainPage(), // Use the MainPage class directly
+          builder: (context) => SignupPage(
+            onRegistrationSuccess: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MainPage(onRegistrationSuccess: () {}),
+                ),
+              );
+            },
+          ),
         ),
       );
     }
@@ -163,11 +198,26 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('New User?'),
+                  Text('New User?'),
                   TextButton(
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => SignupPage()),
+                        MaterialPageRoute(
+                          builder: (context) => SignupPage(
+                            onRegistrationSuccess: () {
+                              // Navigate to MainPage upon successful registration
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MainPage(
+                                    onRegistrationSuccess: () {},
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                       );
                     },
                     child: Text('Register'),
