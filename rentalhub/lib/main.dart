@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:rentalhub/user/notifications.dart'; // Import your NotificationHistoryPage
-import 'package:rentalhub/user/profile.dart'; // Import your Profile page
-import 'package:rentalhub/layout/home.dart'; // Import your Home page
-import 'package:rentalhub/about/about.dart'; // Import your About page
-import 'package:rentalhub/settings/settings.dart'; // Import your Settings page
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rentalhub/layout/landingpage.dart'; // Ensure this is your booking/registration page
+import 'package:rentalhub/user/notifications.dart';
+import 'package:rentalhub/user/profile.dart';
+import 'package:rentalhub/layout/home.dart';
+import 'package:rentalhub/user/profile_form.dart';
+import 'package:rentalhub/about/about.dart';
+import 'package:rentalhub/settings/settings.dart';
 import 'package:rentalhub/user/login.dart';
-import 'package:rentalhub/user/ForgotPassword.dart';
+import 'package:rentalhub/user/signup.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: FirebaseOptions(
-      apiKey: "AIzaSyCv3L7b04n5_86waJE0sDSN-53TQOHHWTk",
-      appId: "1:52847626874:android:b190a976c9db8ff51849c3",
-      messagingSenderId: "52847626874",
-      projectId: "rentalhub-fd89e",
-      // Other optional parameters such as storageBucket
-    ),
-  );
-  runApp(RentalHub()); // Replace with MyApp() or your custom class
+      options: FirebaseOptions(
+    apiKey: "AIzaSyA0tbKIpSXXGhUpj5qTafSFh4qOdhTvfBM",
+    appId: "1:52847626874:android:b190a976c9db8ff51849c3",
+    messagingSenderId: "52847626874",
+    projectId: "rentalhub-96a37",
+  ));
+  runApp(RentalHub());
 }
 
 class RentalHub extends StatelessWidget {
@@ -31,16 +32,44 @@ class RentalHub extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/',
+      initialRoute: '/', // Ensure this is set to '/'
       routes: {
-        '/': (context) => MainPage(),
+        '/': (context) =>
+            LandingPage(), // This should be your booking/registration page
         '/notifications': (context) => NotificationHistoryPage(),
         '/profile': (context) => Profile(),
+        '/profileForm': (context) => ProfileFormPage(
+              onSubmit: () {
+                navigateToHomePage(context); // Pass callback to ProfileFormPage
+              },
+            ),
         '/about': (context) => AboutPage(),
         '/settings': (context) => SettingsPage(),
+        '/home': (context) => MainPage(),
         '/login': (context) => LoginPage(),
-        '/forgot_password': (context) =>
-            ForgotPasswordPage(), // Ensure the route name matches the one used in the LoginPage
+        '/signup': (context) => SignupPage(),
+      },
+    );
+  }
+
+  void navigateToHomePage(BuildContext context) {
+    Navigator.of(context).pushReplacementNamed('/home');
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator(); // Display a loading indicator while waiting for authentication state
+        } else if (snapshot.hasData) {
+          return MainPage(); // If the user is authenticated, show the main page
+        } else {
+          return LoginPage(); // If the user is not authenticated, show the login page
+        }
       },
     );
   }
@@ -61,7 +90,7 @@ class _MainPageState extends State<MainPage> {
     HomePage(),
     NotificationHistoryPage(),
     Profile(),
-    SettingsPage(),
+    LandingPage(), // Ensure this page is also part of the bottom navigation
   ];
 
   void _onTabTapped(int index) {
@@ -98,6 +127,11 @@ class _MainPageState extends State<MainPage> {
           _title = 'Home';
         });
     }
+  }
+
+  void _logout() async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushReplacementNamed(context, '/login');
   }
 
   @override
@@ -179,10 +213,11 @@ class _MainPageState extends State<MainPage> {
                 leading: const Icon(Icons.person),
                 title: const Text('Profile'),
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.pop(context); // Close the drawer before navigating
                   setState(() {
                     _currentIndex = 2;
-                    _title = 'Profile';
+                    _title =
+                        'Profile'; // Update title when navigating from drawer
                   });
                 },
               ),
@@ -190,24 +225,26 @@ class _MainPageState extends State<MainPage> {
                 leading: const Icon(Icons.settings),
                 title: const Text('Settings'),
                 onTap: () {
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, '/settings');
+                  Navigator.pop(context); // Close the drawer before navigating
+                  Navigator.pushNamed(
+                      context, '/settings'); // Navigate to SettingsPage
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.info),
                 title: const Text('About'),
                 onTap: () {
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, '/about');
+                  Navigator.pop(context); // Close the drawer before navigating
+                  Navigator.pushNamed(
+                      context, '/about'); // Navigate to AboutPage
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.logout),
                 title: const Text('Log Out'),
                 onTap: () {
-                  Navigator.pop(context);
-                  Navigator.pushReplacementNamed(context, '/login');
+                  Navigator.pop(context); // Close the drawer
+                  _logout(); // Call the logout function
                 },
               ),
             ],

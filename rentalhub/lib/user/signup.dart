@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:rentalhub/main.dart'; // Import the main.dart file
 import 'package:rentalhub/user/login.dart';
 
 class SignupPage extends StatefulWidget {
@@ -9,16 +8,28 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
+  final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
+    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  String? _validateUsername(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your username';
+    } else if (value.length < 4) {
+      return 'Username must be at least 4 characters long';
+    } else if (!RegExp(r'^[a-zA-Z0-9]+$').hasMatch(value)) {
+      return 'Username can only contain alphanumeric characters';
+    }
+    return null;
   }
 
   String? _validateEmail(String? value) {
@@ -48,27 +59,46 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   Future<void> _signup() async {
-    if (_formKey.currentState?.validate() ?? false) {
-      try {
-        UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-          email: _emailController.text,
-          password: _passwordController.text,
-        );
-
-        print('Signup successful!');
-
-        // Navigate to MainPage upon successful signup
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => MainPage()), // Replace MainPage with your main screen
-        );
-      } on FirebaseAuthException catch (e) {
-        print('Signup failed: $e');
-        // Show error message to the user
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Signup failed: ${e.message}'),
-        ));
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      // Signup successful, you can navigate to the home page or show a success message
+      print('Signup successful!');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()), // Replace with your desired page
+      );
+    } on FirebaseAuthException catch (e) {
+      String message = '';
+      if (e.code == 'email-already-in-use') {
+        message = 'The email address is already in use.';
+      } else if (e.code == 'invalid-email') {
+        message = 'The email address is invalid.';
+      } else if (e.code == 'operation-not-allowed') {
+        message = 'Email/password accounts are not enabled.';
+      } else if (e.code == 'weak-password') {
+        message = 'The password is too weak.';
+      } else {
+        message = 'An error occurred. Please try again later.';
       }
+      // Show error message
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Signup Failed'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
     }
   }
 
@@ -87,6 +117,28 @@ class _SignupPageState extends State<SignupPage> {
               Text(
                 'Create an Account',
                 style: TextStyle(fontSize: 20.0),
+              ),
+              SizedBox(height: 20.0),
+              TextFormField(
+                controller: _usernameController,
+                decoration: InputDecoration(
+                  labelText: 'Username',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.blue,
+                      width: 2.0,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.green,
+                      width: 2.0,
+                    ),
+                  ),
+                ),
+                validator: _validateUsername,
               ),
               SizedBox(height: 20.0),
               TextFormField(
@@ -135,7 +187,11 @@ class _SignupPageState extends State<SignupPage> {
               ),
               SizedBox(height: 20.0),
               ElevatedButton(
-                onPressed: _signup,
+                onPressed: () {
+                  if (_formKey.currentState?.validate() ?? false) {
+                    _signup();
+                  }
+                },
                 child: Text('Signup'),
               ),
               SizedBox(height: 20.0),

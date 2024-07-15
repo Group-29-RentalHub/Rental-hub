@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rentalhub/user/signup.dart';
-import 'package:rentalhub/main.dart';
-import 'package:rentalhub/user/ForgotPassword.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -13,7 +11,6 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
@@ -23,28 +20,41 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _login() async {
-    if (_formKey.currentState?.validate() ?? false) {
-      try {
-        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-          email: _emailController.text,
-          password: _passwordController.text,
-        );
-
-        print('Login successful!');
-        // Navigate to MainPage upon successful login
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  MainPage()), // Replace MainPage with your main screen
-        );
-      } on FirebaseAuthException catch (e) {
-        print('Login failed: $e');
-        // Show error message to the user
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Login failed: ${e.message}'),
-        ));
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      // Login successful, you can navigate to the home page or show a success message
+      print('Login successful!');
+      // Replace with your desired page
+      Navigator.pushReplacementNamed(context, '/home');
+    } on FirebaseAuthException catch (e) {
+      String message = '';
+      if (e.code == 'user-not-found') {
+        message = 'No user found for that email.';
+      } else if (e.code == 'wrong-password') {
+        message = 'Wrong password provided.';
+      } else {
+        message = 'An error occurred. Please try again later.';
       }
+      // Show error message
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Login Failed'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
     }
   }
 
@@ -90,8 +100,6 @@ class _LoginPageState extends State<LoginPage> {
                 validator: (value) {
                   if (value?.isEmpty ?? true) {
                     return 'Please enter your email';
-                  } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value!)) {
-                    return 'Please enter a valid email';
                   }
                   return null;
                 },
@@ -129,19 +137,15 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton(
-                    onPressed: () {
-                      // Implement forgot password logic here
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ForgotPasswordPage(),
-                        ),
-                      );
-                    },
+                    onPressed: () {},
                     child: Text('Forgot Password'),
                   ),
                   ElevatedButton(
-                    onPressed: _login,
+                    onPressed: () {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        _login();
+                      }
+                    },
                     child: Text('Login'),
                   ),
                 ],
@@ -153,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                   Text('New User?'),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushReplacement(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => SignupPage()),
                       );
