@@ -1,37 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:rentalhub/main.dart';
-import 'package:rentalhub/user/signup.dart'
-    as userSignup; // Import signup page from user folder
-import 'package:rentalhub/user/ForgotPassword.dart';
-
-class MainPage extends StatelessWidget {
-  final VoidCallback onRegistrationSuccess;
-
-  const MainPage({Key? key, required this.onRegistrationSuccess})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        // Your main page content
-        );
-  }
-}
-
-class SignupPage extends StatelessWidget {
-  final VoidCallback onRegistrationSuccess;
-
-  const SignupPage({Key? key, required this.onRegistrationSuccess})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        // Your signup page content
-        );
-  }
-}
+import 'package:rentalhub/user/signup.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -42,12 +11,7 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  void onRegistrationSuccess() {
-    // Your logic to be executed after successful registration (optional)
-    print('User registered successfully!'); // Example usage
-  }
+  // Empty comment to illustrate a non-functional change
 
   @override
   void dispose() {
@@ -57,41 +21,40 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _login() async {
-    if (_formKey.currentState?.validate() ?? false) {
-      try {
-        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-          email: _emailController.text,
-          password: _passwordController.text,
-        );
-      } on FirebaseAuthException catch (e) {
-        // Handle the exception
-        print('Login failed: ${e.message}');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Login failed: ${e.message}'),
-          ),
-        );
-      } finally {
-        // Optional: Perform cleanup here
-      }
-
-      print('Login successful!');
-// Navigate to MainPage upon successful login
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SignupPage(
-            onRegistrationSuccess: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MainPage(onRegistrationSuccess: () {}),
-                ),
-              );
-            },
-          ),
-        ),
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
       );
+      // Login successful, you can navigate to the home page or show a success message
+      print('Login successful!');
+      // Replace with your desired page
+      Navigator.pushReplacementNamed(context, '/home');
+    } on FirebaseAuthException catch (e) {
+      String message = '';
+      if (e.code == 'user-not-found') {
+        message = 'No user found for that email.';
+      } else if (e.code == 'wrong-password') {
+        message = 'Wrong password provided.';
+      } else {
+        message = 'An error occurred. Please try again later.';
+      }
+      // Show error message
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: Text('Login Failed'),
+                content: Text(message),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
+              ));
     }
   }
 
@@ -108,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             children: [
               Text(
-                'RentalHub welcomes you back',
+                ' welcome you back',
                 style: TextStyle(
                   fontSize: 15.0,
                   color: const Color.fromARGB(255, 122, 65, 132),
@@ -137,8 +100,6 @@ class _LoginPageState extends State<LoginPage> {
                 validator: (value) {
                   if (value?.isEmpty ?? true) {
                     return 'Please enter your email';
-                  } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value!)) {
-                    return 'Please enter a valid email';
                   }
                   return null;
                 },
@@ -176,19 +137,15 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton(
-                    onPressed: () {
-                      // Implement forgot password logic here
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ForgotPasswordPage(),
-                        ),
-                      );
-                    },
+                    onPressed: () {},
                     child: Text('Forgot Password'),
                   ),
                   ElevatedButton(
-                    onPressed: _login,
+                    onPressed: () {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        _login();
+                      }
+                    },
                     child: Text('Login'),
                   ),
                 ],
@@ -198,26 +155,11 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('New User?'),
-                  Text('New User?'),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushReplacement(
+                      Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => SignupPage(
-                            onRegistrationSuccess: () {
-                              // Navigate to MainPage upon successful registration
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => MainPage(
-                                    onRegistrationSuccess: () {},
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
+                        MaterialPageRoute(builder: (context) => SignupPage()),
                       );
                     },
                     child: Text('Register'),
