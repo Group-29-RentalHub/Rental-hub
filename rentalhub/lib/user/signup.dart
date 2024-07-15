@@ -1,134 +1,161 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rentalhub/main.dart'; // Import the main.dart file
+import 'package:rentalhub/user/login.dart';
 
-class SignUpPage extends StatefulWidget {
-  // Moved SignUpPage to a top-level class
+class SignupPage extends StatefulWidget {
   @override
-  _SignUpPageState createState() => _SignUpPageState();
+  _SignupPageState createState() => _SignupPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
-  final _nameController = TextEditingController();
+class _SignupPageState extends State<SignupPage> {
   final _emailController = TextEditingController();
-  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  String _selectedGender = "";
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
-    _nameController.dispose();
     _emailController.dispose();
-    _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your email';
+    } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+      return 'Please enter a valid email';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your password';
+    } else if (value.length < 8) {
+      return 'Password must be at least 8 characters long';
+    } else if (!RegExp(r'[A-Z]').hasMatch(value)) {
+      return 'Password must contain at least one uppercase letter';
+    } else if (!RegExp(r'[a-z]').hasMatch(value)) {
+      return 'Password must contain at least one lowercase letter';
+    } else if (!RegExp(r'[0-9]').hasMatch(value)) {
+      return 'Password must contain at least one digit';
+    } else if (!RegExp(r'[!@#\$&*~]').hasMatch(value)) {
+      return 'Password must contain at least one special character';
+    }
+    return null;
+  }
+
+  Future<void> _signup() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        UserCredential userCredential =
+            await _auth.createUserWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+
+        print('Signup successful!');
+
+        // Navigate to MainPage upon successful signup
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  MyApp.mainPage), // Replace MainPage with your main screen
+        );
+      } on FirebaseAuthException catch (e) {
+        print('Signup failed: $e');
+        // Show error message to the user
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Signup failed: ${e.message}'),
+        ));
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hostel Sign Up'),
+        title: const Text('Signup'),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: 'Name'),
-                validator: (String? value) {
-                  if (value?.isEmpty ?? true) {
-                    return 'Please enter your name';
-                  }
-                  return null;
-                },
+              const Text(
+                'Create an Account',
+                style: TextStyle(fontSize: 20.0),
               ),
+              const SizedBox(height: 20.0),
               TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(labelText: 'Email'),
-                keyboardType: TextInputType.emailAddress,
-                validator: (String? value) {
-                  if (value?.isEmpty ?? true) {
-                    return 'Please enter your email';
-                  } else if (!RegExp(
-                          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z]+")
-                      .hasMatch(value ?? '')) {
-                    return 'Please enter a valid email';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _usernameController,
-                decoration: InputDecoration(labelText: 'Username'),
-                validator: (String? value) {
-                  if (value?.isEmpty ?? true) {
-                    return 'Please enter a username';
-                  }
-                  return null;
-                },
-              ),
-              Row(
-                children: [
-                  const Text('Gender:'),
-                  Radio(
-                    value: 'Male',
-                    groupValue: _selectedGender,
-                    onChanged: (value) =>
-                        setState(() => _selectedGender = value as String),
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: const BorderSide(
+                      color: Colors.blue,
+                      width: 2.0,
+                    ),
                   ),
-                  Text('Male'),
-                  Radio(
-                    value: 'Female',
-                    groupValue: _selectedGender,
-                    onChanged: (value) =>
-                        setState(() => _selectedGender = value as String),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: const BorderSide(
+                      color: Colors.green,
+                      width: 2.0,
+                    ),
                   ),
-                  Text('Female'),
-                ],
+                ),
+                validator: _validateEmail,
               ),
+              const SizedBox(height: 20.0),
               TextFormField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: InputDecoration(labelText: 'Password'),
-                validator: (value) {
-                  if (value?.isEmpty ?? true) {
-                    return 'Please enter a password';
-                  } else if (value?.length is int && (value?.length ?? 0) < 6) {
-                    return 'Password must be at least 6 characters';
-                  }
-                  return null;
-                },
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: const BorderSide(
+                      color: Colors.blue,
+                      width: 2.0,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: const BorderSide(
+                      color: Colors.green,
+                      width: 2.0,
+                    ),
+                  ),
+                ),
+                validator: _validatePassword,
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               ElevatedButton(
-                onPressed: () async {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    // Implement sign up logic here with a backend service
-                    // (e.g., Firebase Authentication)
-
-                    // Show a progress indicator while signing up
-                    showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (BuildContext context) {
-                        return Center(child: CircularProgressIndicator());
-                      },
-                    );
-
-                    // Replace with your actual sign up logic
-                    // (This is just an example)
-                    await Future.delayed(const Duration(seconds: 2));
-                    Navigator.pop(context); // Hide progress indicator
-
-                    print('Sign Up successful!');
-
-                    // Handle potential errors during sign up
-                  }
-                },
-                child: const Text('Sign Up'),
+                onPressed: _signup,
+                child: const Text('Signup'),
+              ),
+              const SizedBox(height: 20.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Already have an account?'),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                      );
+                    },
+                    child: const Text('Login'),
+                  ),
+                ],
               ),
             ],
           ),

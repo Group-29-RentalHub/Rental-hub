@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:rentalhub/user/notifications.dart'; // Import your NotificationHistoryPage
 import 'package:rentalhub/user/profile.dart'; // Import your Profile page
 import 'package:rentalhub/layout/home.dart'; // Import your Home page
 import 'package:rentalhub/about/about.dart'; // Import your About page
 import 'package:rentalhub/settings/settings.dart'; // Import your Settings page
 import 'package:rentalhub/user/login.dart';
-import 'package:rentalhub/user/signup.dart';
+import 'package:rentalhub/user/ForgotPassword.dart';
 
 void main() {
-  runApp(const RentalHub());
+  runApp(RentalHub());
 }
 
 class RentalHub extends StatelessWidget {
@@ -18,21 +19,27 @@ class RentalHub extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      class SignupPage extends StatelessWidget {
+        @override
+        Widget build(BuildContext context) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Signup'),
+            ),
+            body: Center(
+              child: Text('Signup Page'),
+            ),
+          );
+        }
+      }
+     class RentalHub extends StatelessWidget {
+  const RentalHub({super.key});
 
-
-class SignupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Signup'),
-      ),
-      body: Center(
-        child: Text('Signup Page'),
-      ),
-    );
-  }
-},
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Rental Hub', // Added the missing comma
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -41,17 +48,34 @@ class SignupPage extends StatelessWidget {
         '/': (context) => const MainPage(),
         '/notifications': (context) => NotificationHistoryPage(),
         '/profile': (context) => Profile(),
-        '/about': (context) => AboutPage(), // Add the AboutPage route
-        '/settings': (context) => SettingsPage(), // Add the SettingsPage route
+        '/about': (context) => AboutPage(),
+        '/settings': (context) => SettingsPage(),
         '/login': (context) => LoginPage(),
+        '/forgot_password': (context) =>
+            ForgotPasswordPage(), // Ensure the route name matches the one used in the LoginPage
+      },
+    );
+  }
+}
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => MainPage(),
+        '/notifications': (context) => NotificationHistoryPage(),
+        '/profile': (context) => Profile(),
+        '/about': (context) => AboutPage(),
+        '/settings': (context) => SettingsPage(),
+        '/login': (context) => LoginPage(),
+        '/forgot_password': (context) =>
+            ForgotPasswordPage(), // Ensure the route name matches the one used in the LoginPage
       },
     );
   }
 }
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
-
   
   @override
   _MainPageState createState() => _MainPageState();
@@ -67,7 +91,7 @@ class _MainPageState extends State<MainPage> {
     HomePage(),
     NotificationHistoryPage(),
     Profile(),
-    SettingsPage(), // Add the SettingsPage to the list
+    SettingsPage(),
   ];
 
   void _onTabTapped(int index) {
@@ -114,30 +138,32 @@ class _MainPageState extends State<MainPage> {
         title: !_isSearching
         ?Text(
           _title,
-          style: const TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white),
         ):
         TextField(
           controller: _searchController,
                 decoration: const InputDecoration(
                   hintText: 'Search...',
+                  hintStyle: TextStyle(color: Colors.white),
                   border: InputBorder.none,
                 ),
-                style: const TextStyle(color: Colors.black),
-                onSubmitted: (query) {  
+                style: const TextStyle(color: Colors.white),
+                onSubmitted: (query) {
                   // Perform search operation
-                  ('Search query: $query');
+                  print('Search query: $query');
                   setState(() {
                     _isSearching = false;
                   });
                 },
-        ),
-        
-        // 
+              ),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
-              icon: Icon(_isSearching ? Icons.close : Icons.search_outlined, color: Colors.white,),
+              icon: Icon(
+                _isSearching ? Icons.close : Icons.search_outlined,
+                color: Colors.white,
+              ),
               onPressed: () {
                 setState(() {
                   _isSearching = !_isSearching;
@@ -183,11 +209,10 @@ class _MainPageState extends State<MainPage> {
                 leading: const Icon(Icons.person),
                 title: const Text('Profile'),
                 onTap: () {
-                  Navigator.pop(context); // Close the drawer before navigating
+                  Navigator.pop(context);
                   setState(() {
                     _currentIndex = 2;
-                    _title =
-                        'Profile'; // Update title when navigating from drawer
+                    _title = 'Profile';
                   });
                 },
               ),
@@ -195,18 +220,16 @@ class _MainPageState extends State<MainPage> {
                 leading: const Icon(Icons.settings),
                 title: const Text('Settings'),
                 onTap: () {
-                  Navigator.pop(context); // Close the drawer before navigating
-                  Navigator.pushNamed(
-                      context, '/settings'); // Navigate to SettingsPage
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/settings');
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.info),
                 title: const Text('About'),
                 onTap: () {
-                  Navigator.pop(context); // Close the drawer before navigating
-                  Navigator.pushNamed(
-                      context, '/about'); // Navigate to AboutPage
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/about');
                 },
               ),
               ListTile(
@@ -214,6 +237,7 @@ class _MainPageState extends State<MainPage> {
                 title: const Text('Log Out'),
                 onTap: () {
                   Navigator.pop(context);
+                  Navigator.pushReplacementNamed(context, '/login');
                 },
               ),
             ],
@@ -236,6 +260,10 @@ class _MainPageState extends State<MainPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
       ),
