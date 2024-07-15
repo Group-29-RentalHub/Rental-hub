@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:halls/services/authentication.dart';
 import 'Application_form.dart';
+import "login.dart";
+import 'profile.dart';
 class Hall extends StatefulWidget {
   const Hall({super.key});
 
@@ -8,16 +11,21 @@ class Hall extends StatefulWidget {
 }
 
 class _HallState extends State<Hall> {
+  int currentpage = 0;
+  List<Widget> pages = const [
+    Hall(),
+    ProfilePage(),
+    LoginScreen(),
+  ];
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text("CHOOSE YOUR HALL"),
-        backgroundColor: Colors.green, 
-        ),
-       
-      
+        backgroundColor: Colors.green,
+      ),
       body: Center(
         child: ListView(
           scrollDirection: Axis.vertical,
@@ -204,6 +212,31 @@ class _HallState extends State<Hall> {
           ],
         ),
       ),
-    );
+      bottomNavigationBar:NavigationBarTheme(
+        data: const NavigationBarThemeData(
+          indicatorColor: Colors.green,),
+       child: NavigationBar(
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+          NavigationDestination(
+              icon: Icon(Icons.perm_identity), label: 'Profile'),
+          NavigationDestination(icon: Icon(Icons.logout), label: 'Logout'),
+        ],
+        onDestinationSelected: (int index) async {
+           if (index == 2) {
+      // Perform logout
+      await AuthMethod().signOut();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );}
+          setState(() {
+            currentpage = index;
+          });
+        },
+        selectedIndex: currentpage,
+      
+      ),
+    ));
   }
 }
