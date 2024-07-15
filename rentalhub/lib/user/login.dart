@@ -7,11 +7,10 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Your main page content
-    );
+        // Your main page content
+        );
   }
 }
-
 
 class LoginPage extends StatefulWidget {
   @override
@@ -38,18 +37,26 @@ class _LoginPageState extends State<LoginPage> {
           email: _emailController.text,
           password: _passwordController.text,
         );
-
-       print('Login successful!');
-// Navigate to MainPage upon successful login
-Navigator.pushReplacement(
-  context,
-  MaterialPageRoute(
-    builder: (context) => MainPage(), // Use the MainPage class directly
-  ),
-);SnackBar(
-          content: Text('Login failed: ${e.message}'),
+      } on FirebaseAuthException catch (e) {
+        // Handle the exception
+        print('Login failed: ${e.message}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Login failed: ${e.message}'),
+          ),
         );
+      } finally {
+        // Optional: Perform cleanup here
       }
+
+      print('Login successful!');
+// Navigate to MainPage upon successful login
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MainPage(), // Use the MainPage class directly
+        ),
+      );
     }
   }
 

@@ -62,8 +62,9 @@ class _SignupPageState extends State<SignupPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  MyApp.mainPage), // Replace MainPage with your main screen
+            builder: (context) => MyApp
+                .mainPage(), // Replace with the correct way to access MainPage
+          ),
         );
       } on FirebaseAuthException catch (e) {
         print('Signup failed: $e');

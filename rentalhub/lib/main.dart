@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:firebase_core/firebase_core.dart';
 import 'package:rentalhub/user/notifications.dart'; // Import your NotificationHistoryPage
 import 'package:rentalhub/user/profile.dart'; // Import your Profile page
 import 'package:rentalhub/layout/home.dart'; // Import your Home page
 import 'package:rentalhub/about/about.dart'; // Import your About page
 import 'package:rentalhub/settings/settings.dart'; // Import your Settings page
+=======
+import 'package:rentalhub/user/notifications.dart';
+import 'package:rentalhub/user/profile.dart';
+import 'package:rentalhub/layout/home.dart';
+import 'package:rentalhub/about/about.dart';
+import 'package:rentalhub/settings/settings.dart';
+>>>>>>> origin/Eric
 import 'package:rentalhub/user/login.dart';
 import 'package:rentalhub/user/ForgotPassword.dart';
 
@@ -19,6 +27,7 @@ class RentalHub extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+<<<<<<< HEAD
       class SignupPage extends StatelessWidget {
         @override
         Widget build(BuildContext context) {
@@ -57,6 +66,9 @@ class RentalHub extends StatelessWidget {
     );
   }
 }
+=======
+      title: 'Rental Hub', // Properly placed title property
+>>>>>>> origin/Eric
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -68,8 +80,12 @@ class RentalHub extends StatelessWidget {
         '/about': (context) => AboutPage(),
         '/settings': (context) => SettingsPage(),
         '/login': (context) => LoginPage(),
+<<<<<<< HEAD
         '/forgot_password': (context) =>
             ForgotPasswordPage(), // Ensure the route name matches the one used in the LoginPage
+=======
+        '/signup': (context) => SignupPage(),
+>>>>>>> origin/Eric
       },
     );
   }
@@ -85,7 +101,7 @@ class _MainPageState extends State<MainPage> {
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
   int _currentIndex = 0;
-  String _title = 'Home'; // Default title
+  String _title = 'Home';
 
   final List<Widget> _pages = [
     HomePage(),
@@ -104,29 +120,19 @@ class _MainPageState extends State<MainPage> {
   void _updateTitle(int index) {
     switch (index) {
       case 0:
-        setState(() {
-          _title = 'Home';
-        });
+        _title = 'Home';
         break;
       case 1:
-        setState(() {
-          _title = 'Notifications';
-        });
+        _title = 'Notifications';
         break;
       case 2:
-        setState(() {
-          _title = 'Profile';
-        });
+        _title = 'Profile';
         break;
       case 3:
-        setState(() {
-          _title = 'Settings';
-        });
+        _title = 'Settings';
         break;
       default:
-        setState(() {
-          _title = 'Home';
-        });
+        _title = 'Home';
     }
   }
 
@@ -237,7 +243,11 @@ class _MainPageState extends State<MainPage> {
                 title: const Text('Log Out'),
                 onTap: () {
                   Navigator.pop(context);
+<<<<<<< HEAD
                   Navigator.pushReplacementNamed(context, '/login');
+=======
+                  Navigator.pushNamed(context, '/login');
+>>>>>>> origin/Eric
                 },
               ),
             ],
@@ -266,6 +276,20 @@ class _MainPageState extends State<MainPage> {
             label: 'Settings',
           ),
         ],
+      ),
+    );
+  }
+}
+
+class SignupPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Signup'),
+      ),
+      body: Center(
+        child: Text('Signup Page'),
       ),
     );
   }
