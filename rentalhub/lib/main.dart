@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:rentalhub/layout/landingpage.dart';
-import 'package:rentalhub/user/notifications.dart'; // Import your NotificationHistoryPage
-import 'package:rentalhub/user/profile.dart'; // Import your Profile page
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rentalhub/layout/landingpage.dart'; // Ensure this is your booking/registration page
+import 'package:rentalhub/user/notifications.dart';
+import 'package:rentalhub/user/profile.dart';
 import 'package:rentalhub/layout/home.dart';
-import 'package:rentalhub/user/profile_form.dart'; // Import your Home page
-import 'package:rentalhub/about/about.dart'; // Import your About page
-import 'package:rentalhub/settings/settings.dart'; // Import your Settings page
-// import 'package:rentalhub/user/login.dart';
-// import 'package:rentalhub/user/signup.dart';
+import 'package:rentalhub/user/profile_form.dart';
+import 'package:rentalhub/about/about.dart';
+import 'package:rentalhub/settings/settings.dart';
+import 'package:rentalhub/user/login.dart';
+import 'package:rentalhub/user/signup.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+      options: FirebaseOptions(
+    apiKey: "AIzaSyA0tbKIpSXXGhUpj5qTafSFh4qOdhTvfBM",
+    appId: "1:52847626874:android:b190a976c9db8ff51849c3",
+    messagingSenderId: "52847626874",
+    projectId: "rentalhub-96a37",
+  ));
   runApp(RentalHub());
 }
 
@@ -22,26 +32,46 @@ class RentalHub extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/',
+      initialRoute: '/', // Ensure this is set to '/'
       routes: {
-        '/': (context) => LandingPage(),
+        '/': (context) =>
+            LandingPage(), // This should be your booking/registration page
         '/notifications': (context) => NotificationHistoryPage(),
         '/profile': (context) => Profile(),
-         '/profileForm': (context) => ProfileFormPage(
-          onSubmit: () {
-            navigateToHomePage(context); // Pass callback to ProfileFormPage
-          },
-          ),
-        '/about': (context) => AboutPage(), // Add the AboutPage route
+        '/profileForm': (context) => ProfileFormPage(
+              onSubmit: () {
+                navigateToHomePage(context); // Pass callback to ProfileFormPage
+              },
+            ),
+        '/about': (context) => AboutPage(),
         '/settings': (context) => SettingsPage(),
         '/home': (context) => MainPage(),
+        '/login': (context) => LoginPage(),
+        '/signup': (context) => SignupPage(),
       },
     );
   }
 
   void navigateToHomePage(BuildContext context) {
-    // Handle any necessary logic here before navigating
     Navigator.of(context).pushReplacementNamed('/home');
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator(); // Display a loading indicator while waiting for authentication state
+        } else if (snapshot.hasData) {
+          return MainPage(); // If the user is authenticated, show the main page
+        } else {
+          return LoginPage(); // If the user is not authenticated, show the login page
+        }
+      },
+    );
   }
 }
 
@@ -60,7 +90,7 @@ class _MainPageState extends State<MainPage> {
     HomePage(),
     NotificationHistoryPage(),
     Profile(),
-    LandingPage(),
+    LandingPage(), // Ensure this page is also part of the bottom navigation
   ];
 
   void _onTabTapped(int index) {
@@ -97,6 +127,11 @@ class _MainPageState extends State<MainPage> {
           _title = 'Home';
         });
     }
+  }
+
+  void _logout() async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushReplacementNamed(context, '/login');
   }
 
   @override
@@ -209,8 +244,7 @@ class _MainPageState extends State<MainPage> {
                 title: const Text('Log Out'),
                 onTap: () {
                   Navigator.pop(context); // Close the drawer
-                  Navigator.pushReplacementNamed(
-                      context, '/login'); // Navigate to LoginPage
+                  _logout(); // Call the logout function
                 },
               ),
             ],
