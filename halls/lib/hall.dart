@@ -13,14 +13,11 @@ class _HallState extends State<Hall> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: const Icon(Icons.arrow_back_ios),
-        ),
         title: const Text("CHOOSE YOUR HALL"),
-      ),
+        backgroundColor: Colors.green, 
+        ),
+       
+      
       body: Center(
         child: ListView(
           scrollDirection: Axis.vertical,
