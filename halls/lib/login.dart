@@ -3,8 +3,8 @@ import 'widget/button.dart';
 import 'package:halls/forgot_password.dart';
 import 'services/authentication.dart';
 import 'widget/text_field.dart';
-import 'hall.dart';
 import 'signup.dart';
+import 'navigation.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -41,7 +41,7 @@ class _SignupScreenState extends State<LoginScreen> {
       //navigate to the home screen
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (BuildContext context) {
-        return const Hall();
+        return const Navigation();
       }));
     } else {
       setState(() {
@@ -75,7 +75,7 @@ class _SignupScreenState extends State<LoginScreen> {
             TextFieldInput(
               icon: Icons.lock,
               textEditingController: passwordController,
-              hintText: 'Enter your passord',
+              hintText: 'Enter your pasword',
               textInputType: TextInputType.text,
               isPass: true,
             ),

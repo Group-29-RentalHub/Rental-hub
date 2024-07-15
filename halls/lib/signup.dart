@@ -3,8 +3,8 @@ import 'widget/button.dart';
 
 import 'services/authentication.dart';
 import 'widget/text_field.dart';
-import 'hall.dart';
 import 'login.dart';
+
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -45,7 +45,7 @@ class _SignupScreenState extends State<SignupScreen> {
       //navigate to the next screen
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => const Hall(),
+          builder: (context) => const LoginScreen(),
         ),
       );
     } else {
