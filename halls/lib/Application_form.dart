@@ -17,15 +17,15 @@ class _StudentState extends State<Student> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _yearOfStudyController = TextEditingController();
   final TextEditingController _collegeController = TextEditingController();
-  final TextEditingController _hallOfAttachmentController =
-      TextEditingController();
+  final TextEditingController _hallOfAttachmentController = TextEditingController();
+  String _studentType = 'Fresher';  // Default value
+  String? _points;
+  String? _cgpa;
 
   String? _selectedStudentType; // Initialize as null
   bool _hasDisability = false;
-  bool _hasAppliedBefore = false;
   bool _isContinuingResident = false;
 
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,10 +50,11 @@ class _StudentState extends State<Student> {
                 TextFormField(
                   controller: _firstNameController,
                   decoration: const InputDecoration(
-                      labelText: 'First Name',
-                      hintText: 'Enter your given name',
-                      labelStyle: TextStyle(fontSize: 16, color: Colors.black),
-                      border: OutlineInputBorder()),
+                    labelText: 'First Name',
+                    hintText: 'Enter your given name',
+                    labelStyle: TextStyle(fontSize: 16, color: Colors.black),
+                    border: OutlineInputBorder(),
+                  ),
                   keyboardType: TextInputType.text,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -66,13 +67,14 @@ class _StudentState extends State<Student> {
                 TextFormField(
                   controller: _lastNameController,
                   decoration: const InputDecoration(
-                      labelText: 'Last Name',
-                      hintText: "Your Surname name",
-                      labelStyle: TextStyle(fontSize: 16, color: Colors.black),
-                      border: OutlineInputBorder()),
+                    labelText: 'Last Name',
+                    hintText: "Your Surname name",
+                    labelStyle: TextStyle(fontSize: 16, color: Colors.black),
+                    border: OutlineInputBorder(),
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please  enter your last name';
+                      return 'Please enter your last name';
                     }
                     return null;
                   },
@@ -81,10 +83,11 @@ class _StudentState extends State<Student> {
                 TextFormField(
                   controller: _sexController,
                   decoration: const InputDecoration(
-                      labelText: 'Sex',
-                      hintText: "Your sex",
-                      labelStyle: TextStyle(fontSize: 16, color: Colors.black),
-                      border: OutlineInputBorder()),
+                    labelText: 'Sex',
+                    hintText: "Your sex",
+                    labelStyle: TextStyle(fontSize: 16, color: Colors.black),
+                    border: OutlineInputBorder(),
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your sex';
@@ -96,10 +99,11 @@ class _StudentState extends State<Student> {
                 TextFormField(
                   controller: _registrationController,
                   decoration: const InputDecoration(
-                      labelText: 'Registration Number',
-                      hintText: "Your University Reg no.",
-                      labelStyle: TextStyle(fontSize: 16, color: Colors.black),
-                      border: OutlineInputBorder()),
+                    labelText: 'Registration Number',
+                    hintText: "Your University Reg no.",
+                    labelStyle: TextStyle(fontSize: 16, color: Colors.black),
+                    border: OutlineInputBorder(),
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your registration number';
@@ -111,12 +115,12 @@ class _StudentState extends State<Student> {
                 TextFormField(
                   controller: _emailController,
                   decoration: const InputDecoration(
-                      labelText: 'Email',
-                      hintText: "Your personal email",
-                      labelStyle: TextStyle(fontSize: 16, color: Colors.black),
-                      border: OutlineInputBorder()),
+                    labelText: 'Email',
+                    hintText: "Your personal email",
+                    labelStyle: TextStyle(fontSize: 16, color: Colors.black),
+                    border: OutlineInputBorder(),
+                  ),
                   keyboardType: TextInputType.emailAddress,
-                  obscureText: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your email';
@@ -131,10 +135,11 @@ class _StudentState extends State<Student> {
                 TextFormField(
                   controller: _yearOfStudyController,
                   decoration: const InputDecoration(
-                      labelText: 'Year of Study',
-                      hintText: "Your year of study e.g Year 1",
-                      labelStyle: TextStyle(fontSize: 16, color: Colors.black),
-                      border: OutlineInputBorder()),
+                    labelText: 'Year of Study',
+                    hintText: "Your year of study e.g Year 1",
+                    labelStyle: TextStyle(fontSize: 16, color: Colors.black),
+                    border: OutlineInputBorder(),
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your year of study';
@@ -146,10 +151,11 @@ class _StudentState extends State<Student> {
                 TextFormField(
                   controller: _collegeController,
                   decoration: const InputDecoration(
-                      labelText: 'College',
-                      hintText: "Name of your college",
-                      labelStyle: TextStyle(fontSize: 16, color: Colors.black),
-                      border: OutlineInputBorder()),
+                    labelText: 'College',
+                    hintText: "Name of your college",
+                    labelStyle: TextStyle(fontSize: 16, color: Colors.black),
+                    border: OutlineInputBorder(),
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your College name';
@@ -161,10 +167,11 @@ class _StudentState extends State<Student> {
                 TextFormField(
                   controller: _hallOfAttachmentController,
                   decoration: const InputDecoration(
-                      labelText: 'Hall Of Attachment',
-                      hintText: "Name of the hall you are attached to",
-                      labelStyle: TextStyle(fontSize: 16, color: Colors.black),
-                      border: OutlineInputBorder()),
+                    labelText: 'Hall Of Attachment',
+                    hintText: "Name of the hall you are attached to",
+                    labelStyle: TextStyle(fontSize: 16, color: Colors.black),
+                    border: OutlineInputBorder(),
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your Hall of attachment';
@@ -172,6 +179,45 @@ class _StudentState extends State<Student> {
                     return null;
                   },
                 ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: _studentType,
+                  decoration: const InputDecoration(
+                    labelText: 'Are you a fresher or a continuing student?',
+                  ),
+                  items: ['Fresher', 'Continuing Student']
+                      .map((label) => DropdownMenuItem(
+                            child: Text(label),
+                            value: label,
+                          ))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _studentType = value!;
+                    });
+                  },
+                ),
+                const SizedBox(height: 20),
+                if (_studentType == 'Fresher')
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Enter your points',
+                    ),
+                    keyboardType: TextInputType.number,
+                    onSaved: (value) {
+                      _points = value;
+                    },
+                  ),
+                if (_studentType == 'Continuing Student')
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Enter your CGPA',
+                    ),
+                    keyboardType: TextInputType.number,
+                    onSaved: (value) {
+                      _cgpa = value;
+                    },
+                  ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
                   value: _selectedStudentType,
@@ -186,9 +232,10 @@ class _StudentState extends State<Student> {
                     DropdownMenuItem(value: 'Private', child: Text('Private')),
                   ],
                   decoration: const InputDecoration(
-                      labelText: 'Student Type',
-                      labelStyle: TextStyle(fontSize: 16, color: Colors.black),
-                      border: OutlineInputBorder()),
+                    labelText: 'Student Type',
+                    labelStyle: TextStyle(fontSize: 16, color: Colors.black),
+                    border: OutlineInputBorder(),
+                  ),
                   validator: (value) {
                     if (value == null) {
                       return 'Please select a student type';
@@ -215,22 +262,18 @@ class _StudentState extends State<Student> {
                     });
                   },
                 ),
-                SwitchListTile(
-                  title: const Text('Applied Before'),
-                  value: _hasAppliedBefore,
-                  onChanged: (newValue) {
-                    setState(() {
-                      _hasAppliedBefore = newValue;
-                    });
-                  },
-                ),
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (BuildContext context) {
-                        return const Hall();
-                      }),
-                    );
+                    if (_formKey.currentState!.validate()) {
+                      _formKey.currentState!.save();
+                      // Handle form submission, e.g., navigate to the next page
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (BuildContext context) {
+                          return const Hall();
+                        }),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
