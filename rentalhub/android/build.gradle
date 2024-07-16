@@ -1,13 +1,13 @@
 buildscript {
+    // ext.k // This line is incorrect and should be removed or corrected
     repositories {
         google()
         mavenCentral()
     }
-
     dependencies {
-
-        classpath 'com.android.tools.build:gradle:4.2.2' // Android Gradle Plugin version
-        classpath 'com.google.gms:google-services:4.4.2' // Google Services plugin version
+        classpath 'com.android.tools.build:gradle:7.0.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10" // Add Kotlin plugin if needed
+        classpath 'com.google.gms:google-services:4.3.10' // Add Google services plugin if needed
     }
 }
 
@@ -18,17 +18,14 @@ allprojects {
     }
 }
 
-rootProject.buildDir = '../build'
-
+rootProject.buildDir = "../build"
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
-
 subprojects {
-    project.evaluationDependsOn(':app')
+    project.evaluationDependsOn(":app")
 }
 
-tasks.register('clean', Delete) {
+tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
-apply plugin: 'com.google.gms.google-services'
