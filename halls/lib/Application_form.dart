@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'hall.dart';
+import 'roomallocation_screen.dart';
+
+
 
 class Student extends StatefulWidget {
   const Student({super.key});
@@ -25,6 +29,47 @@ class _StudentState extends State<Student> {
   String? _selectedStudentType; // Initialize as null
   bool _hasDisability = false;
   bool _isContinuingResident = false;
+
+  void _submitForm() async {
+  if (_formKey.currentState!.validate()) {
+    _formKey.currentState!.save();
+    
+    // Ensure _points and _cgpa are correctly populated
+    print('_points: $_points');
+    print('_cgpa: $_cgpa');
+    
+    try {
+      await FirebaseFirestore.instance.collection('students').add({
+        'firstName': _firstNameController.text,
+        'lastName': _lastNameController.text,
+        'sex': _sexController.text,
+        'registrationNumber': _registrationController.text,
+        'email': _emailController.text,
+        'yearOfStudy': _yearOfStudyController.text,
+        'college': _collegeController.text,
+        'hallOfAttachment': _hallOfAttachmentController.text,
+        'studentType': _selectedStudentType,
+        'points': _points ?? '',
+        'cgpa': _cgpa ?? '',
+        'hasDisability': _hasDisability,
+        'isContinuingResident': _isContinuingResident,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+      
+      // Navigate to the next screen after successful submission
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (BuildContext context) {
+          return  RoomAllocationScreen();
+        }),
+      );
+      
+    } catch (e) {
+      print('Error saving to Firestore: $e');
+      // Handle error as needed
+    }
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -184,6 +229,7 @@ class _StudentState extends State<Student> {
                   value: _studentType,
                   decoration: const InputDecoration(
                     labelText: 'Are you a fresher or a continuing student?',
+                    border: OutlineInputBorder(),
                   ),
                   items: ['Fresher', 'Continuing Student']
                       .map((label) => DropdownMenuItem(
@@ -202,6 +248,7 @@ class _StudentState extends State<Student> {
                   TextFormField(
                     decoration: const InputDecoration(
                       labelText: 'Enter your points',
+                      border: OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.number,
                     onSaved: (value) {
@@ -212,6 +259,7 @@ class _StudentState extends State<Student> {
                   TextFormField(
                     decoration: const InputDecoration(
                       labelText: 'Enter your CGPA',
+                      border: OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.number,
                     onSaved: (value) {
@@ -263,29 +311,23 @@ class _StudentState extends State<Student> {
                   },
                 ),
                 const SizedBox(height: 16),
-                ElevatedButton(
+               
+                
+                  ElevatedButton(
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      _formKey.currentState!.save();
-                      // Handle form submission, e.g., navigate to the next page
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (BuildContext context) {
-                          return const Hall();
-                        }),
-                      );
-                    }
+                    _submitForm();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
-                    shape: const RoundedRectangleBorder(
+                    shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(30)),
                     ),
                   ),
-                  child: const SizedBox(
+                  child: SizedBox(
                     width: 200,
                     height: 50,
                     child: Center(
-                      child: Text(
+                      child: const Text(
                         'Submit',
                         style: TextStyle(color: Colors.black),
                       ),
