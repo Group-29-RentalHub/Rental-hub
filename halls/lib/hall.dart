@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'Application_form.dart';
 import "login.dart";
 import 'profile.dart';
+import 'NavBar.dart';
 
 class Hall extends StatefulWidget {
   const Hall({super.key});
@@ -65,6 +66,17 @@ class _HallState extends State<Hall> {
           automaticallyImplyLeading: false,
           title: const Text("MAKERERE HALL APP"),
           backgroundColor: Colors.green,
+           actions: [
+            DrawerButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (BuildContext context) {
+                  return const NavBar();
+                }));
+              },
+            )
+
+          ],
         ),
         body: Center(
           child: ListView(
@@ -105,7 +117,7 @@ class _HallState extends State<Hall> {
                         child: Text(
                       "CHOOSE YOUR HALL",
                       style: TextStyle(
-                        fontSize: 40.0,
+                        fontSize: 30.0,
                         color: Colors.black,
                       ),
                     ))),

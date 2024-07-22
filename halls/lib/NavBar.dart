@@ -23,7 +23,7 @@ class _NavBarState extends State<NavBar> {
             currentAccountPicture: CircleAvatar(
               child: ClipOval(
                 child: Image.asset(
-                  'https://images.app.goo.gl/6vCExB2uFqkeFtc47',
+                  "assets/images/studentprofile.png",
                   width: 90,
                   height: 90,
                   fit: BoxFit.cover,
@@ -31,7 +31,7 @@ class _NavBarState extends State<NavBar> {
               ),
             ),
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: Colors.black,
               image: DecorationImage(
                 image: AssetImage(
                  "                     ",
