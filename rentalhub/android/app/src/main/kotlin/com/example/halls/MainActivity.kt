@@ -1,4 +1,4 @@
-package com.example.halls
+package com.example.rentalhub
 
 import io.flutter.embedding.android.FlutterActivity
 

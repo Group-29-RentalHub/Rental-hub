@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "318432616758",
-    "project_id": "halls-bccf0",
-    "storage_bucket": "halls-bccf0.appspot.com"
+    "project_number": "52847626874",
+    "project_id": "rentalhub-fd89e",
+    "storage_bucket": "rentalhub-fd89e.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:318432616758:android:3560f35f0678f83d691397",
+        "mobilesdk_app_id": "1:52847626874:android:b190a976c9db8ff51849c3",
         "android_client_info": {
-          "package_name": "com.example.halls"
+          "package_name": "com.example.rentalhub"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCGtdD8JWgN6R03p1xJoxCJ7ua-lKnmMX8"
+          "current_key": "AIzaSyCv3L7b04n5_86waJE0sDSN-53TQOHHWTk"
         }
       ],
       "services": {

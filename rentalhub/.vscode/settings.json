@@ -1,0 +1,5 @@
+{
+  "cmake.ignoreCMakeListsMissing": true,
+  "cmake.configureOnOpen": false,
+  "java.configuration.updateBuildConfiguration": "interactive"
+}
