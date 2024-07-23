@@ -18,6 +18,8 @@ dependencies:
   cloud_firestore: ^5.1.0
   firebase_auth: ^5.1.2
   firebase_core: ^3.2.0
+  firebase_storage: ^12.1.1
+  geocoding: ^3.0.0
  
   
 
@@ -29,7 +31,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/
+    - assets/
   #  - images/a_dot_ham.jpeg
   # fonts:
   #   - family: Schyler
