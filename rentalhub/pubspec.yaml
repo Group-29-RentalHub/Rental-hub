@@ -10,6 +10,9 @@ dependencies:
   flutter_native_splash: ^2.4.0 
   flutter:
     sdk: flutter
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
+  image_picker: ^1.1.2
   get:  
 
   cloud_firestore: ^5.1.0

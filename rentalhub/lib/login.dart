@@ -1,126 +1,177 @@
 import 'package:flutter/material.dart';
-import 'widget/button.dart';
-import 'package:halls/forgot_password.dart';
-import 'services/authentication.dart';
-import 'widget/text_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'signup.dart';
-import 'hall.dart';
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<LoginScreen> createState() => _SignupScreenState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _SignupScreenState extends State<LoginScreen> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  bool isLoading = false;
+class _LoginPageState extends State<LoginPage> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
-    emailController.dispose();
-    passwordController.dispose();
   }
 
-// email and passowrd auth part
-  void loginUser() async {
-    setState(() {
-      isLoading = true;
-    });
-    // signup user using our authmethod
-    String res = await AuthMethod().loginUser(
-        email: emailController.text, password: passwordController.text);
-
-    if (res == "success") {
-      setState(() {
-        isLoading = false;
-      });
-      //navigate to the home screen
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (BuildContext context) {
-        return const Hall();
-      }));
-    } else {
-      setState(() {
-        isLoading = false;
-      });
-      // show error
+  Future<void> _login() async {
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      // Login successful, you can navigate to the home page or show a success message
+      print('Login successful!');
+      // Replace with your desired page
+      Navigator.pushReplacementNamed(context, '/home');
+    } on FirebaseAuthException catch (e) {
+      String message = '';
+      if (e.code == 'user-not-found') {
+        message = 'No user found for that email.';
+      } else if (e.code == 'wrong-password') {
+        message = 'Wrong password provided.';
+      } else {
+        message = 'An error occurred. Please try again later.';
+      }
+      // Show error message
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Login Failed'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      // resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: SizedBox(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: height / 2.7,
-              child: Image.asset('assets/images/makerere.png'),
-            ),
-            TextFieldInput(
-                icon: Icons.person,
-                textEditingController: emailController,
-                hintText: 'Enter your webmail',
-                textInputType: TextInputType.text),
-            TextFieldInput(
-              icon: Icons.lock,
-              textEditingController: passwordController,
-              hintText: 'Enter your password',
-              textInputType: TextInputType.text,
-              isPass: true,
-              
-            ),
-            //  we call our forgot password below the login in button
-            const ForgotPassword(),
-            MyButtons(onTap: loginUser, text: "Log In"),
-
-            Row(
-              children: [
-                Expanded(
-                  child: Container(height: 1, color: Colors.black26),
+      appBar: AppBar(
+        title: const Text('Login'),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              const Text(
+                'RentalHub welcomes you back',
+                style: TextStyle(
+                  fontSize: 15.0,
+                  color: Color.fromARGB(255, 122, 65, 132),
                 ),
-                const Text("  or  "),
-                Expanded(
-                  child: Container(height: 1, color: Colors.black26),
-                )
-              ],
-            ),
-
-            // Don't have an account? got to signup screen
-            Padding(
-              padding: const EdgeInsets.only(top: 10, left: 100),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Don't have an account? "),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const SignupScreen(),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      "SignUp",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20.0),
+              TextFormField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: const BorderSide(
+                      color: Colors.blue,
+                      width: 2.0,
                     ),
-                  )
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: const BorderSide(
+                      color: Colors.green,
+                      width: 2.0,
+                    ),
+                  ),
+                ),
+                validator: (value) {
+                  if (value?.isEmpty ?? true) {
+                    return 'Please enter your email';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20.0),
+              TextFormField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: const BorderSide(
+                      color: Colors.blue,
+                      width: 2.0,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: const BorderSide(
+                      color: Colors.green,
+                      width: 2.0,
+                    ),
+                  ),
+                ),
+                validator: (value) {
+                  if (value?.isEmpty ?? true) {
+                    return 'Please enter your password';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text('Forgot Password'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        _login();
+                      }
+                    },
+                    child: const Text('Login'),
+                  ),
                 ],
               ),
-            ),
-          ],
+              const SizedBox(height: 20.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('New User?'),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const SignupPage()),
+                      );
+                    },
+                    child: const Text('Register'),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-      )),
-     ) );
+      ),
+    );
   }
 }

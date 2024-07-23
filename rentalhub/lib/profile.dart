@@ -1,61 +1,83 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:halls/services/authentication.dart';
-import 'hall.dart';
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
 
-  @override
-  _ProfilePageState createState() => _ProfilePageState();
-}
-
-class _ProfilePageState extends State<ProfilePage> {
-  final AuthMethod _authMethod = AuthMethod();
-  late User? _user;
-
-  @override
-  void initState() {
-    super.initState();
-    _user = _authMethod.getCurrentUser();
-  }
+class Profile extends StatelessWidget {
+  const Profile({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-      automaticallyImplyLeading: false,
-        title: const Text('Profile'),
-        backgroundColor: Colors.green,
-      ),
-      body: _user != null
-          ? Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Name: ${_user!.displayName ?? 'No name provided'}',
-                      style: const TextStyle(fontSize: 20)),
-                  const SizedBox(height: 10),
-                  Text('Email: ${_user!.email}',
-                      style: const TextStyle(fontSize: 20)),
-                  const SizedBox(height: 10),
-                  // Add more fields as needed
-                  const Spacer(),
-                  ElevatedButton(
-                    onPressed: () async {
-                      await _authMethod.signOut();
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const Hall()),
-                      );
-                    },
-                    child: const Text('RETURN TO HOMESCREEN'),
-                  ),
-                ],
+      backgroundColor: Colors.white, 
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const CircleAvatar(
+                radius: 50,
+                backgroundImage: AssetImage('assets/user_image.png'), // Replace with actual image
               ),
-            )
-          : const Center(child: Text('User data not found')),
+              const SizedBox(height: 16),
+              const Text(
+                'Leah Diane',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'leah.diane@gmail.com',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey[600],
+                ),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  // Navigate to Edit Profile screen
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromRGBO(118, 36, 177, 1),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12), // Rounded corners
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                child: const Text(
+                  'Edit Profile',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              const SizedBox(height: 32),
+              Expanded(
+                child: ListView(
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.location_on, color: Colors.purple),
+                      title: const Text('Address', style: TextStyle(color: Colors.black)),
+                      subtitle: Text('123 Main St, Bugolobi Lule Ug', style: TextStyle(color: Colors.grey[600])),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.phone, color: Colors.purple),
+                      title: const Text('Phone', style: TextStyle(color: Colors.black)),
+                      subtitle: Text('+256 776 567 890', style: TextStyle(color: Colors.grey[600])),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.calendar_today, color: Colors.purple),
+                      title: const Text('Date of Birth', style: TextStyle(color: Colors.black)),
+                      subtitle: Text('January 1, 1990', style: TextStyle(color: Colors.grey[600])),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
