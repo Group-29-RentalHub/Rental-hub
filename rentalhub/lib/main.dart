@@ -274,6 +274,9 @@ class _MainPageState extends State<MainPage> {
             label: 'Settings',
           ),
         ],
+        selectedItemColor:Colors.grey , // Purple color for selected item
+        unselectedItemColor: Color.fromRGBO(70, 0, 119, 1), // Color for unselected items
+        backgroundColor: Color.fromRGBO(70, 0, 119, 1), // Background color of the BottomNavigationBar
       ),
     );
   }
