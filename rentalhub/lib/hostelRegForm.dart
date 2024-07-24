@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:halls/hostel_lists.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -118,7 +119,7 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
         'contact_number': _contactNumberController.text,
         'description': _descriptionController.text,
         'amenities': _amenities,
-        'user_id': userId,
+        'userId': userId,
         'images': imageUrls, // Include image URLs
       });
 
@@ -131,8 +132,12 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop(); // Optionally pop to previous page
+                Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HostelsListPage(),
+                ),
+              ); // Optionally pop to previous page
               },
               child: const Text('OK'),
             ),
