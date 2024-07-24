@@ -30,8 +30,7 @@ class RentalHub extends StatelessWidget {
       ),
       initialRoute: '/', // Ensure this is set to '/'
       routes: {
-        '/': (context) =>
-            const LoginPage(), // This should be your booking/registration page
+        '/': (context) => const AuthWrapper(), // Use AuthWrapper to handle authentication
         '/notifications': (context) => const NotificationHistoryPage(),
         '/profile': (context) => const Profile(),
         '/profileForm': (context) => ProfileFormPage(
@@ -275,6 +274,9 @@ class _MainPageState extends State<MainPage> {
             label: 'Settings',
           ),
         ],
+        selectedItemColor:Colors.grey , // Purple color for selected item
+        unselectedItemColor: Color.fromRGBO(70, 0, 119, 1), // Color for unselected items
+        backgroundColor: Color.fromRGBO(70, 0, 119, 1), // Background color of the BottomNavigationBar
       ),
     );
   }
