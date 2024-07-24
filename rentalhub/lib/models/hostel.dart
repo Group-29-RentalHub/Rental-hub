@@ -34,7 +34,7 @@ class Hostel {
       contactNumber: data['contact_number'] ?? '',
       description: data['description'] ?? '',
       amenities: List<String>.from(data['amenities'] ?? []),
-      imageUrls: List<String>.from(data['images'] ?? []),
+      imageUrls: List<String>.from(data['image_urls'] ?? []),
     );
   }
 }
