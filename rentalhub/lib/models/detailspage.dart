@@ -10,9 +10,8 @@ class DetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(house.title, style: const TextStyle(color: Colors.white),),
+        title: Text(house.name, style: const TextStyle(color: Colors.white)),
         backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
-
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -20,66 +19,81 @@ class DetailPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Main Image
               ClipRRect(
                 borderRadius: BorderRadius.circular(16.0),
-                child: Image.asset(
-                  house.imageUrl,
+                child: Image.network(
+                  house.images.isNotEmpty ? house.images[0] : 'https://via.placeholder.com/600x400',
                   fit: BoxFit.cover,
                   width: double.infinity,
                   height: 250,
                 ),
               ),
               const SizedBox(height: 16.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16.0),
-                    child: Image.asset(
-                      house.imageUrl,
-                      fit: BoxFit.cover,
-                      width: (MediaQuery.of(context).size.width - 48) / 2,
-                      height: 150,
+              
+              // Image Grid
+              if (house.images.length > 1)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16.0),
+                        child: Image.network(
+                          house.images.length > 1 ? house.images[1] : 'https://via.placeholder.com/300x200',
+                          fit: BoxFit.cover,
+                          height: 150,
+                        ),
+                      ),
                     ),
-                  ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16.0),
-                    child: Image.asset(
-                      house.imageUrl,
-                      fit: BoxFit.cover,
-                      width: (MediaQuery.of(context).size.width - 48) / 2,
-                      height: 150,
+                    const SizedBox(width: 8.0),
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16.0),
+                        child: Image.network(
+                          house.images.length > 2 ? house.images[2] : 'https://via.placeholder.com/300x200',
+                          fit: BoxFit.cover,
+                          height: 150,
+                        ),
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
               const SizedBox(height: 8.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16.0),
-                    child: Image.asset(
-                      house.imageUrl,
-                      fit: BoxFit.cover,
-                      width: (MediaQuery.of(context).size.width - 48) / 2,
-                      height: 150,
+              
+              // Additional Images Row
+              if (house.images.length > 3)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16.0),
+                        child: Image.network(
+                          house.images.length > 3 ? house.images[3] : 'https://via.placeholder.com/300x200',
+                          fit: BoxFit.cover,
+                          height: 150,
+                        ),
+                      ),
                     ),
-                  ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16.0),
-                    child: Image.asset(
-                      house.imageUrl,
-                      fit: BoxFit.cover,
-                      width: (MediaQuery.of(context).size.width - 48) / 2,
-                      height: 150,
+                    const SizedBox(width: 8.0),
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16.0),
+                        child: Image.network(
+                          house.images.length > 4 ? house.images[4] : 'https://via.placeholder.com/300x200',
+                          fit: BoxFit.cover,
+                          height: 150,
+                        ),
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
               const SizedBox(height: 16.0),
+
+              // Title and Location
               Text(
-                house.title,
+                house.name,
                 style: const TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.bold,
@@ -112,6 +126,8 @@ class DetailPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16.0),
+
+              // Description
               const Text(
                 'Description:',
                 style: TextStyle(
@@ -127,6 +143,8 @@ class DetailPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16.0),
+
+              // Minimum Requirements
               const Text(
                 'Minimum Requirements:',
                 style: TextStyle(
@@ -145,6 +163,8 @@ class DetailPage extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 16.0),
+
+              // Ratings
               const Text(
                 'Ratings:',
                 style: TextStyle(
@@ -157,14 +177,16 @@ class DetailPage extends StatelessWidget {
               const RatingBar(label: 'Hospitality', rating: 4.0),
               const RatingBar(label: 'Facilities', rating: 4.2),
               const SizedBox(height: 16.0),
+
+              // Action Buttons
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [ 
+                children: [
                   ElevatedButton(
                     onPressed: () {
-                      // Implement chat functionality
+                      // Implement booking functionality
                     },
-                    style: FilledButton.styleFrom(
+                    style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
                       elevation: 3.0,
                       textStyle: const TextStyle(color: Colors.white),
@@ -181,7 +203,7 @@ class DetailPage extends StatelessWidget {
                     onPressed: () {
                       // Implement chat functionality
                     },
-                    style: FilledButton.styleFrom(
+                    style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
                       elevation: 3.0,
                       textStyle: const TextStyle(color: Colors.white),
@@ -195,7 +217,7 @@ class DetailPage extends StatelessWidget {
                     ),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),
