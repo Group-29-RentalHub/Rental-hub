@@ -31,7 +31,7 @@ class RentalHub extends StatelessWidget {
       initialRoute: '/', // Ensure this is set to '/'
       routes: {
         '/': (context) =>
-            const LandingPage(), // This should be your booking/registration page
+            const LoginPage(), // This should be your booking/registration page
         '/notifications': (context) => const NotificationHistoryPage(),
         '/profile': (context) => const Profile(),
         '/profileForm': (context) => ProfileFormPage(
@@ -44,6 +44,7 @@ class RentalHub extends StatelessWidget {
         '/home': (context) => const MainPage(),
         '/login': (context) => const LoginPage(),
         '/signup': (context) => const SignupPage(),
+        '/user_interest': (context) => const LandingPage(),
       },
     );
   }
@@ -90,7 +91,8 @@ class _MainPageState extends State<MainPage> {
     const HomePage(),
     const NotificationHistoryPage(),
     const Profile(),
-    const LandingPage(), // Ensure this page is also part of the bottom navigation
+    const LandingPage(),
+    const LoginPage(),
   ];
 
   void _onTabTapped(int index) {
