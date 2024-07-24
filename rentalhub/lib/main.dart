@@ -106,7 +106,7 @@ class _MainPageState extends State<MainPage> {
     switch (index) {
       case 0:
         setState(() {
-          _title = 'Home';
+          _title = 'Rental Hub';
         });
         break;
       case 1:
@@ -258,8 +258,10 @@ class _MainPageState extends State<MainPage> {
         type: BottomNavigationBarType.fixed,
         backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
         selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.grey,
+
         
+        unselectedItemColor: Colors.grey,
+
        
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
