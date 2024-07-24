@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:halls/components/square_tile.dart';
 import 'login.dart';
 
 class SignupPage extends StatefulWidget {
@@ -121,8 +122,8 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Signup'),
-        backgroundColor: Colors.deepPurple,
+        // title: const Text('Signup'),
+        // backgroundColor: Colors.deepPurple,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
@@ -134,6 +135,18 @@ class _SignupPageState extends State<SignupPage> {
               key: _formKey,
               child: Column(
                 children: [
+
+                  const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    //icon
+                    SquareTile(imagePath: 'images/purple.jpg'),
+
+                    SizedBox(width: 25),
+
+    
+                  ],
+                ),
                   const Text(
                     'Create an Account',
                     style: TextStyle(

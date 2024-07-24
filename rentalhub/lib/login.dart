@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:halls/components/square_tile.dart';
 import 'signup.dart';
 
 class LoginPage extends StatefulWidget {
@@ -84,10 +85,11 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
-        backgroundColor: Colors.deepPurple,
+        // title: const Text('Login'),
+        // backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
+        
         padding: const EdgeInsets.all(20.0),
         child: Center(
           child: Container(
@@ -96,7 +98,21 @@ class _LoginPageState extends State<LoginPage> {
             child: Form(
               key: _formKey,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    //google
+                    SquareTile(imagePath: 'images/purple.jpg'),
+
+                    SizedBox(width: 25),
+
+    
+                  ],
+                ),
                   const Text(
                     'Welcome Back to RentalHub',
                     style: TextStyle(
@@ -187,6 +203,8 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     child: const Text('Login'),
                   ),
+
+    
                   const SizedBox(height: 20.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

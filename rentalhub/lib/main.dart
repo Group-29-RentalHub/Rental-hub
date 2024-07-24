@@ -255,6 +255,12 @@ class _MainPageState extends State<MainPage> {
       ),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey,
+        
+       
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
         items: const <BottomNavigationBarItem>[
@@ -263,7 +269,9 @@ class _MainPageState extends State<MainPage> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
+            // backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
+            icon: Icon(Icons.notifications,
+            ),
             label: 'Notifications',
           ),
           BottomNavigationBarItem(
