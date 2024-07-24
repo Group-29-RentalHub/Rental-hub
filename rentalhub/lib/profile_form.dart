@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfileFormPage extends StatefulWidget {
   final VoidCallback onSubmit;
@@ -19,8 +21,72 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
   String? _selectedHouseType;
   String? _selectedHostelType;
   String? _selectedNationality;
-  bool _allowDrugs = false;
-  bool _allowVisitors = false;
+  String? _name;
+  String? _yearOfStudy;
+  bool _wifi = false;
+  bool _laundryServices = false;
+  bool _cafeteria = false;
+  bool _parking = false;
+  bool _security = false;
+
+  LatLng _selectedLocation = LatLng(0.3152, 32.5816);
+
+  bool _isSubmitting = false;
+  String? _errorMessage;
+
+  // Method to save data to Firestore
+ Future<void> _saveToFirestore() async {
+  User? user = FirebaseAuth.instance.currentUser;
+
+  if (user != null) {
+    try {
+      setState(() {
+        _isSubmitting = true;
+        _errorMessage = null;
+      });
+
+      await FirebaseFirestore.instance.collection('user_hostel_prefs').add({
+        'location': GeoPoint(_selectedLocation.latitude, _selectedLocation.longitude),
+        'budget': _selectedBudget,
+        'house_type': _selectedHouseType,
+        'hostel_type': _selectedHostelType,
+        'nationality': _selectedNationality,
+        'name': _name,
+        'year_of_study': _yearOfStudy,
+        'wifi': _wifi,
+        'laundry_services': _laundryServices,
+        'cafeteria': _cafeteria,
+        'parking': _parking,
+        'security': _security,
+        'user_id': user.uid,  // Added user ID
+      });
+
+      // Optionally show a success message or navigate to another screen
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profile submitted successfully!')),
+      );
+    } catch (e) {
+      // Handle errors and show an error message
+      setState(() {
+        _errorMessage = 'Failed to submit profile. Please try again.';
+      });
+      print('Error saving profile: $e');
+    } finally {
+      setState(() {
+        _isSubmitting = false;
+      });
+    }
+  } else {
+    setState(() {
+      _errorMessage = 'User not logged in.';
+    });
+  }
+}
+
+  void _handleSubmit() async {
+    await _saveToFirestore();
+    widget.onSubmit();
+  }
 
   List<Widget> _buildSteps() {
     return [
@@ -30,29 +96,29 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
           height: 300,
           color: Colors.grey[300],
           child: FlutterMap(
-            options: const MapOptions(
-              initialCenter: LatLng(0.3152, 32.5816),
-              minZoom: 10.0,
+            options: MapOptions(
+              initialCenter: _selectedLocation,
+              initialZoom: 13.0,
+              minZoom: 13.0,
             ),
             children: [
               TileLayer(
-                urlTemplate:
-                    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                 subdomains: const ['a', 'b', 'c'],
               ),
-              const MarkerLayer(
-                markers: [
-                  Marker(
-                    width: 80.0,
-                    height: 80.0,
-                    point: LatLng(0.3152, 32.5816),
-                    child: Icon(
-                      Icons.location_pin,
-                      color: Colors.red,
-                    ),
-                  ),
-                ],
-              ),
+              // MarkerLayer(
+              //   markers: [
+              //     Marker(
+              //       width: 80.0,
+              //       height: 80.0,
+              //       point: _selectedLocation,
+              //       builder: (ctx) => const Icon(
+              //         Icons.location_pin,
+              //         color: Colors.red,
+              //       ),
+              //     ),
+              //   ],
+              // ),
             ],
           ),
         ),
@@ -89,8 +155,8 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
         icon: Icons.school,
       ),
       _buildStep(
-        question: 'Allow drugs and visitors to sleep over',
-        child: _buildAllowanceCheckboxes(),
+        question: 'Select amenities',
+        child: _buildAmenitiesCheckboxes(),
         icon: Icons.check,
       ),
     ];
@@ -215,7 +281,9 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
         labelText: 'Enter your name',
       ),
       onChanged: (value) {
-        // Handle name input
+        setState(() {
+          _name = value;
+        });
       },
     );
   }
@@ -226,29 +294,58 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
         labelText: 'Enter your year of study',
       ),
       onChanged: (value) {
-        // Handle year of study input
+        setState(() {
+          _yearOfStudy = value;
+        });
       },
     );
   }
 
-  Widget _buildAllowanceCheckboxes() {
+  Widget _buildAmenitiesCheckboxes() {
     return Column(
       children: [
         CheckboxListTile(
-          title: const Text('Allow drugs'),
-          value: _allowDrugs,
+          title: const Text('Wifi'),
+          value: _wifi,
           onChanged: (value) {
             setState(() {
-              _allowDrugs = value ?? false;
+              _wifi = value ?? false;
             });
           },
         ),
         CheckboxListTile(
-          title: const Text('Allow visitors to sleep over'),
-          value: _allowVisitors,
+          title: const Text('Laundry services'),
+          value: _laundryServices,
           onChanged: (value) {
             setState(() {
-              _allowVisitors = value ?? false;
+              _laundryServices = value ?? false;
+            });
+          },
+        ),
+        CheckboxListTile(
+          title: const Text('Cafeteria'),
+          value: _cafeteria,
+          onChanged: (value) {
+            setState(() {
+              _cafeteria = value ?? false;
+            });
+          },
+        ),
+        CheckboxListTile(
+          title: const Text('Parking'),
+          value: _parking,
+          onChanged: (value) {
+            setState(() {
+              _parking = value ?? false;
+            });
+          },
+        ),
+        CheckboxListTile(
+          title: const Text('Security'),
+          value: _security,
+          onChanged: (value) {
+            setState(() {
+              _security = value ?? false;
             });
           },
         ),
@@ -260,44 +357,32 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
     required String label,
     required String value,
     required String? groupValue,
-    required void Function(String?) onChanged,
+    required ValueChanged<String?> onChanged,
   }) {
-    bool isSelected = value == groupValue;
-    return InkWell(
+    final isSelected = value == groupValue;
+    return GestureDetector(
       onTap: () => onChanged(value),
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8.0),
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        margin: const EdgeInsets.symmetric(vertical: 4.0),
         decoration: BoxDecoration(
-          color:
-              isSelected ? const Color.fromRGBO(70, 0, 119, 1) : Colors.white,
-          borderRadius: BorderRadius.circular(8.0),
+          color: isSelected ? const Color.fromRGBO(70, 0, 119, 1) : Colors.white,
           border: Border.all(
-            color: const Color.fromRGBO(70, 0, 119, 1),
+            color: isSelected
+                ? const Color.fromRGBO(70, 0, 119, 1)
+                : Colors.grey,
+            width: 2,
           ),
+          borderRadius: BorderRadius.circular(8.0),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Icon(
-              isSelected
-                  ? Icons.radio_button_checked
-                  : Icons.radio_button_unchecked,
-              color: isSelected
-                  ? Colors.white
-                  : const Color.fromRGBO(70, 0, 119, 1),
+        child: Center(
+          child: Text(
+            label,
+            style: TextStyle(
+              color: isSelected ? Colors.white : Colors.black,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
-            const SizedBox(width: 8.0),
-            Text(
-              label,
-              style: TextStyle(
-                color: isSelected
-                    ? Colors.white
-                    : const Color.fromRGBO(70, 0, 119, 1),
-                fontSize: 16.0,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -308,30 +393,41 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
     required Widget child,
     required IconData icon,
   }) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            size: 100.0,
-            color: const Color.fromRGBO(70, 0, 119, 1), // Theme color
-          ),
-          const SizedBox(height: 16.0),
-          Text(
-            question,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 30,
+              color: const Color.fromRGBO(70, 0, 119, 1),
+            ),
+            const SizedBox(width: 8),
+            Flexible(
+              child: Text(
+                question,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        child,
+        if (_errorMessage != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 16.0),
+            child: Text(
+              _errorMessage!,
+              style: const TextStyle(color: Colors.red, fontSize: 16),
             ),
           ),
-          const SizedBox(height: 16.0),
-          child,
-        ],
-      ),
+      ],
     );
   }
 
@@ -339,23 +435,16 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            const Text('Profile Form', style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color.fromRGBO(70, 0, 119, 1), // Theme color
+        title: const Text('Profile Form'),
+        backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
       ),
-      body: Container(
+      body: Center(
         child: Column(
           children: [
-            LinearProgressIndicator(
-              value: (_currentPage + 1) /
-                  8, // Adjust according to the number of steps
-              backgroundColor: Colors.grey[300],
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
-            ),
             Expanded(
               child: PageView(
                 controller: _pageController,
-                onPageChanged: (int page) {
+                onPageChanged: (page) {
                   setState(() {
                     _currentPage = page;
                   });
@@ -368,46 +457,41 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _currentPage > 0
-                      ? ElevatedButton(
-                          onPressed: () {
-                            _pageController.previousPage(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromRGBO(
-                                70, 0, 119, 1), // Theme color
-                          ),
-                          child: const Text('Previous',
-                              style: TextStyle(color: Colors.white)),
-                        )
-                      : Container(),
-                  _currentPage < 7
-                      ? ElevatedButton(
-                          onPressed: () {
-                            _pageController.nextPage(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromRGBO(
-                                70, 0, 119, 1), // Theme color
-                          ),
-                          child: const Text('Next',
-                              style: TextStyle(color: Colors.white)),
-                        )
-                      : ElevatedButton(
-                          onPressed: widget.onSubmit,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromRGBO(
-                                70, 0, 119, 1), // Theme color
-                          ),
-                          child: const Text('Submit',
-                              style: TextStyle(color: Colors.white)),
-                        ),
+                  if (_currentPage > 0)
+                    ElevatedButton(
+                      onPressed: () {
+                        _pageController.previousPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey,
+                      ),
+                      child: const Text(
+                        'Previous',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ElevatedButton(
+                    onPressed: _isSubmitting
+                        ? null
+                        : _currentPage < 7
+                            ? () {
+                                _pageController.nextPage(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                );
+                              }
+                            : _handleSubmit,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
+                    ),
+                    child: Text(
+                      _currentPage < 7 ? 'Next' : 'Submit',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
                 ],
               ),
             ),

@@ -20,7 +20,7 @@ class House {
     Map data = doc.data() as Map<String, dynamic>;
     return House(
       id: doc.id,
-      name: data['title'] ?? '',
+      name: data['name'] ?? '',
       location: data['location'] ?? '',
       price: data['price'] ?? '',
       images: List<String>.from(data['images'] ?? []), // Handle images array
