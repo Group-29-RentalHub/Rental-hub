@@ -30,8 +30,7 @@ class RentalHub extends StatelessWidget {
       ),
       initialRoute: '/', // Ensure this is set to '/'
       routes: {
-        '/': (context) =>
-            const LoginPage(), // This should be your booking/registration page
+        '/': (context) => const AuthWrapper(), // Use AuthWrapper to handle authentication
         '/notifications': (context) => const NotificationHistoryPage(),
         '/profile': (context) => const Profile(),
         '/profileForm': (context) => ProfileFormPage(
