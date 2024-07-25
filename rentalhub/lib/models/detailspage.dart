@@ -30,7 +30,7 @@ class DetailPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16.0),
-              
+
               // Image Grid
               if (house.images.length > 1)
                 Row(
@@ -60,7 +60,7 @@ class DetailPage extends StatelessWidget {
                   ],
                 ),
               const SizedBox(height: 8.0),
-              
+
               // Additional Images Row
               if (house.images.length > 3)
                 Row(
@@ -117,14 +117,6 @@ class DetailPage extends StatelessWidget {
                   Icon(Icons.star_border, color: Colors.yellow),
                 ],
               ),
-              const SizedBox(height: 8.0),
-              Text(
-                house.price,
-                style: const TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
               const SizedBox(height: 16.0),
 
               // Description
@@ -136,13 +128,71 @@ class DetailPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8.0),
-              const Text(
-                'This is a wonderful hostel located in the heart of the city. It offers comfortable rooms and modern amenities to ensure a pleasant stay for all guests.',
-                style: TextStyle(
+              Text(
+                house.description,
+                style: const TextStyle(
                   fontSize: 16.0,
                 ),
               ),
               const SizedBox(height: 16.0),
+
+              // Amenities
+              // Amenities Section in DetailPage
+const Text(
+  'Amenities:',
+  style: TextStyle(
+    fontSize: 20.0,
+    fontWeight: FontWeight.bold,
+  ),
+),
+const SizedBox(height: 8.0),
+Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: house.amenities.entries
+    .where((entry) => entry.value) // Only display amenities that are true
+    .map((entry) => Text('- ${entry.key}'))
+    .toList(),
+),
+
+              
+              const SizedBox(height: 16.0),
+
+// Contact Information
+Text(
+  'Contact: ${house.contact}',
+  style: const TextStyle(
+    fontSize: 16.0,
+    fontWeight: FontWeight.bold,
+  ),
+),
+const SizedBox(height: 16.0),
+
+// // Room Types and Prices
+// const Text(
+//   'Room Types and Prices:',
+//   style: TextStyle(
+//     fontSize: 20.0,
+//     fontWeight: FontWeight.bold,
+//   ),
+// ),
+
+// const SizedBox(height: 8.0),
+// Column(
+//   crossAxisAlignment: CrossAxisAlignment.start,
+//   children: house.roomTypes.entries
+//     .map((entry) => Text('- ${entry.key}: ${entry.value}'))
+//     .toList(),
+// ),
+// const SizedBox(height: 16.0),
+
+// // Hostel Gender
+Text(
+  'Hostel Gender: ${house.hostelGender}',
+  style: const TextStyle(
+    fontSize: 16.0,
+    fontWeight: FontWeight.bold,
+  ),
+),
 
               // Minimum Requirements
               const Text(

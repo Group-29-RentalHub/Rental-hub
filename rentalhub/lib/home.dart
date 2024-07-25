@@ -122,7 +122,7 @@ class HouseCard extends StatelessWidget {
                 const SizedBox(height: 4.0),
                 // Price
                 Text(
-                  house.price,
+                  house.name,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
