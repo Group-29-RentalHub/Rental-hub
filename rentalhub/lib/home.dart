@@ -1,195 +1,129 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'chatpage.dart';
-import '/models/detailspage.dart';
-import '/models/house_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'explore.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  final CollectionReference housesCollection = FirebaseFirestore.instance
-      .collection('hostels'); // Updated collection name
-
+class ForYouPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Explore Hostels',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
-      body: StreamBuilder(
-        stream: housesCollection.snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return const Center(child: Text('Error loading data'));
-          }
-
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: _fetchHostels(),
+        builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            print('Error fetching data: ${snapshot.error}');
+            return const Center(child: Text('Error fetching data. Check your internet connection.'));
+          } else if (!snapshot.hasData || (snapshot.data?.isEmpty ?? true)) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('No hostels currently available for you.'),
+                  const SizedBox(height: 8.0),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.white, backgroundColor: const Color.fromRGBO(70, 0, 119, 1), // White text
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const HomePage()),
+                      );
+                    },
+                    child: const Text('Maybe explore'),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                final hostel = snapshot.data![index];
+                return ListTile(
+                  title: Text(hostel['name']),
+                  subtitle: Text('Matching percentage: ${hostel['match']}%'),
+                  onTap: () {
+                    // Navigate to hostel details page
+                  },
+                );
+              },
+            );
           }
-
-          final List<House> houses = snapshot.data!.docs
-              .map((doc) => House.fromFirestore(doc))
-              .toList();
-
-          return ListView.builder(
-            itemCount: houses.length,
-            itemBuilder: (context, index) {
-              return HouseCard(house: houses[index]);
-            },
-          );
         },
       ),
     );
   }
-}
 
-class HouseCard extends StatelessWidget {
-  final House house;
+  Future<List<Map<String, dynamic>>> _fetchHostels() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print('No user is signed in.');
+      throw Exception('No user is signed in.');
+    }
 
-  const HouseCard({super.key, required this.house});
+    try {
+      final userPrefsSnapshot = await FirebaseFirestore.instance
+          .collection('user_hostel_prefs')
+          .doc(user.uid)
+          .get();
 
-  @override
-  Widget build(BuildContext context) {
-    String imageUrl = house.images.isNotEmpty ? house.images[0] : 'https://via.placeholder.com/600x400';
+      if (!userPrefsSnapshot.exists) {
+        print('User preferences not found for user ID: ${user.uid}');
+        return []; // Return an empty list if preferences are not found
+      }
 
-    return Card(
-      margin: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AspectRatio(
-            aspectRatio: 16 / 9,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16.0),
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Image.network(
-                    'https://via.placeholder.com/600x400',
-                    fit: BoxFit.cover,
-                  );
-                },
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Title of the hostel
-                Text(
-                  house.name,
-                  style: const TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4.0),
-                // Location of the hostel
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.location_on,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 4.0),
-                    Text(house.location,
-                        style: const TextStyle(
-                          color: Colors.grey,
-                        )),
-                  ],
-                ),
-                const SizedBox(height: 4.0),
-                // Rating
-                const Row(
-                  children: [
-                    Icon(Icons.star, size: 20),
-                    Icon(Icons.star, size: 20),
-                    Icon(Icons.star, size: 20),
-                    Icon(Icons.star, size: 20),
-                  ],
-                ),
-                const SizedBox(height: 4.0),
-                // Price
-                Text(
-                  house.name,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailPage(house: house),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
-                    elevation: 3.0,
-                    textStyle: const TextStyle(color: Colors.white),
-                  ),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.phone, size: 20, color: Colors.white),
-                      SizedBox(width: 4.0),
-                      Text(
-                        'Details',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ChatPage(),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
-                    elevation: 3.0,
-                    textStyle: const TextStyle(color: Colors.white),
-                  ),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.chat, size: 20, color: Colors.white),
-                      SizedBox(width: 4.0),
-                      Text(
-                        'Chat',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+      final userPrefs = userPrefsSnapshot.data();
+      if (userPrefs == null) {
+        throw Exception('User preferences data is null.');
+      }
+
+      final hostelsSnapshot = await FirebaseFirestore.instance.collection('hostels').get();
+
+      List<Map<String, dynamic>> matchedHostels = [];
+
+      for (var hostelDoc in hostelsSnapshot.docs) {
+        final hostel = hostelDoc.data();
+        final matchPercentage = _calculateMatchPercentage(userPrefs, hostel);
+
+        if (matchPercentage >= 75) {
+          matchedHostels.add({
+            'id': hostelDoc.id,
+            'name': hostel['name'],
+            'match': matchPercentage,
+          });
+        }
+      }
+
+      return matchedHostels;
+    } catch (e) {
+      print('Error fetching data: $e');
+      throw Exception('Failed to fetch hostels: $e');
+    }
+  }
+
+  double _calculateMatchPercentage(Map<String, dynamic> userPrefs, Map<String, dynamic> hostel) {
+    int matchCount = 0;
+    int totalCount = 0;
+
+    // Check hostel gender
+    if (userPrefs['hostel_gender'] == hostel['hostel_gender']) {
+      matchCount++;
+    }
+    totalCount++;
+
+    // Check amenities
+    Map<String, dynamic> userAmenities = userPrefs['amenities'];
+    Map<String, dynamic> hostelAmenities = hostel['amenities'];
+    for (String amenity in userAmenities.keys) {
+      if (userAmenities[amenity] == true && hostelAmenities[amenity] == true) {
+        matchCount++;
+      }
+      totalCount++;
+    }
+
+    return (totalCount > 0) ? (matchCount / totalCount) * 100 : 0;
   }
 }
