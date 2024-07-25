@@ -19,8 +19,8 @@ class House {
   factory House.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map<String, dynamic>;
     return House(
-      id: doc.id,
-      name: data['title'] ?? '',
+      id: doc.id, 
+      name: data['name'] ?? '',
       location: data['location'] ?? '',
       price: data['price'] ?? '',
       images: List<String>.from(data['images'] ?? []), // Handle images array
