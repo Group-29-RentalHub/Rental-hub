@@ -198,6 +198,8 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
       'nin': _ninController.text,
       'hostel_gender': _selectedHostelGender,
       'room_types': roomTypePrices,
+      'createdAt': FieldValue.serverTimestamp(), 
+
     });
 
     showDialog(
