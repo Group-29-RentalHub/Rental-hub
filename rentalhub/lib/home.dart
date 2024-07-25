@@ -29,7 +29,7 @@ class ForYouPage extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ExplorePage()),
+                        MaterialPageRoute(builder: (context) => const HomePage()),
                       );
                     },
                     child: const Text('Maybe explore'),
