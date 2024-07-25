@@ -15,42 +15,46 @@ class ForYouPage extends StatelessWidget {
           } else if (snapshot.hasError) {
             print('Error fetching data: ${snapshot.error}');
             return const Center(child: Text('Error fetching data. Check your internet connection.'));
-          } else if (!snapshot.hasData || (snapshot.data?.isEmpty ?? true)) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('No hostels currently available for you.'),
-                  const SizedBox(height: 8.0),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.white, backgroundColor: const Color.fromRGBO(70, 0, 119, 1), // White text
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const HomePage()),
-                      );
-                    },
-                    child: const Text('Maybe explore'),
-                  ),
-                ],
-              ),
-            );
           } else {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                final hostel = snapshot.data![index];
-                return ListTile(
-                  title: Text(hostel['name']),
-                  subtitle: Text('Matching percentage: ${hostel['match']}%'),
-                  onTap: () {
-                    // Navigate to hostel details page
-                  },
-                );
-              },
-            );
+            List<Map<String, dynamic>> hostels = snapshot.data ?? [];
+            if (hostels.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('No hostels currently available for you.'),
+                    const SizedBox(height: 8.0),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: const Color.fromRGBO(70, 0, 119, 1), // White text
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const HomePage()), // Navigate to ExplorePage
+                        );
+                      },
+                      child: const Text('Maybe explore'),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              return ListView.builder(
+                itemCount: hostels.length,
+                itemBuilder: (context, index) {
+                  final hostel = hostels[index];
+                  return ListTile(
+                    title: Text(hostel['name']),
+                    subtitle: Text('Matching percentage: ${hostel['match']}%'),
+                    onTap: () {
+                      // Navigate to hostel details page
+                    },
+                  );
+                },
+              );
+            }
           }
         },
       ),
@@ -65,17 +69,17 @@ class ForYouPage extends StatelessWidget {
     }
 
     try {
-      final userPrefsSnapshot = await FirebaseFirestore.instance
+      final userPrefsQuerySnapshot = await FirebaseFirestore.instance
           .collection('user_hostel_prefs')
-          .doc(user.uid)
+          .where('user_id', isEqualTo: user.uid)
           .get();
 
-      if (!userPrefsSnapshot.exists) {
+      if (userPrefsQuerySnapshot.docs.isEmpty) {
         print('User preferences not found for user ID: ${user.uid}');
         return []; // Return an empty list if preferences are not found
       }
 
-      final userPrefs = userPrefsSnapshot.data();
+      final userPrefs = userPrefsQuerySnapshot.docs.first.data();
       if (userPrefs == null) {
         throw Exception('User preferences data is null.');
       }
@@ -88,7 +92,10 @@ class ForYouPage extends StatelessWidget {
         final hostel = hostelDoc.data();
         final matchPercentage = _calculateMatchPercentage(userPrefs, hostel);
 
-        if (matchPercentage >= 75) {
+        print('Hostel: ${hostel['name']}');
+        print('Match Percentage: $matchPercentage');
+
+        if (matchPercentage >= 10) { // Change the match threshold to 50%
           matchedHostels.add({
             'id': hostelDoc.id,
             'name': hostel['name'],
@@ -108,21 +115,41 @@ class ForYouPage extends StatelessWidget {
     int matchCount = 0;
     int totalCount = 0;
 
-    // Check hostel gender
-    if (userPrefs['hostel_gender'] == hostel['hostel_gender']) {
+    // Check hostel type
+    if (userPrefs['hostel_type'] == hostel['hostel_type']) {
       matchCount++;
     }
     totalCount++;
 
     // Check amenities
-    Map<String, dynamic> userAmenities = userPrefs['amenities'];
-    Map<String, dynamic> hostelAmenities = hostel['amenities'];
+    Map<String, dynamic> userAmenities = {
+      'wifi': userPrefs['wifi'],
+      'laundry_services': userPrefs['laundry_services'],
+      'cafeteria': userPrefs['cafeteria'],
+      'parking': userPrefs['parking'],
+      'security': userPrefs['security'],
+    };
+
+    Map<String, dynamic> hostelAmenities = {
+      'wifi': hostel['Wi-Fi'],
+      'laundry_services': hostel['Laundry Service'],
+      'cafeteria': hostel['Cafeteria'],
+      'parking': hostel['Parking'],
+      'security': hostel['Security'],
+    };
+
     for (String amenity in userAmenities.keys) {
       if (userAmenities[amenity] == true && hostelAmenities[amenity] == true) {
         matchCount++;
       }
       totalCount++;
     }
+
+    // Log match details
+    print('User Preferences: $userPrefs');
+    print('Hostel Amenities: $hostelAmenities');
+    print('Match Count: $matchCount');
+    print('Total Count: $totalCount');
 
     return (totalCount > 0) ? (matchCount / totalCount) * 100 : 0;
   }
