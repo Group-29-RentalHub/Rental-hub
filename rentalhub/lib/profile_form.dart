@@ -497,7 +497,7 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
             ),
           ],
         ),
-      ),
-    );
-  }
+),
+);
+}
 }

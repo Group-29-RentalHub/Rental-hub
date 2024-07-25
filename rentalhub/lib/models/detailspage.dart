@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '/models/house_model.dart';
+import 'package:halls/models/booking.dart';
+import 'package:halls/models/house_model.dart';
+import 'package:intl/intl.dart'; // Import intl for date formatting
 
 class DetailPage extends StatelessWidget {
   final House house;
@@ -8,6 +10,80 @@ class DetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final BookingService bookingService = BookingService(); // Initialize the BookingService
+
+    Future<void> _bookNow() async {
+      final TextEditingController detailsController = TextEditingController();
+      DateTime selectedDate = DateTime.now();
+
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Book Now'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: detailsController,
+                decoration: const InputDecoration(
+                  labelText: 'Additional Details',
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: selectedDate,
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime(2101),
+                  );
+                  if (pickedDate != null && pickedDate != selectedDate) {
+                    selectedDate = pickedDate;
+                    // Update the state to refresh the UI
+                    Navigator.of(context).setState(() {});
+                  }
+                },
+                child: Text(
+                  selectedDate == DateTime.now()
+                      ? 'Pick Date'
+                      : 'Selected Date: ${DateFormat.yMMMd().format(selectedDate)}',
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.of(context).pop(); // Close the dialog
+                try {
+                  await bookingService.bookHostel(
+                    hostelId: house.id, // Assuming house.id is the hostel ID
+                    bookingDate: selectedDate,
+                    additionalDetails: detailsController.text,
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Booking successful!')),
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Failed to book the hostel. Please try again.')),
+                  );
+                }
+              },
+              child: const Text('Book Now'),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(house.name, style: const TextStyle(color: Colors.white)),
@@ -137,62 +213,40 @@ class DetailPage extends StatelessWidget {
               const SizedBox(height: 16.0),
 
               // Amenities
-              // Amenities Section in DetailPage
-const Text(
-  'Amenities:',
-  style: TextStyle(
-    fontSize: 20.0,
-    fontWeight: FontWeight.bold,
-  ),
-),
-const SizedBox(height: 8.0),
-Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: house.amenities.entries
-    .where((entry) => entry.value) // Only display amenities that are true
-    .map((entry) => Text('- ${entry.key}'))
-    .toList(),
-),
-
-              
+              const Text(
+                'Amenities:',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8.0),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: house.amenities.entries
+                  .where((entry) => entry.value) // Only display amenities that are true
+                  .map((entry) => Text('- ${entry.key}'))
+                  .toList(),
+              ),
               const SizedBox(height: 16.0),
 
-// Contact Information
-Text(
-  'Contact: ${house.contact}',
-  style: const TextStyle(
-    fontSize: 16.0,
-    fontWeight: FontWeight.bold,
-  ),
-),
-const SizedBox(height: 16.0),
+              // Contact Information
+              Text(
+                'Contact: ${house.contact}',
+                style: const TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16.0),
 
-// // Room Types and Prices
-// const Text(
-//   'Room Types and Prices:',
-//   style: TextStyle(
-//     fontSize: 20.0,
-//     fontWeight: FontWeight.bold,
-//   ),
-// ),
-
-// const SizedBox(height: 8.0),
-// Column(
-//   crossAxisAlignment: CrossAxisAlignment.start,
-//   children: house.roomTypes.entries
-//     .map((entry) => Text('- ${entry.key}: ${entry.value}'))
-//     .toList(),
-// ),
-// const SizedBox(height: 16.0),
-
-// // Hostel Gender
-Text(
-  'Hostel Gender: ${house.hostelGender}',
-  style: const TextStyle(
-    fontSize: 16.0,
-    fontWeight: FontWeight.bold,
-  ),
-),
+              Text(
+                'Hostel Gender: ${house.hostelGender}',
+                style: const TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
 
               // Minimum Requirements
               const Text(
@@ -233,9 +287,7 @@ Text(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   ElevatedButton(
-                    onPressed: () {
-                      // Implement booking functionality
-                    },
+                    onPressed: _bookNow, // Call the booking function
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
                       elevation: 3.0,
