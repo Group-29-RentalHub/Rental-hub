@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:halls/hostel_lists.dart';
 import 'landingpage.dart'; // Ensure this is your booking/registration page
 import 'notifications.dart';
 import 'profile.dart';
 import 'home.dart';
 import 'profile_form.dart';
-import 'about.dart';
+// import 'about.dart';
 import 'settings.dart';
 import 'login.dart';
 import 'signup.dart';
@@ -38,7 +39,7 @@ class RentalHub extends StatelessWidget {
                 navigateToHomePage(context); // Pass callback to ProfileFormPage
               },
             ),
-        '/about': (context) => const AboutPage(),
+        '/about': (context) => const HostelListingsPage(),
         '/settings': (context) => const SettingsPage(),
         '/home': (context) => const MainPage(),
         '/login': (context) => const LoginPage(),

@@ -211,7 +211,7 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => HostelsListPage(),
+                  builder: (context) => HostelListingsPage(),
                 ),
               ); 
             },
