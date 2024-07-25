@@ -87,7 +87,7 @@ class _MainPageState extends State<MainPage> {
   String _title = 'Home'; // Default title
 
   final List<Widget> _pages = [
-    const HomePage(),
+    ForYouPage(),
     const NotificationHistoryPage(),
     const Profile(),
     const LandingPage(),

@@ -103,43 +103,25 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
     }
     return imageUrls;
   }
- Future<void> _submitForm() async {
-  if (_nameController.text.isEmpty ||
-      _locationController.text.isEmpty ||
-      _numberOfRoomsController.text.isEmpty ||
-      _contactNumberController.text.isEmpty ||
-      _descriptionController.text.isEmpty ||
-      _images.isEmpty ||
-      _managerNameController.text.isEmpty ||
-      _dobController.text.isEmpty ||
-      _ninController.text.isEmpty || 
-      _profileImage == null ||
-      _selectedHostelGender == null ||
-      !_selectedRoomTypes.values.any((value) => value == true)) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Form Submission Failed'),
-        content: const Text('Please fill in all fields and upload at least one image.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-    return;
-  }
 
-  // Ensure all selected room types have prices
-  for (String roomType in _roomTypes) {
-    if (_selectedRoomTypes[roomType] == true && _roomTypePrices[roomType]!.text.isEmpty) {
+  Future<void> _submitForm() async {
+    if (_nameController.text.isEmpty ||
+        _locationController.text.isEmpty ||
+        _numberOfRoomsController.text.isEmpty ||
+        _contactNumberController.text.isEmpty ||
+        _descriptionController.text.isEmpty ||
+        _images.isEmpty ||
+        _managerNameController.text.isEmpty ||
+        _dobController.text.isEmpty ||
+        _ninController.text.isEmpty || 
+        _profileImage == null ||
+        _selectedHostelGender == null ||
+        !_selectedRoomTypes.values.any((value) => value == true)) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('Form Submission Failed'),
-          content: Text('Please enter a price for $roomType.'),
+          content: const Text('Please fill in all fields and upload at least one image.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -150,96 +132,115 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
       );
       return;
     }
-  }
 
-  setState(() {
-    _isLoading = true;
-  });
-
-  try {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      throw Exception('No user is signed in.');
-    }
-
-    String userId = user.uid;
-
-    List<String> imageUrls = await _uploadImages(userId);
-
-    final storage = FirebaseStorage.instance.ref();
-    String profileImageUrl = '';
-    if (_profileImage != null) {
-      String profileImageName = DateTime.now().millisecondsSinceEpoch.toString();
-      Reference ref = storage.child('profile_images/$userId/$profileImageName');
-      await ref.putFile(_profileImage!);
-      profileImageUrl = await ref.getDownloadURL();
-    }
-
-    Map<String, double> roomTypePrices = {};
-    _roomTypes.forEach((roomType) {
-      if (_selectedRoomTypes[roomType] == true) {
-        roomTypePrices[roomType] = double.parse(_roomTypePrices[roomType]!.text);
+    // Ensure all selected room types have prices
+    for (String roomType in _roomTypes) {
+      if (_selectedRoomTypes[roomType] == true && _roomTypePrices[roomType]!.text.isEmpty) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Form Submission Failed'),
+            content: Text('Please enter a price for $roomType.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+        return;
       }
-    });
+    }
 
-    await FirebaseFirestore.instance.collection('hostels').add({
-      'name': _nameController.text,
-      'location': _locationController.text,
-      'number_of_rooms': int.parse(_numberOfRoomsController.text),
-      'contact_number': _contactNumberController.text,
-      'description': _descriptionController.text,
-      'amenities': _amenities,
-      'userId': userId,
-      'images': imageUrls,
-      'manager_name': _managerNameController.text,
-      'dob': _dobController.text,
-      'gender': _selectedGender,
-      'profile_image': profileImageUrl,
-      'nin': _ninController.text,
-      'hostel_gender': _selectedHostelGender,
-      'room_types': roomTypePrices,
-    });
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Success'),
-        content: const Text('Hostel registration successful!'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HostelsListPage(),
-                ),
-              ); 
-            },
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  } catch (e) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Submission Failed'),
-        content: Text('Failed to submit form. Please try again. Error: $e'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  } finally {
     setState(() {
-      _isLoading = false;
+      _isLoading = true;
     });
+
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        throw Exception('No user is signed in.');
+      }
+
+      String userId = user.uid;
+
+      List<String> imageUrls = await _uploadImages(userId);
+
+      final storage = FirebaseStorage.instance.ref();
+      String profileImageUrl = '';
+      if (_profileImage != null) {
+        String profileImageName = DateTime.now().millisecondsSinceEpoch.toString();
+        Reference ref = storage.child('profile_images/$userId/$profileImageName');
+        await ref.putFile(_profileImage!);
+        profileImageUrl = await ref.getDownloadURL();
+      }
+
+      Map<String, double> roomTypePrices = {};
+      _roomTypes.forEach((roomType) {
+        if (_selectedRoomTypes[roomType] == true) {
+          roomTypePrices[roomType] = double.parse(_roomTypePrices[roomType]!.text);
+        }
+      });
+
+      await FirebaseFirestore.instance.collection('hostels').add({
+        'name': _nameController.text,
+        'location': _locationController.text,
+        'number_of_rooms': int.parse(_numberOfRoomsController.text),
+        'contact_number': _contactNumberController.text,
+        'description': _descriptionController.text,
+        'amenities': _amenities,
+        'userId': userId,
+        'images': imageUrls,
+        'manager_name': _managerNameController.text,
+        'dob': _dobController.text,
+        'gender': _selectedGender,
+        'profile_image': profileImageUrl,
+        'nin': _ninController.text,
+        'hostel_gender': _selectedHostelGender,
+        'room_types': roomTypePrices,
+      });
+
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Success'),
+          content: const Text('Hostel registration successful!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HostelsListPage(),
+                  ),
+                ); 
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Submission Failed'),
+          content: Text('Failed to submit form. Please try again. Error: $e'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -267,59 +268,159 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
                 'Amenities',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
               ),
-              ..._amenities.keys.map((String key) {
-                return SwitchListTile(
-                  title: Text(key),
-                  value: _amenities[key]!,
-                  onChanged: (bool value) {
+              ..._amenities.keys.map((amenity) {
+                return CheckboxListTile(
+                  title: Text(amenity),
+                  value: _amenities[amenity],
+                  onChanged: (bool? value) {
                     setState(() {
-                      _amenities[key] = value;
+                      _amenities[amenity] = value ?? false;
                     });
                   },
                 );
-              }),
+              }).toList(),
+              const SizedBox(height: 16.0),
+              ElevatedButton.icon(
+                icon: const Icon(Icons.photo_library),
+                label: const Text('Upload Images'),
+                onPressed: _pickImages,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              _images.isNotEmpty
+                  ? Wrap(
+                      spacing: 8.0,
+                      runSpacing: 8.0,
+                      children: _images.map((image) {
+                        return Stack(
+                          children: [
+                            Image.file(image, width: 100, height: 100, fit: BoxFit.cover),
+                            Positioned(
+                              top: 0,
+                              right: 0,
+                              child: IconButton(
+                                icon: const Icon(Icons.cancel, color: Colors.red),
+                                onPressed: () {
+                                  setState(() {
+                                    _images.remove(image);
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    )
+                  : const SizedBox.shrink(),
+              const SizedBox(height: 16.0),
+              ElevatedButton.icon(
+                icon: const Icon(Icons.photo_library),
+                label: const Text('Upload Profile Image'),
+                onPressed: _pickProfileImage,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              _profileImage != null
+                  ? Stack(
+                      children: [
+                        Image.file(_profileImage!, width: 100, height: 100, fit: BoxFit.cover),
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: IconButton(
+                            icon: const Icon(Icons.cancel, color: Colors.red),
+                            onPressed: () {
+                              setState(() {
+                                _profileImage = null;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox.shrink(),
+              const SizedBox(height: 16.0),
+              _buildTextInput(_managerNameController, 'Manager Name', Icons.person),
+              _buildTextInput(_dobController, 'Date of Birth', Icons.cake),
+              const SizedBox(height: 16.0),
+              const Text(
+                'Gender',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+              ),
+              ListTile(
+                title: const Text('Male'),
+                leading: Radio<String>(
+                  value: 'Male',
+                  groupValue: _selectedGender,
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedGender = value;
+                    });
+                  },
+                ),
+              ),
+              ListTile(
+                title: const Text('Female'),
+                leading: Radio<String>(
+                  value: 'Female',
+                  groupValue: _selectedGender,
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedGender = value;
+                    });
+                  },
+                ),
+              ),
+              
+              _buildTextInput(_ninController, 'NIN', Icons.credit_card),
               const SizedBox(height: 16.0),
               const Text(
                 'Hostel Gender',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
               ),
-              Column(
-                children: [
-                  RadioListTile<String>(
-                    title: const Text('Male'),
-                    value: 'Male',
-                    groupValue: _selectedHostelGender,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedHostelGender = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<String>(
-                    title: const Text('Female'),
-                    value: 'Female',
-                    groupValue: _selectedHostelGender,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedHostelGender = value;
-                      });
-                    },
-                  ),
-                  RadioListTile<String>(
-                    title: const Text('Mixed'),
-                    value: 'Mixed',
-                    groupValue: _selectedHostelGender,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedHostelGender = value;
-                      });
-                    },
-                  ),
-                ],
+              ListTile(
+                title: const Text('Male'),
+                leading: Radio<String>(
+                  value: 'Male',
+                  groupValue: _selectedHostelGender,
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedHostelGender = value;
+                    });
+                  },
+                ),
+              ),
+              ListTile(
+                title: const Text('Female'),
+                leading: Radio<String>(
+                  value: 'Female',
+                  groupValue: _selectedHostelGender,
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedHostelGender = value;
+                    });
+                  },
+                ),
+              ),
+              ListTile(
+                title: const Text('Mixed'),
+                leading: Radio<String>(
+                  value: 'Mixed',
+                  groupValue: _selectedHostelGender,
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedHostelGender = value;
+                    });
+                  },
+                ),
               ),
               const SizedBox(height: 16.0),
               const Text(
-                'Room Types',
+                'Room Types and Prices',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
               ),
               ..._roomTypes.map((roomType) {
@@ -336,7 +437,7 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
                     ),
                     if (_selectedRoomTypes[roomType] == true)
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
                         child: _buildTextInput(
                           _roomTypePrices[roomType]!,
                           'Price for $roomType',
@@ -347,73 +448,16 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
                   ],
                 );
               }).toList(),
-              const SizedBox(height: 16.0),
-              const Text(
-                'Personal Information',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-              ),
-              _buildTextInput(_managerNameController, 'Manager Name', Icons.person),
-              _buildTextInput(_dobController, 'Date of Birth (YYYY-MM-DD)', Icons.calendar_today),
-              _buildTextInput(_ninController, 'National ID Number', Icons.credit_card),
-              const SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: _pickProfileImage,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromRGBO(70, 0, 119, 1), // Theme color
-                ),
-                child: const Text('Pick Profile Image'),
-              ),
-              const SizedBox(height: 16.0),
-              _profileImage == null
-                  ? const Text('No profile image selected')
-                  : Image.file(_profileImage!),
-              const SizedBox(height: 16.0),
-              const Text(
-                'Hostel Images',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-              ),
-              ElevatedButton(
-                onPressed: _pickImages,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromRGBO(70, 0, 119, 1), // Theme color
-                ),
-                child: const Text('Pick Images'),
-              ),
-              const SizedBox(height: 16.0),
-              _images.isEmpty
-                  ? const Text('No images selected')
-                  : Wrap(
-                      spacing: 8.0,
-                      runSpacing: 8.0,
-                      children: _images.map((image) {
-                        return Stack(
-                          children: [
-                            Image.file(image, width: 100, height: 100, fit: BoxFit.cover),
-                            Positioned(
-                              right: 0,
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _images.remove(image);
-                                  });
-                                },
-                                child: const Icon(Icons.remove_circle, color: Colors.red),
-                              ),
-                            ),
-                          ],
-                        );
-                      }).toList(),
+              const SizedBox(height: 32.0),
+              _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : ElevatedButton(
+                      onPressed: _submitForm,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
+                      ),
+                      child: const Text('Register Hostel'),
                     ),
-              const SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: _isLoading ? null : _submitForm,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromRGBO(70, 0, 119, 1), // Theme color
-                ),
-                child: _isLoading
-                    ? const CircularProgressIndicator()
-                    : const Text('Submit'),
-              ),
             ],
           ),
         ),
@@ -423,20 +467,20 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
 
   Widget _buildTextInput(
     TextEditingController controller,
-    String labelText,
+    String label,
     IconData icon, {
     TextInputType keyboardType = TextInputType.text,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextFormField(
+      child: TextField(
         controller: controller,
+        keyboardType: keyboardType,
         decoration: InputDecoration(
-          labelText: labelText,
+          labelText: label,
           prefixIcon: Icon(icon),
           border: const OutlineInputBorder(),
         ),
-        keyboardType: keyboardType,
       ),
     );
   }
