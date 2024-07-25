@@ -7,10 +7,6 @@ class ForYouPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('For You', style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color.fromRGBO(70, 0, 119, 1), // Theme color
-      ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _fetchHostels(),
         builder: (context, snapshot) {
@@ -18,7 +14,7 @@ class ForYouPage extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             print('Error fetching data: ${snapshot.error}');
-            return const Center(child: Text('Error fetching data.'));
+            return const Center(child: Text('Error fetching data. Check your internet connection.'));
           } else if (!snapshot.hasData || (snapshot.data?.isEmpty ?? true)) {
             return Center(
               child: Column(
@@ -26,17 +22,17 @@ class ForYouPage extends StatelessWidget {
                 children: [
                   const Text('No hostels currently available for you.'),
                   const SizedBox(height: 8.0),
-                  GestureDetector(
-                    onTap: () {
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.white, backgroundColor: const Color.fromRGBO(70, 0, 119, 1), // White text
+                    ),
+                    onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => ExplorePage()),
                       );
                     },
-                    child: const Text(
-                      'Maybe explore',
-                      style: TextStyle(color: Color.fromRGBO(70, 0, 119, 1), decoration: TextDecoration.underline),
-                    ),
+                    child: const Text('Maybe explore'),
                   ),
                 ],
               ),

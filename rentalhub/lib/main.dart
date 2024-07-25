@@ -49,7 +49,7 @@ class RentalHub extends StatelessWidget {
   }
 
   void navigateToHomePage(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed('/home');
+    Navigator.of(context).pushReplacementNamed('/For You');
   }
 }
 
@@ -84,7 +84,7 @@ class _MainPageState extends State<MainPage> {
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
   int _currentIndex = 0;
-  String _title = 'Home'; // Default title
+  String _title = 'For You'; // Default title
 
   final List<Widget> _pages = [
     ForYouPage(),
