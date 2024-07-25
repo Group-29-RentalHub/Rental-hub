@@ -17,7 +17,6 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _numberOfRoomsController = TextEditingController();
-  final TextEditingController _pricePerRoomController = TextEditingController();
   final TextEditingController _contactNumberController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _managerNameController = TextEditingController();
@@ -31,7 +30,8 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
     'Single Self-Contained',
     'Single Non-Self-Contained',
   ];
-  final Map<String, bool?> _selectedRoomTypes = {};
+  final Map<String, bool> _selectedRoomTypes = {};
+  final Map<String, TextEditingController> _roomTypePrices = {};
   String? _selectedGender;
   File? _profileImage;
   final Map<String, bool> _amenities = {
@@ -48,7 +48,8 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
   void initState() {
     super.initState();
     for (String roomType in _roomTypes) {
-      _selectedRoomTypes[roomType] = null; // Initialize as null for tristate
+      _selectedRoomTypes[roomType] = false; // Initialize as false for two-state
+      _roomTypePrices[roomType] = TextEditingController();
     }
   }
 
@@ -102,27 +103,43 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
     }
     return imageUrls;
   }
+ Future<void> _submitForm() async {
+  if (_nameController.text.isEmpty ||
+      _locationController.text.isEmpty ||
+      _numberOfRoomsController.text.isEmpty ||
+      _contactNumberController.text.isEmpty ||
+      _descriptionController.text.isEmpty ||
+      _images.isEmpty ||
+      _managerNameController.text.isEmpty ||
+      _dobController.text.isEmpty ||
+      _ninController.text.isEmpty || 
+      _profileImage == null ||
+      _selectedHostelGender == null ||
+      !_selectedRoomTypes.values.any((value) => value == true)) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Form Submission Failed'),
+        content: const Text('Please fill in all fields and upload at least one image.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+    return;
+  }
 
-  Future<void> _submitForm() async {
-    if (_nameController.text.isEmpty ||
-        _locationController.text.isEmpty ||
-        _numberOfRoomsController.text.isEmpty ||
-        _pricePerRoomController.text.isEmpty ||
-        _contactNumberController.text.isEmpty ||
-        _descriptionController.text.isEmpty ||
-        _images.isEmpty ||
-        _managerNameController.text.isEmpty ||
-        _dobController.text.isEmpty ||
-        _ninController.text.isEmpty ||
-        _selectedGender == null ||
-        _profileImage == null ||
-        _selectedHostelGender == null ||
-        !_selectedRoomTypes.values.any((value) => value == true)) {
+  // Ensure all selected room types have prices
+  for (String roomType in _roomTypes) {
+    if (_selectedRoomTypes[roomType] == true && _roomTypePrices[roomType]!.text.isEmpty) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('Form Submission Failed'),
-          content: const Text('Please fill in all fields and upload at least one image.'),
+          content: Text('Please enter a price for $roomType.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -133,89 +150,96 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
       );
       return;
     }
+  }
 
-    setState(() {
-      _isLoading = true;
+  setState(() {
+    _isLoading = true;
+  });
+
+  try {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      throw Exception('No user is signed in.');
+    }
+
+    String userId = user.uid;
+
+    List<String> imageUrls = await _uploadImages(userId);
+
+    final storage = FirebaseStorage.instance.ref();
+    String profileImageUrl = '';
+    if (_profileImage != null) {
+      String profileImageName = DateTime.now().millisecondsSinceEpoch.toString();
+      Reference ref = storage.child('profile_images/$userId/$profileImageName');
+      await ref.putFile(_profileImage!);
+      profileImageUrl = await ref.getDownloadURL();
+    }
+
+    Map<String, double> roomTypePrices = {};
+    _roomTypes.forEach((roomType) {
+      if (_selectedRoomTypes[roomType] == true) {
+        roomTypePrices[roomType] = double.parse(_roomTypePrices[roomType]!.text);
+      }
     });
 
-    try {
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        throw Exception('No user is signed in.');
-      }
+    await FirebaseFirestore.instance.collection('hostels').add({
+      'name': _nameController.text,
+      'location': _locationController.text,
+      'number_of_rooms': int.parse(_numberOfRoomsController.text),
+      'contact_number': _contactNumberController.text,
+      'description': _descriptionController.text,
+      'amenities': _amenities,
+      'userId': userId,
+      'images': imageUrls,
+      'manager_name': _managerNameController.text,
+      'dob': _dobController.text,
+      'gender': _selectedGender,
+      'profile_image': profileImageUrl,
+      'nin': _ninController.text,
+      'hostel_gender': _selectedHostelGender,
+      'room_types': roomTypePrices,
+    });
 
-      String userId = user.uid;
-
-      List<String> imageUrls = await _uploadImages(userId);
-
-      final storage = FirebaseStorage.instance.ref();
-      String profileImageUrl = '';
-      if (_profileImage != null) {
-        String profileImageName = DateTime.now().millisecondsSinceEpoch.toString();
-        Reference ref = storage.child('profile_images/$userId/$profileImageName');
-        await ref.putFile(_profileImage!);
-        profileImageUrl = await ref.getDownloadURL();
-      }
-
-      await FirebaseFirestore.instance.collection('hostels').add({
-        'name': _nameController.text,
-        'location': _locationController.text,
-        'number_of_rooms': int.parse(_numberOfRoomsController.text),
-        'price_per_room': double.parse(_pricePerRoomController.text),
-        'contact_number': _contactNumberController.text,
-        'description': _descriptionController.text,
-        'amenities': _amenities,
-        'userId': userId,
-        'images': imageUrls,
-        'manager_name': _managerNameController.text,
-        'dob': _dobController.text,
-        'gender': _selectedGender,
-        'profile_image': profileImageUrl,
-        'nin': _ninController.text,
-        'hostel_gender': _selectedHostelGender,
-        'room_types': _selectedRoomTypes,
-      });
-
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Success'),
-          content: const Text('Hostel registration successful!'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HostelsListPage(),
-                  ),
-                ); 
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-    } catch (e) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Submission Failed'),
-          content: Text('Failed to submit form. Please try again. Error: $e'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Success'),
+        content: const Text('Hostel registration successful!'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HostelsListPage(),
+                ),
+              ); 
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  } catch (e) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Submission Failed'),
+        content: Text('Failed to submit form. Please try again. Error: $e'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  } finally {
+    setState(() {
+      _isLoading = false;
+    });
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -233,8 +257,6 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
               _buildTextInput(_nameController, 'Hostel Name', Icons.home),
               _buildTextInput(_locationController, 'Location', Icons.location_on),
               _buildTextInput(_numberOfRoomsController, 'Number of Rooms', Icons.meeting_room,
-                  keyboardType: TextInputType.number),
-              _buildTextInput(_pricePerRoomController, 'Price per Room', Icons.attach_money,
                   keyboardType: TextInputType.number),
               _buildTextInput(_contactNumberController, 'Contact Number', Icons.phone,
                   keyboardType: TextInputType.phone),
@@ -261,43 +283,37 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
                 'Hostel Gender',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
               ),
-              Row(
+              Column(
                 children: [
-                  Expanded(
-                    child: RadioListTile<String>(
-                      title: const Text('Male'),
-                      value: 'Male',
-                      groupValue: _selectedHostelGender,
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedHostelGender = value;
-                        });
-                      },
-                    ),
+                  RadioListTile<String>(
+                    title: const Text('Male'),
+                    value: 'Male',
+                    groupValue: _selectedHostelGender,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedHostelGender = value;
+                      });
+                    },
                   ),
-                  Expanded(
-                    child: RadioListTile<String>(
-                      title: const Text('Female'),
-                      value: 'Female',
-                      groupValue: _selectedHostelGender,
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedHostelGender = value;
-                        });
-                      },
-                    ),
+                  RadioListTile<String>(
+                    title: const Text('Female'),
+                    value: 'Female',
+                    groupValue: _selectedHostelGender,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedHostelGender = value;
+                      });
+                    },
                   ),
-                  Expanded(
-                    child: RadioListTile<String>(
-                      title: const Text('Mixed'),
-                      value: 'Mixed',
-                      groupValue: _selectedHostelGender,
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedHostelGender = value;
-                        });
-                      },
-                    ),
+                  RadioListTile<String>(
+                    title: const Text('Mixed'),
+                    value: 'Mixed',
+                    groupValue: _selectedHostelGender,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedHostelGender = value;
+                      });
+                    },
                   ),
                 ],
               ),
@@ -307,14 +323,28 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
               ),
               ..._roomTypes.map((roomType) {
-                return CheckboxListTile(
-                  title: Text(roomType),
-                  value: _selectedRoomTypes[roomType] ?? false,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _selectedRoomTypes[roomType] = value;
-                    });
-                  },
+                return Column(
+                  children: [
+                    CheckboxListTile(
+                      title: Text(roomType),
+                      value: _selectedRoomTypes[roomType],
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _selectedRoomTypes[roomType] = value ?? false;
+                        });
+                      },
+                    ),
+                    if (_selectedRoomTypes[roomType] == true)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: _buildTextInput(
+                          _roomTypePrices[roomType]!,
+                          'Price for $roomType',
+                          Icons.attach_money,
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                  ],
                 );
               }).toList(),
               const SizedBox(height: 16.0),
@@ -337,6 +367,43 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
               _profileImage == null
                   ? const Text('No profile image selected')
                   : Image.file(_profileImage!),
+              const SizedBox(height: 16.0),
+              const Text(
+                'Hostel Images',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+              ),
+              ElevatedButton(
+                onPressed: _pickImages,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromRGBO(70, 0, 119, 1), // Theme color
+                ),
+                child: const Text('Pick Images'),
+              ),
+              const SizedBox(height: 16.0),
+              _images.isEmpty
+                  ? const Text('No images selected')
+                  : Wrap(
+                      spacing: 8.0,
+                      runSpacing: 8.0,
+                      children: _images.map((image) {
+                        return Stack(
+                          children: [
+                            Image.file(image, width: 100, height: 100, fit: BoxFit.cover),
+                            Positioned(
+                              right: 0,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _images.remove(image);
+                                  });
+                                },
+                                child: const Icon(Icons.remove_circle, color: Colors.red),
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    ),
               const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: _isLoading ? null : _submitForm,
@@ -367,7 +434,7 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
         decoration: InputDecoration(
           labelText: labelText,
           prefixIcon: Icon(icon),
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
         ),
         keyboardType: keyboardType,
       ),
