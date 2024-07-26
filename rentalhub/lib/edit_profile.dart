@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -83,12 +82,12 @@ class _EditProfileState extends State<EditProfile> {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      final file = pickedFile.readAsBytes();
+      final Uint8List file = await pickedFile.readAsBytes(); // Read as bytes
       final fileName = DateTime.now().toIso8601String(); // Unique name for the file
       final ref = FirebaseStorage.instance.ref().child('profile_images/$fileName');
 
       try {
-        await ref.putData(file as Uint8List);
+        await ref.putData(file);
         final downloadUrl = await ref.getDownloadURL();
         setState(() {
           _imageUrl = downloadUrl; // Save the image URL
@@ -121,45 +120,47 @@ class _EditProfileState extends State<EditProfile> {
                   ],
                 ),
               )
-            : Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: _pickImage,
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundImage: _imageUrl != null
-                            ? NetworkImage(_imageUrl!)
-                            : const AssetImage('assets/default_profile.png') as ImageProvider,
-                        child: const Align(
-                          alignment: Alignment.bottomRight,
-                          child: Icon(Icons.camera_alt, color: Colors.white),
+            : SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      GestureDetector(
+                        onTap: _pickImage,
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: _imageUrl != null
+                              ? NetworkImage(_imageUrl!)
+                              : const AssetImage('assets/default_profile.png') as ImageProvider,
+                          child: const Align(
+                            alignment: Alignment.bottomRight,
+                            child: Icon(Icons.camera_alt, color: Colors.white),
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    _buildTextField('Name', _name, (value) => _name = value ?? ''),
-                    _buildTextField('Email', _email, (value) => _email = value ?? ''),
-                    _buildTextField('Address', _address, (value) => _address = value ?? ''),
-                    _buildTextField('Phone', _phone, (value) => _phone = value ?? ''),
-                    _buildTextField('Date of Birth', _dateOfBirth, (value) => _dateOfBirth = value ?? ''),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: _updateProfile,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromRGBO(118, 36, 177, 1),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                      const SizedBox(height: 16),
+                      _buildTextField('Name', _name, (value) => _name = value ?? ''),
+                      _buildTextField('Email', _email, (value) => _email = value ?? ''),
+                      _buildTextField('Address', _address, (value) => _address = value ?? ''),
+                      _buildTextField('Phone', _phone, (value) => _phone = value ?? ''),
+                      _buildTextField('Date of Birth', _dateOfBirth, (value) => _dateOfBirth = value ?? ''),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: _updateProfile,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromRGBO(118, 36, 177, 1),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          'Save Changes',
+                          style: TextStyle(color: Colors.white),
                         ),
                       ),
-                      child: const Text(
-                        'Save Changes',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
       ),
