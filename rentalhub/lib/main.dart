@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:halls/hostel_lists.dart';
 import 'landingpage.dart'; // Ensure this is your booking/registration page
 import 'notifications.dart';
-import 'profile.dart';
+import 'profile.dart'; // Import profile page
 import 'home.dart';
 import 'profile_form.dart';
 // import 'about.dart';
@@ -33,7 +33,7 @@ class RentalHub extends StatelessWidget {
       routes: {
         '/': (context) => const AuthWrapper(), // Use AuthWrapper to handle authentication
         '/notifications': (context) => const NotificationHistoryPage(),
-        '/profile': (context) => const Profile(),
+        '/profile': (context) => Profile(userId: FirebaseAuth.instance.currentUser!.uid), // Pass userId to Profile
         '/profileForm': (context) => ProfileFormPage(
               onSubmit: () {
                 navigateToHomePage(context); // Pass callback to ProfileFormPage
@@ -90,7 +90,7 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _pages = [
     ForYouPage(),
     const NotificationHistoryPage(),
-    const Profile(),
+    Profile(userId: FirebaseAuth.instance.currentUser!.uid), // Pass userId to Profile
     const LandingPage(),
     const LoginPage(),
   ];
@@ -106,7 +106,7 @@ class _MainPageState extends State<MainPage> {
     switch (index) {
       case 0:
         setState(() {
-          _title = 'Home';
+          _title = 'For You';
         });
         break;
       case 1:
@@ -121,12 +121,12 @@ class _MainPageState extends State<MainPage> {
         break;
       case 3:
         setState(() {
-          _title = 'Settings';
+          _title = 'Explore';
         });
         break;
       default:
         setState(() {
-          _title = 'Home';
+          _title = 'For You';
         });
     }
   }
@@ -207,7 +207,7 @@ class _MainPageState extends State<MainPage> {
                   Navigator.pop(context);
                   setState(() {
                     _currentIndex = 0;
-                    _title = 'Home';
+                    _title = 'For You';
                   });
                 },
               ),
@@ -218,8 +218,7 @@ class _MainPageState extends State<MainPage> {
                   Navigator.pop(context); // Close the drawer before navigating
                   setState(() {
                     _currentIndex = 2;
-                    _title =
-                        'Profile'; // Update title when navigating from drawer
+                    _title = 'Profile'; // Update title when navigating from drawer
                   });
                 },
               ),
@@ -260,7 +259,7 @@ class _MainPageState extends State<MainPage> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Home',
+            label: 'For You',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
@@ -271,13 +270,15 @@ class _MainPageState extends State<MainPage> {
             label: 'Profile',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
+            icon: Icon(Icons.explore),
+            label: 'Explore',
           ),
         ],
-        selectedItemColor:Colors.grey , // Purple color for selected item
+        selectedItemColor: Colors.grey, // Color for selected item
         unselectedItemColor: Color.fromRGBO(70, 0, 119, 1), // Color for unselected items
-        backgroundColor: Color.fromRGBO(70, 0, 119, 1), // Background color of the BottomNavigationBar
+        // backgroundColor: Color.fromRGBO(70, 0, 119, 1),
+        selectedLabelStyle: TextStyle(color: Colors.purple),
+        backgroundColor: const Color.fromRGBO(70, 0, 119, 1),// Background color of the BottomNavigationBar
       ),
     );
   }

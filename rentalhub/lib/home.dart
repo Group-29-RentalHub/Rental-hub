@@ -10,7 +10,8 @@ class ForYouPage extends StatelessWidget {
       appBar: AppBar(
         title: Row(
           children: [
-            const Text('For You'),
+            const Text('',
+            style: TextStyle(color: Color.fromARGB(255, 16, 0, 0)),),
             Spacer(), // Pushes the button to the rightmost side
             TextButton(
               onPressed: () {
