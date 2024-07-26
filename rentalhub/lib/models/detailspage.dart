@@ -6,7 +6,8 @@ import 'package:intl/intl.dart'; // Import intl for date formatting
 class DetailPage extends StatelessWidget {
   final House house;
 
-  const DetailPage({super.key, required this.house});
+  const DetailPage({super.key, required this.house})
+      : assert(house != null, 'House cannot be null');
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +84,9 @@ class DetailPage extends StatelessWidget {
         ),
       );
     }
+
+    // Debug: Print the received house object
+    print('Received House: $house');
 
     return Scaffold(
       appBar: AppBar(
@@ -290,33 +294,17 @@ class DetailPage extends StatelessWidget {
                     onPressed: _bookNow, // Call the booking function
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
-                      elevation: 3.0,
-                      textStyle: const TextStyle(color: Colors.white),
                     ),
-                    child: const Row(
-                      children: [
-                        Icon(Icons.payment, size: 20, color: Colors.white),
-                        SizedBox(width: 4.0),
-                        Text('Book Now', style: TextStyle(color: Colors.white)),
-                      ],
-                    ),
+                    child: const Text('Book Now'),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Implement chat functionality
+                      Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
-                      elevation: 3.0,
-                      textStyle: const TextStyle(color: Colors.white),
+                      backgroundColor: Colors.grey,
                     ),
-                    child: const Row(
-                      children: [
-                        Icon(Icons.chat, size: 20, color: Colors.white),
-                        SizedBox(width: 4.0),
-                        Text('Chat', style: TextStyle(color: Colors.white)),
-                      ],
-                    ),
+                    child: const Text('Go Back'),
                   ),
                 ],
               ),
@@ -328,39 +316,37 @@ class DetailPage extends StatelessWidget {
   }
 }
 
+// Dummy BookingService class
+class BookingService {
+  Future<void> bookHostel({
+    required String hostelId,
+    required DateTime bookingDate,
+    required String additionalDetails,
+  }) async {
+    // Implement booking logic here
+  }
+}
+
+// Dummy RatingBar widget
 class RatingBar extends StatelessWidget {
   final String label;
   final double rating;
 
-  const RatingBar({super.key, required this.label, required this.rating});
+  const RatingBar({
+    Key? key,
+    required this.label,
+    required this.rating,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        Text(label),
-        const SizedBox(height: 4.0),
-        Stack(
-          children: [
-            Container(
-              height: 20,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.grey[300],
-              ),
-            ),
-            Container(
-              height: 20,
-              width: rating * 20, // Adjust width based on rating
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.green,
-              ),
-            ),
-          ],
+        Text(
+          '$label: ',
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 8.0),
+        Text(rating.toStringAsFixed(1)), // Show rating with 1 decimal place
       ],
     );
   }
