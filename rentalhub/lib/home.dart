@@ -1,12 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'explore.dart';
+import 'package:halls/explore.dart';
 
 class ForYouPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Row(
+          children: [
+            const Text('For You'),
+            Spacer(), // Pushes the button to the rightmost side
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()), // Navigate to ExplorePage
+                );
+              },
+              child: const Text(
+                'Explore',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
+      ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _fetchHostels(),
         builder: (context, snapshot) {
@@ -27,7 +48,7 @@ class ForYouPage extends StatelessWidget {
                     TextButton(
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.white,
-                        backgroundColor: const Color.fromRGBO(70, 0, 119, 1), // White text
+                        backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
                       ),
                       onPressed: () {
                         Navigator.push(
@@ -45,12 +66,125 @@ class ForYouPage extends StatelessWidget {
                 itemCount: hostels.length,
                 itemBuilder: (context, index) {
                   final hostel = hostels[index];
-                  return ListTile(
-                    title: Text(hostel['name']),
-                    subtitle: Text('Matching percentage: ${hostel['match']}%'),
-                    onTap: () {
-                      // Navigate to hostel details page
-                    },
+                  return Card(
+                    margin: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16.0),
+                            child: Image.network(
+                              hostel['images'].isNotEmpty ? hostel['images'][0] : 'https://via.placeholder.com/600x400',
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Image.network(
+                                  'https://via.placeholder.com/600x400',
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                hostel['name'],
+                                style: const TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 4.0),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.location_on,
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: 4.0),
+                                  Text(
+                                    'Location Unknown', // Adjust this based on actual data
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 4.0),
+                              const Row(
+                                children: [
+                                  Icon(Icons.star, size: 20),
+                                  Icon(Icons.star, size: 20),
+                                  Icon(Icons.star, size: 20),
+                                  Icon(Icons.star, size: 20),
+                                ],
+                              ),
+                              const SizedBox(height: 4.0),
+                              Text(
+                                'Matching percentage: ${hostel['match'].toStringAsFixed(0)}%',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.purple,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  // Navigate to DetailPage
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
+                                  elevation: 3.0,
+                                  textStyle: const TextStyle(color: Colors.white),
+                                ),
+                                child: const Row(
+                                  children: [
+                                    Icon(Icons.phone, size: 20, color: Colors.white),
+                                    SizedBox(width: 4.0),
+                                    Text(
+                                      'Details',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  // Navigate to ChatPage
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
+                                  elevation: 3.0,
+                                  textStyle: const TextStyle(color: Colors.white),
+                                ),
+                                child: const Row(
+                                  children: [
+                                    Icon(Icons.chat, size: 20, color: Colors.white),
+                                    SizedBox(width: 4.0),
+                                    Text(
+                                      'Chat',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 },
               );
@@ -76,7 +210,7 @@ class ForYouPage extends StatelessWidget {
 
       if (userPrefsQuerySnapshot.docs.isEmpty) {
         print('User preferences not found for user ID: ${user.uid}');
-        return []; // Return an empty list if preferences are not found
+        return [];
       }
 
       final userPrefs = userPrefsQuerySnapshot.docs.first.data();
@@ -93,13 +227,14 @@ class ForYouPage extends StatelessWidget {
         final matchPercentage = _calculateMatchPercentage(userPrefs, hostel);
 
         print('Hostel: ${hostel['name']}');
-        print('Match Percentage: $matchPercentage');
+        print('Match Percentage: ${matchPercentage.toStringAsFixed(2)}%');
 
-        if (matchPercentage >= 10) { // Change the match threshold to 50%
+        if (matchPercentage >= 10) {
           matchedHostels.add({
             'id': hostelDoc.id,
             'name': hostel['name'],
             'match': matchPercentage,
+            'images': hostel['images'] ?? [],
           });
         }
       }
@@ -115,13 +250,30 @@ class ForYouPage extends StatelessWidget {
     int matchCount = 0;
     int totalCount = 0;
 
-    // Check hostel type
-    if (userPrefs['hostel_type'] == hostel['hostel_type']) {
+    if (userPrefs['hostel_type'] == hostel['hostel_gender'] || hostel['hostel_gender'] == 'Mixed') {
       matchCount++;
     }
     totalCount++;
 
-    // Check amenities
+    final userBudgetRange = userPrefs['budget']?.split(' - ').map((e) => num.tryParse(e.replaceAll(RegExp(r'[^\d]'), '')) ?? 0).toList() ?? [0, 0];
+    final hostelPrices = hostel['room_types']?.values.map((e) => e as num).toList() ?? [];
+
+    if (userBudgetRange.length == 2) {
+      final minBudget = userBudgetRange[0];
+      final maxBudget = userBudgetRange[1];
+      if (hostelPrices.any((price) => price >= minBudget && price <= maxBudget)) {
+        matchCount++;
+      }
+    }
+
+    final userRoomType = userPrefs['house_type'];
+    final hostelRoomTypes = hostel['room_types']?.keys.toList() ?? [];
+
+    if (hostelRoomTypes.contains(userRoomType)) {
+      matchCount++;
+    }
+    totalCount++;
+
     Map<String, dynamic> userAmenities = {
       'wifi': userPrefs['wifi'],
       'laundry_services': userPrefs['laundry_services'],
@@ -139,18 +291,70 @@ class ForYouPage extends StatelessWidget {
     };
 
     for (String amenity in userAmenities.keys) {
-      if (userAmenities[amenity] == true && hostelAmenities[amenity] == true) {
+      var userValue = userAmenities[amenity];
+      var hostelValue = hostelAmenities[amenity];
+
+      if (userValue == null) {
+        userValue = false;
+      }
+      if (hostelValue == null) {
+        hostelValue = false;
+      }
+
+      if (userValue == hostelValue) {
         matchCount++;
       }
       totalCount++;
     }
 
-    // Log match details
-    print('User Preferences: $userPrefs');
-    print('Hostel Amenities: $hostelAmenities');
-    print('Match Count: $matchCount');
-    print('Total Count: $totalCount');
-
     return (totalCount > 0) ? (matchCount / totalCount) * 100 : 0;
   }
+}
+
+class DetailPage extends StatelessWidget {
+  final House house;
+
+  const DetailPage({Key? key, required this.house}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(house.name),
+      ),
+      body: Center(
+        child: Text('Details for ${house.name}'),
+      ),
+    );
+  }
+}
+
+class ChatPage extends StatelessWidget {
+  const ChatPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Chat'),
+      ),
+      body: Center(
+        child: const Text('Chat Page'),
+      ),
+    );
+  }
+}
+
+class House {
+  final String id;
+  final String name;
+  final String location;
+  final List<String> images;
+
+  House({
+    required this.id,
+    required this.name,
+    required this.location,
+    required this.images,
+  });
 }
