@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:halls/chatpage.dart';
 import 'package:halls/models/booking.dart';
 import 'package:halls/models/house_model.dart';
 import 'package:intl/intl.dart'; // Import intl for date formatting
@@ -303,8 +305,28 @@ class DetailPage extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Implement chat functionality
-                    },
+                    final currentUser = FirebaseAuth.instance.currentUser;
+                    if (currentUser != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChatPage(
+                            currentUserId: currentUser.uid,
+                            // hostelOwnerId: house.ownerId,
+                            hostelId: house.id,
+                          ),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Please log in to chat')),
+                      );
+                    }
+                  },
+                    // onPressed: () {
+                      
+                    //   // Implement chat functionality
+                    // },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
                       elevation: 3.0,
