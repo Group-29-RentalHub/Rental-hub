@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:halls/hostelnotifier.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -104,24 +105,43 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
     return imageUrls;
   }
 
-  Future<void> _submitForm() async {
-    if (_nameController.text.isEmpty ||
-        _locationController.text.isEmpty ||
-        _numberOfRoomsController.text.isEmpty ||
-        _contactNumberController.text.isEmpty ||
-        _descriptionController.text.isEmpty ||
-        _images.isEmpty ||
-        _managerNameController.text.isEmpty ||
-        _dobController.text.isEmpty ||
-        _ninController.text.isEmpty || 
-        _profileImage == null ||
-        _selectedHostelGender == null ||
-        !_selectedRoomTypes.values.any((value) => value == true)) {
+Future<void> _submitForm() async {
+  if (_nameController.text.isEmpty ||
+      _locationController.text.isEmpty ||
+      _numberOfRoomsController.text.isEmpty ||
+      _contactNumberController.text.isEmpty ||
+      _descriptionController.text.isEmpty ||
+      _images.isEmpty ||
+      _managerNameController.text.isEmpty ||
+      _dobController.text.isEmpty ||
+      _ninController.text.isEmpty || 
+      _profileImage == null ||
+      _selectedHostelGender == null ||
+      !_selectedRoomTypes.values.any((value) => value == true)) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Form Submission Failed'),
+        content: const Text('Please fill in all fields and upload at least one image.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+    return;
+  }
+
+  // Ensure all selected room types have prices
+  for (String roomType in _roomTypes) {
+    if (_selectedRoomTypes[roomType] == true && _roomTypePrices[roomType]!.text.isEmpty) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('Form Submission Failed'),
-          content: const Text('Please fill in all fields and upload at least one image.'),
+          content: Text('Please enter a price for $roomType.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -131,59 +151,40 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
         ),
       );
       return;
+  }
+}
+
+  setState(() {
+    _isLoading = true;
+  });
+
+  try {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      throw Exception('No user is signed in.');
     }
 
-    // Ensure all selected room types have prices
-    for (String roomType in _roomTypes) {
-      if (_selectedRoomTypes[roomType] == true && _roomTypePrices[roomType]!.text.isEmpty) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Form Submission Failed'),
-            content: Text('Please enter a price for $roomType.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-        );
-        return;
+    String userId = user.uid;
+
+    List<String> imageUrls = await _uploadImages(userId);
+
+    final storage = FirebaseStorage.instance.ref();
+    String profileImageUrl = '';
+    if (_profileImage != null) {
+      String profileImageName = DateTime.now().millisecondsSinceEpoch.toString();
+      Reference ref = storage.child('profile_images/$userId/$profileImageName');
+      await ref.putFile(_profileImage!);
+      profileImageUrl = await ref.getDownloadURL();
+    }
+
+    Map<String, double> roomTypePrices = {};
+    _roomTypes.forEach((roomType) {
+      if (_selectedRoomTypes[roomType] == true) {
+        roomTypePrices[roomType] = double.parse(_roomTypePrices[roomType]!.text);
       }
-    }
-
-    setState(() {
-      _isLoading = true;
     });
 
-    try {
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        throw Exception('No user is signed in.');
-      }
-
-      String userId = user.uid;
-
-      List<String> imageUrls = await _uploadImages(userId);
-
-      final storage = FirebaseStorage.instance.ref();
-      String profileImageUrl = '';
-      if (_profileImage != null) {
-        String profileImageName = DateTime.now().millisecondsSinceEpoch.toString();
-        Reference ref = storage.child('profile_images/$userId/$profileImageName');
-        await ref.putFile(_profileImage!);
-        profileImageUrl = await ref.getDownloadURL();
-      }
-
-      Map<String, double> roomTypePrices = {};
-      _roomTypes.forEach((roomType) {
-        if (_selectedRoomTypes[roomType] == true) {
-          roomTypePrices[roomType] = double.parse(_roomTypePrices[roomType]!.text);
-        }
-      });
-
-    await FirebaseFirestore.instance.collection('hostels').add({
+    Map<String, dynamic> hostelData = {
       'name': _nameController.text,
       'location': _locationController.text,
       'number_of_rooms': int.parse(_numberOfRoomsController.text),
@@ -200,8 +201,14 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
       'hostel_gender': _selectedHostelGender,
       'room_types': roomTypePrices,
       'createdAt': FieldValue.serverTimestamp(), 
+    };
 
-    });
+    final hostelRef = await FirebaseFirestore.instance.collection('hostels').add(hostelData);
+    final hostel = await hostelRef.get();
+
+    if (hostel.exists) {
+      notifyUsersOnNewHostel(hostel.data() as Map<String, dynamic>);
+    }
 
     showDialog(
       context: context,

@@ -2,8 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:halls/explore.dart';
+import 'package:halls/models/detailspage.dart';
+import '/models/house_model.dart';
+
 
 class ForYouPage extends StatelessWidget {
+  Future<House> getHouse(String houseId) async {
+    DocumentSnapshot doc = await FirebaseFirestore.instance.collection('hostels').doc(houseId).get();
+    if (doc.exists) {
+      return House.fromFirestore(doc);
+    } else {
+      throw Exception('House not found');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -142,9 +153,17 @@ class ForYouPage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               ElevatedButton(
-                                onPressed: () {
-                                  // Navigate to DetailPage
-                                },
+                                onPressed: () async{
+                                  print(hostel['id']);
+                                   final house = await getHouse(hostel['id']);
+                                   
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DetailPage(house: house),
+                                      ),
+                                    );
+                                  },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
                                   elevation: 3.0,
@@ -312,50 +331,37 @@ class ForYouPage extends StatelessWidget {
   }
 }
 
-class DetailPage extends StatelessWidget {
-  final House house;
+// class DetailPage extends StatelessWidget {
+//   final House house;
 
-  const DetailPage({Key? key, required this.house}) : super(key: key);
+//   const DetailPage({Key? key, required this.house}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(house.name),
-      ),
-      body: Center(
-        child: Text('Details for ${house.name}'),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text(house.name),
+//       ),
+//       body: Center(
+//         child: Text('Details for ${house.name}'),
+//       ),
+//     );
+//   }
+// }
 
-class ChatPage extends StatelessWidget {
-  const ChatPage({Key? key}) : super(key: key);
+// class ChatPage extends StatelessWidget {
+//   const ChatPage({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Chat'),
-      ),
-      body: Center(
-        child: const Text('Chat Page'),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Chat'),
+//       ),
+//       body: Center(
+//         child: const Text('Chat Page'),
+//       ),
+//     );
+//   }
+// }
 
-class House {
-  final String id;
-  final String name;
-  final String location;
-  final List<String> images;
-
-  House({
-    required this.id,
-    required this.name,
-    required this.location,
-    required this.images,
-  });
-}

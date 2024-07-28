@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class NotificationHistoryPage extends StatefulWidget {
   const NotificationHistoryPage({super.key});
@@ -10,14 +11,23 @@ class NotificationHistoryPage extends StatefulWidget {
 }
 
 class _NotificationHistoryPageState extends State<NotificationHistoryPage> {
+  late User _user;
+
+  @override
+  void initState() {
+    super.initState();
+    _user = FirebaseAuth.instance.currentUser!;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
-              .collection('hostels')
-              .orderBy('createdAt', descending: true)
+              .collection('notifications')
+              .where('user_id', isEqualTo: _user.uid)
+              // .orderBy('createdAt', descending: true)
               .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
@@ -25,10 +35,10 @@ class _NotificationHistoryPageState extends State<NotificationHistoryPage> {
             }
             var notifications = snapshot.data!.docs.map((doc) {
               return {
-                'title': 'New Hostel Added',
-                'body': doc['name'],
-                'date': (doc['createdAt'] as Timestamp).toDate().toString(),
-                'read': false, // default to false, update as necessary
+                'title': doc['title'],
+                'body': doc['message'],
+                'date': (doc['timestamp'] as Timestamp).toDate().toString(),
+                'read': false, // assuming 'read' field is present in the notification document
               };
             }).toList();
 
