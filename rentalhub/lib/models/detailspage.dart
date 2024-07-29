@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:halls/chat_service.dart';
 import 'package:halls/chatpage.dart';
 import 'package:halls/models/booking.dart';
 import 'package:halls/models/house_model.dart';
@@ -299,17 +300,25 @@ class DetailPage extends StatelessWidget {
                     ),
                     child: const Text('Book Now'),
                   ),
+
+                  //chat
                   ElevatedButton(
-                    onPressed: () {
+                  onPressed: () async {
                     final currentUser = FirebaseAuth.instance.currentUser;
                     if (currentUser != null) {
+                      final chatService = ChatService();
+                      bool isCurrentUserOwner = await chatService.isUserIdOwner(currentUser.uid);
+                      String otherUserId = isCurrentUserOwner ? 'userId${house.id}' : house.id;
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ChatPage(
-                            currentUserId: currentUser.uid,
-                            // hostelOwnerId: house.ownerId,
+                          builder: (context) => ChatScreen(
+                            // currentUserId: currentUser.uid,
+                            // otherUserId: otherUserId,
                             hostelId: house.id,
+                            ownerId: 'userId${house.id}',
+                            userId: FirebaseAuth.instance.currentUser!.uid,
                           ),
                         ),
                       );
@@ -319,15 +328,23 @@ class DetailPage extends StatelessWidget {
                       );
                     }
                   },
-                    // onPressed: () {
-                      
-                    //   // Implement chat functionality
-                    // },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey,
-                    ),
-                    child: const Text('Go Back'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
+                    elevation: 3.0,
+                    textStyle: const TextStyle(color: Colors.white),
                   ),
+                  child: const Row(
+                    children: [
+                      Icon(Icons.chat, size: 20, color: Colors.white),
+                      SizedBox(width: 4.0),
+                      Text(
+                        'Chat',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+                  
                 ],
               ),
             ],

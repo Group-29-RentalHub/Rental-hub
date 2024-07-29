@@ -1,34 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:halls/chat_service.dart';
+import 'package:halls/chatpage.dart';
 import 'package:halls/explore.dart';
 import 'package:halls/models/detailspage.dart';
 import '/models/house_model.dart';
 
-
 class ForYouPage extends StatelessWidget {
   Future<House> getHouse(String houseId) async {
-    DocumentSnapshot doc = await FirebaseFirestore.instance.collection('hostels').doc(houseId).get();
+    DocumentSnapshot doc = await FirebaseFirestore.instance
+        .collection('hostels')
+        .doc(houseId)
+        .get();
     if (doc.exists) {
       return House.fromFirestore(doc);
     } else {
       throw Exception('House not found');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Row(
           children: [
-            const Text('',
-            style: TextStyle(color: Color.fromARGB(255, 16, 0, 0)),),
+            const Text(
+              '',
+              style: TextStyle(color: Color.fromARGB(255, 16, 0, 0)),
+            ),
             Spacer(), // Pushes the button to the rightmost side
             TextButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const HomePage()), // Navigate to ExplorePage
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          const HomePage()), // Navigate to ExplorePage
                 );
               },
               child: const Text(
@@ -47,7 +56,9 @@ class ForYouPage extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             print('Error fetching data: ${snapshot.error}');
-            return const Center(child: Text('Error fetching data. Check your internet connection.'));
+            return const Center(
+                child: Text(
+                    'Error fetching data. Check your internet connection.'));
           } else {
             List<Map<String, dynamic>> hostels = snapshot.data ?? [];
             if (hostels.isEmpty) {
@@ -65,7 +76,9 @@ class ForYouPage extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const HomePage()), // Navigate to ExplorePage
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const HomePage()), // Navigate to ExplorePage
                         );
                       },
                       child: const Text('Maybe explore'),
@@ -88,7 +101,9 @@ class ForYouPage extends StatelessWidget {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(16.0),
                             child: Image.network(
-                              hostel['images'].isNotEmpty ? hostel['images'][0] : 'https://via.placeholder.com/600x400',
+                              hostel['images'].isNotEmpty
+                                  ? hostel['images'][0]
+                                  : 'https://via.placeholder.com/600x400',
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
                                 return Image.network(
@@ -148,30 +163,35 @@ class ForYouPage extends StatelessWidget {
                           ),
                         ),
                         Container(
-                          margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                          margin: const EdgeInsets.only(
+                              left: 20, right: 20, bottom: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               ElevatedButton(
-                                onPressed: () async{
+                                onPressed: () async {
                                   print(hostel['id']);
-                                   final house = await getHouse(hostel['id']);
-                                   
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => DetailPage(house: house),
-                                      ),
-                                    );
-                                  },
+                                  final house = await getHouse(hostel['id']);
+
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          DetailPage(house: house),
+                                    ),
+                                  );
+                                },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
+                                  backgroundColor:
+                                      const Color.fromRGBO(70, 0, 119, 1),
                                   elevation: 3.0,
-                                  textStyle: const TextStyle(color: Colors.white),
+                                  textStyle:
+                                      const TextStyle(color: Colors.white),
                                 ),
                                 child: const Row(
                                   children: [
-                                    Icon(Icons.phone, size: 20, color: Colors.white),
+                                    Icon(Icons.phone,
+                                        size: 20, color: Colors.white),
                                     SizedBox(width: 4.0),
                                     Text(
                                       'Details',
@@ -180,18 +200,48 @@ class ForYouPage extends StatelessWidget {
                                   ],
                                 ),
                               ),
+
                               ElevatedButton(
-                                onPressed: () {
-                                  // Navigate to ChatPage
+                                onPressed: () async {
+                                  final currentUser =
+                                      FirebaseAuth.instance.currentUser;
+                                  if (currentUser != null) {
+                                    final chatService = ChatService();
+                                    bool isCurrentUserOwner = await chatService
+                                        .isUserIdOwner(currentUser.uid);
+                                    String otherUserId = isCurrentUserOwner
+                                        ? 'userId${hostel['id']}'
+                                        : hostel['id'];
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ChatScreen(
+                                          hostelId: hostel['id'],
+                                          ownerId: 'userId${hostel['id']}',
+                                          userId: currentUser.uid,
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content:
+                                              Text('Please log in to chat')),
+                                    );
+                                  }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
+                                  backgroundColor:
+                                      const Color.fromRGBO(70, 0, 119, 1),
                                   elevation: 3.0,
-                                  textStyle: const TextStyle(color: Colors.white),
+                                  textStyle:
+                                      const TextStyle(color: Colors.white),
                                 ),
                                 child: const Row(
                                   children: [
-                                    Icon(Icons.chat, size: 20, color: Colors.white),
+                                    Icon(Icons.chat,
+                                        size: 20, color: Colors.white),
                                     SizedBox(width: 4.0),
                                     Text(
                                       'Chat',
@@ -200,6 +250,8 @@ class ForYouPage extends StatelessWidget {
                                   ],
                                 ),
                               ),
+
+    
                             ],
                           ),
                         ),
@@ -238,7 +290,8 @@ class ForYouPage extends StatelessWidget {
         throw Exception('User preferences data is null.');
       }
 
-      final hostelsSnapshot = await FirebaseFirestore.instance.collection('hostels').get();
+      final hostelsSnapshot =
+          await FirebaseFirestore.instance.collection('hostels').get();
 
       List<Map<String, dynamic>> matchedHostels = [];
 
@@ -266,22 +319,30 @@ class ForYouPage extends StatelessWidget {
     }
   }
 
-  double _calculateMatchPercentage(Map<String, dynamic> userPrefs, Map<String, dynamic> hostel) {
+  double _calculateMatchPercentage(
+      Map<String, dynamic> userPrefs, Map<String, dynamic> hostel) {
     int matchCount = 0;
     int totalCount = 0;
 
-    if (userPrefs['hostel_type'] == hostel['hostel_gender'] || hostel['hostel_gender'] == 'Mixed') {
+    if (userPrefs['hostel_type'] == hostel['hostel_gender'] ||
+        hostel['hostel_gender'] == 'Mixed') {
       matchCount++;
     }
     totalCount++;
 
-    final userBudgetRange = userPrefs['budget']?.split(' - ').map((e) => num.tryParse(e.replaceAll(RegExp(r'[^\d]'), '')) ?? 0).toList() ?? [0, 0];
-    final hostelPrices = hostel['room_types']?.values.map((e) => e as num).toList() ?? [];
+    final userBudgetRange = userPrefs['budget']
+            ?.split(' - ')
+            .map((e) => num.tryParse(e.replaceAll(RegExp(r'[^\d]'), '')) ?? 0)
+            .toList() ??
+        [0, 0];
+    final hostelPrices =
+        hostel['room_types']?.values.map((e) => e as num).toList() ?? [];
 
     if (userBudgetRange.length == 2) {
       final minBudget = userBudgetRange[0];
       final maxBudget = userBudgetRange[1];
-      if (hostelPrices.any((price) => price >= minBudget && price <= maxBudget)) {
+      if (hostelPrices
+          .any((price) => price >= minBudget && price <= maxBudget)) {
         matchCount++;
       }
     }
