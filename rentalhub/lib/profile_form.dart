@@ -435,7 +435,7 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile Form'),
+        title: const Text('Profile Form', style: TextStyle(color: Colors.white),),
         backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
       ),
       body: Center(
