@@ -85,7 +85,7 @@ class _MainPageState extends State<MainPage> {
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
   int _currentIndex = 0;
-  String _title = 'For You'; // Default title
+  String _title = 'RentalHub'; // Default title
 
   final List<Widget> _pages = [
     ForYouPage(),
