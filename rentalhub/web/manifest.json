@@ -1,6 +1,6 @@
 {
-    "name": "rentalhub",
-    "short_name": "rentalhub",
+    "name": "halls",
+    "short_name": "halls",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

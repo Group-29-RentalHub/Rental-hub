@@ -1,4 +1,4 @@
-# rentalhub
+# halls
 
 A new Flutter project.
 
