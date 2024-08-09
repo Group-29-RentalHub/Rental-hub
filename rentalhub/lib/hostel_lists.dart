@@ -50,6 +50,7 @@ class _HostelListingsPageState extends State<HostelListingsPage> {
       appBar: AppBar(
         title: const Text('My Hostels', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _hostelsFuture,
