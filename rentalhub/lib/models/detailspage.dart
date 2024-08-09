@@ -95,6 +95,7 @@ class DetailPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(house.name, style: const TextStyle(color: Colors.white)),
         backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         child: Padding(
