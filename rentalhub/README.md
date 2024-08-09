@@ -1,4 +1,5 @@
-# halls
+# Rental Hub
+Developing a flutter mobile App to enable people easily get rentals and hostels within their current locations 
 
 A new Flutter project.
 
