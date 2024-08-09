@@ -274,7 +274,7 @@ class ForYouPage extends StatelessWidget {
     if (user == null) {
       // ignore: avoid_print
       print('No user is signed in.');
-      throw Exception('No user is signed in.');
+      throw Exception('No user is signed in now.');
     }
 
     try {
