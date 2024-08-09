@@ -55,6 +55,7 @@ class ForYouPage extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
+            // ignore: avoid_print
             print('Error fetching data: ${snapshot.error}');
             return const Center(
                 child: Text(
@@ -127,16 +128,16 @@ class ForYouPage extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 4.0),
-                              Row(
+                              const Row(
                                 children: [
-                                  const Icon(
+                                  Icon(
                                     Icons.location_on,
                                     size: 20,
                                   ),
-                                  const SizedBox(width: 4.0),
+                                  SizedBox(width: 4.0),
                                   Text(
                                     'Location Unknown', // Adjust this based on actual data
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: Colors.grey,
                                     ),
                                   ),
@@ -170,6 +171,7 @@ class ForYouPage extends StatelessWidget {
                             children: [
                               ElevatedButton(
                                 onPressed: () async {
+                                  // ignore: avoid_print
                                   print(hostel['id']);
                                   final house = await getHouse(hostel['id']);
 
@@ -270,6 +272,7 @@ class ForYouPage extends StatelessWidget {
   Future<List<Map<String, dynamic>>> _fetchHostels() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
+      // ignore: avoid_print
       print('No user is signed in.');
       throw Exception('No user is signed in.');
     }
