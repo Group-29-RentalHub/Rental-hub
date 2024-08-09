@@ -299,7 +299,8 @@ class SearchResultsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Search Results for "$searchQuery"'),
+        title: Text('Search Results for "$searchQuery"',
+        style: TextStyle(color: Colors.white),),
         backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
       ),
       body: StreamBuilder<QuerySnapshot>(
