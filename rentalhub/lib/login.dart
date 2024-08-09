@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:halls/models/squaretile.dart';
 import 'signup.dart';
 
 class LoginPage extends StatefulWidget {
@@ -84,8 +85,8 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
-        backgroundColor: Colors.deepPurple,
+        // title: const Text('Login'),
+        // backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
@@ -97,6 +98,7 @@ class _LoginPageState extends State<LoginPage> {
               key: _formKey,
               child: Column(
                 children: [
+                  SquareTile(imagePath: 'assets/icon.png'),
                   const Text(
                     'Welcome Back to RentalHub',
                     style: TextStyle(
