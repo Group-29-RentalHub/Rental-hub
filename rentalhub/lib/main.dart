@@ -150,6 +150,7 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
+        iconTheme: const IconThemeData(color: Colors.white),
         title: !_isSearching
             ? Text(
                 _title,
