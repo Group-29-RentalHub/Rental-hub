@@ -273,7 +273,7 @@ class ForYouPage extends StatelessWidget {
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       // ignore: avoid_print
-      print('No user is signed in.');
+      print('No user is signed in try again later .');
       throw Exception('No user is signed in now.');
     }
 
