@@ -302,6 +302,7 @@ class SearchResultsPage extends StatelessWidget {
         title: Text('Search Results for "$searchQuery"',
         style: TextStyle(color: Colors.white),),
         backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
