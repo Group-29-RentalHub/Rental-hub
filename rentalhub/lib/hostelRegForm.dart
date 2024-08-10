@@ -257,6 +257,7 @@ Future<void> _submitForm() async {
       appBar: AppBar(
         title: const Text('Hostel Registration', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color.fromRGBO(70, 0, 119, 1), // Theme color
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
