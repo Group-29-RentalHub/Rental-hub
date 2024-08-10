@@ -437,6 +437,7 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
       appBar: AppBar(
         title: const Text('Profile Form', style: TextStyle(color: Colors.white),),
         backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Center(
         child: Column(
