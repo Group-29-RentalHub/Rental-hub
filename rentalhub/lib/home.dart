@@ -59,7 +59,7 @@ class ForYouPage extends StatelessWidget {
             print('Error fetching data: ${snapshot.error}');
             return const Center(
                 child: Text(
-                    'Error fetching data. Check your internet connection.'));
+                    'Error fetching data. Check your internet connection!'));
           } else {
             List<Map<String, dynamic>> hostels = snapshot.data ?? [];
             if (hostels.isEmpty) {
