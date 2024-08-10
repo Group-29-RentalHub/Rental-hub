@@ -8,15 +8,18 @@ Property Search: Easily search for rental properties based on location, price ra
 In-App Messaging: Communicate directly with landlords or tenants through our secure messaging system.
 Application Submission: Submit rental applications and necessary documents directly through the app.
 Landlord Tools: Manage properties
+
 #Installation
 Open the app and create an account or log in.
 Start exploring rental properties or list your own!
+
 Getting Started
 #For Tenants:
 Set up your profile with your rental preferences.
 Use the search function to find properties that match your criteria.
 Save favorite listings and schedule viewings.
 Submit applications and communicate with landlords through the app.
+
 #For Landlords:
 List your properties with detailed descriptions and high-quality photos.
 Manage inquiries and applications from potential tenants.
