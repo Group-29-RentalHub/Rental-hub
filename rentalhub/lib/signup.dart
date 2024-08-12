@@ -241,7 +241,7 @@ class _SignupPageState extends State<SignupPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('Already have an account?'),
+                      const Text('Already have an account ?'),
                       TextButton(
                         onPressed: () {
                           Navigator.pushReplacement(
