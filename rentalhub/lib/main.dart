@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:halls/about.dart';
 import 'package:halls/hostel_lists.dart';
 import 'landingpage.dart';
 import 'notifications.dart';
@@ -39,7 +40,8 @@ class RentalHub extends StatelessWidget {
                 navigateToHomePage(context);
               },
             ),
-        '/about': (context) => const HostelListingsPage(),
+        '/myhostels': (context) => const HostelListingsPage(),
+        '/about': (context) => const AboutPage(),
         '/settings': (context) => const SettingsPage(),
         '/home': (context) => const MainPage(),
         '/login': (context) => const LoginPage(),
@@ -121,7 +123,7 @@ class _MainPageState extends State<MainPage> {
         break;
       case 3:
         setState(() {
-          _title = 'Explore';
+          _title = 'Main Menu';
         });
         break;
       default:
@@ -240,6 +242,14 @@ class _MainPageState extends State<MainPage> {
                 },
               ),
               ListTile(
+                leading: const Icon(Icons.hotel),
+                title: const Text('My Hostels'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/myhostels');
+                },
+              ),
+              ListTile(
                 leading: const Icon(Icons.info),
                 title: const Text('About'),
                 onTap: () {
@@ -278,7 +288,7 @@ class _MainPageState extends State<MainPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.explore),
-            label: 'Explore',
+            label: 'Main Menu',
           ),
         ],
         selectedItemColor: Colors.grey,

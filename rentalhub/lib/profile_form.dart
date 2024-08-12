@@ -105,6 +105,7 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
             _selectedLocation = point;
           });
         },
+        
       ),
       children: [
         TileLayer(
@@ -119,6 +120,15 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
             ),
           ],
         ),
+        CircleLayer(circles: [
+              CircleMarker(
+                point: _selectedLocation,
+                color: Colors.blue.withOpacity(0.3),
+                borderStrokeWidth: 2.0,
+                borderColor: Colors.blue,
+                radius: 00, // Radius in meters (2 km)
+              ),
+            ],)
       ],
     ),
   ),

@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class House {
   final String id;
   final String name;
-  final String location;
+  // final String location;
   final String contact;
   final String description;
   final String hostelGender; // Hostel gender field
@@ -15,7 +15,7 @@ class House {
   House({
     required this.id,
     required this.name,
-    required this.location,
+    // required this.location,
     required this.description,
     required this.contact,
     required this.images,
@@ -32,7 +32,7 @@ class House {
       id: doc.id,
       name: data['name'] ?? '',
       contact: data['contact_number'] ?? '',
-      location: data['location'] ?? '',
+      // location: data['location'] ?? '',
       description: data['description'] ?? '',
       images: List<String>.from(data['images'] ?? []),
       amenities: _mapFromFirestore(data['amenities']),

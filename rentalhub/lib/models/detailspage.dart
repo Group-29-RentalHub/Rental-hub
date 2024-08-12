@@ -4,98 +4,101 @@ import 'package:halls/chat_service.dart';
 import 'package:halls/chatpage.dart';
 import 'package:halls/models/booking.dart';
 import 'package:halls/models/house_model.dart';
-import 'package:intl/intl.dart'; // Import intl for date formatting
+ import 'package:intl/intl.dart';
 
 class DetailPage extends StatelessWidget {
   final House house;
 
-  const DetailPage({super.key, required this.house})
-      : assert(house != null, 'House cannot be null');
+  const DetailPage({Key? key, required this.house}) : super(key: key);
 
-  @override  
+  @override
   Widget build(BuildContext context) {
-    final BookingService bookingService = BookingService(); // Initialize the BookingService
+    final BookingService bookingService = BookingService();
 
-    Future<void> _bookNow() async {
-      final TextEditingController detailsController = TextEditingController();
-      DateTime selectedDate = DateTime.now();
+  Future<void> _bookNow() async {
+  final TextEditingController detailsController = TextEditingController();
+  DateTime selectedDate = DateTime.now();
 
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Book Now'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: detailsController,
-                decoration: const InputDecoration(
-                  labelText: 'Additional Details',
-                ),
-              ),
-              const SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: () async {
-                  DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: selectedDate,
-                    firstDate: DateTime.now(),
-                    lastDate: DateTime(2101),
-                  );
-                  if (pickedDate != null && pickedDate != selectedDate) {
-                    selectedDate = pickedDate;
-                    // Update the state to refresh the UI
-                    Navigator.of(context).setState(() {});
-                  }
-                },
-                child: Text(
-                  selectedDate == DateTime.now()
-                      ? 'Pick Date'
-                      : 'Selected Date: ${DateFormat.yMMMd().format(selectedDate)}',
-                ),
-              ),
-            ],
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Book Now'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: detailsController,
+            decoration: const InputDecoration(
+              labelText: 'Additional Details',
+            ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                Navigator.of(context).pop(); // Close the dialog
-                try {
-                  await bookingService.bookHostel(
-                    hostelId: house.id, // Assuming house.id is the hostel ID
-                    bookingDate: selectedDate,
-                    additionalDetails: detailsController.text,
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Booking successful!')),
-                  );
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Failed to book the hostel. Please try again.')),
-                  );
+          const SizedBox(height: 16.0),
+          ElevatedButton(
+            onPressed: () async {
+              DateTime? pickedDate = await showDatePicker(
+                context: context,
+                initialDate: selectedDate,
+                firstDate: DateTime.now(),
+                lastDate: DateTime(2101),
+              );
+              if (pickedDate != null && pickedDate != selectedDate) {
+                selectedDate = pickedDate;
+                // Refresh the UI to show the selected date
+                if (context.mounted) {
+                  Navigator.of(context).setState(() {});
                 }
-              },
-              child: const Text('Book Now'),
+              }
+            },
+            child: Text(
+              selectedDate == DateTime.now()
+                  ? 'Pick Date'
+                  : 'Selected Date: ${DateFormat.yMMMd().format(selectedDate)}',
             ),
-          ],
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Cancel'),
         ),
-      );
-    }
-
-    // Debug: Print the received house object
-    print('Received House: $house');
+        ElevatedButton(
+          onPressed: () async {
+            Navigator.of(context).pop(); // Close the dialog
+            try {
+              await bookingService.bookHostel(
+                hostelId: house.id,
+                hostelName: house.name,
+                bookingDate: selectedDate,
+                additionalDetails: detailsController.text,
+              );
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Booking successful!')),
+                );
+              }
+            } catch (e) {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Failed to book the hostel: $e')),
+                );
+              }
+            }
+          },
+          child: const Text('Book Now'),
+        ),
+      ],
+    ),
+  );
+}
 
     return Scaffold(
       appBar: AppBar(
         title: Text(house.name, style: const TextStyle(color: Colors.white)),
         backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -184,13 +187,13 @@ class DetailPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8.0),
-              Text(
-                house.location,
-                style: const TextStyle(
-                  fontSize: 16.0,
-                  color: Colors.grey,
-                ),
-              ),
+              // Text(
+              //   house.location,
+              //   style: const TextStyle(
+              //     fontSize: 16.0,
+              //     color: Colors.grey,
+              //   ),
+              // ),
               const SizedBox(height: 8.0),
               const Row(
                 children: [
@@ -271,38 +274,23 @@ class DetailPage extends StatelessWidget {
                   Text('- Valid ID'),
                   Text('- Security Deposit'),
                   Text('- Minimum Stay of 2 nights'),
-                  Text('- No Smoking in Rooms'),
+                  Text('- Proof of Income'),
                 ],
               ),
               const SizedBox(height: 16.0),
 
-              // Ratings
-              const Text(
-                'Ratings:',
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8.0),
-              const RatingBar(label: 'Cleanliness', rating: 4.5),
-              const RatingBar(label: 'Hospitality', rating: 4.0),
-              const RatingBar(label: 'Facilities', rating: 4.2),
-              const SizedBox(height: 16.0),
-
-              // Action Buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    onPressed: _bookNow, // Call the booking function
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
-                    ),
-                    child: const Text('Book Now'),
+              // Book Now Button
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                   ElevatedButton(
+                  onPressed: _bookNow,
+                  child: const Text('Book Now', style: const TextStyle(color: Colors.white)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
                   ),
-
-                  //chat
+                ),
                   ElevatedButton(
                   onPressed: () async {
                     final currentUser = FirebaseAuth.instance.currentUser;
@@ -346,48 +334,13 @@ class DetailPage extends StatelessWidget {
                   ),
                 ),
                   
-                ],
+                ],)
               ),
+              const SizedBox(height: 16.0),
             ],
           ),
         ),
       ),
-    );
-  }
-}
-
-// Dummy BookingService class
-class BookingService {
-  Future<void> bookHostel({
-    required String hostelId,
-    required DateTime bookingDate,
-    required String additionalDetails,
-  }) async {
-    // Implement booking logic here
-  }
-}
-
-// Dummy RatingBar widget
-class RatingBar extends StatelessWidget {
-  final String label;
-  final double rating;
-
-  const RatingBar({
-    Key? key,
-    required this.label,
-    required this.rating,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(
-          '$label: ',
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        Text(rating.toStringAsFixed(1)), // Show rating with 1 decimal place
-      ],
     );
   }
 }
