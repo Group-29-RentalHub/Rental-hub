@@ -12,7 +12,7 @@ class DetailPage extends StatelessWidget {
   const DetailPage({super.key, required this.house})
       : assert(house != null, 'House cannot be null');
 
-  @override
+  @override  
   Widget build(BuildContext context) {
     final BookingService bookingService = BookingService(); // Initialize the BookingService
 
