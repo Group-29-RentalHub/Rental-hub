@@ -60,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
       } else if (e.code == 'wrong-password') {
         message = 'Wrong password provided.';
       } else {
-        message = 'An error occurred. Please try again later.';
+        message = 'An error occurred. Please try again later...';
       }
       // Show error message
       showDialog(
