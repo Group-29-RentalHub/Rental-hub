@@ -68,7 +68,7 @@ class BookingPage extends StatelessWidget {
 
       // Update the notification collection
       await _updateNotification(userId, title, message);
-
+  
       // Show a success message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Booking ${isApproved ? 'approved' : 'rejected'} successfully')),
