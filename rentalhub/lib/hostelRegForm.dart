@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:halls/hostelnotifier.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
+import 'dart:io'; 
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -44,7 +46,7 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
   };
   final List<File> _images = [];
   bool _isLoading = false;
-
+  LatLng _selectedLocation = LatLng(0.3152, 32.5816);
   @override
   void initState() {
     super.initState();
@@ -106,8 +108,7 @@ class _HostelRegistrationPageState extends State<HostelRegistrationPage> {
   }
 
 Future<void> _submitForm() async {
-  if (_nameController.text.isEmpty ||
-      _locationController.text.isEmpty ||
+  if (_nameController.text.isEmpty || 
       _numberOfRoomsController.text.isEmpty ||
       _contactNumberController.text.isEmpty ||
       _descriptionController.text.isEmpty ||
@@ -186,7 +187,7 @@ Future<void> _submitForm() async {
 
     Map<String, dynamic> hostelData = {
       'name': _nameController.text,
-      'location': _locationController.text,
+      'location': GeoPoint(_selectedLocation.latitude, _selectedLocation.longitude),
       'number_of_rooms': int.parse(_numberOfRoomsController.text),
       'contact_number': _contactNumberController.text,
       'description': _descriptionController.text,
@@ -266,14 +267,48 @@ Future<void> _submitForm() async {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _buildTextInput(_nameController, 'Hostel Name', Icons.home),
-              _buildTextInput(_locationController, 'Location', Icons.location_on),
-              _buildTextInput(_numberOfRoomsController, 'Number of Rooms', Icons.meeting_room,
+               _buildTextInput(_numberOfRoomsController, 'Number of Rooms', Icons.meeting_room,
                   keyboardType: TextInputType.number),
               _buildTextInput(_contactNumberController, 'Contact Number', Icons.phone,
                   keyboardType: TextInputType.phone),
               _buildTextInput(_descriptionController, 'Description', Icons.description,
                   keyboardType: TextInputType.multiline),
               const SizedBox(height: 16.0),
+              
+              const SizedBox(height: 16.0),
+ Container(
+  child: Container(
+    height: 300,
+    color: Colors.grey[300],
+    child: FlutterMap(
+      options: MapOptions(
+        initialCenter: _selectedLocation,
+        initialZoom: 13.0,
+        minZoom: 13.0,
+         onTap: (tapPosition, point) {
+          setState(() {
+            _selectedLocation = point;
+          });
+        },
+      ),
+      children: [
+        TileLayer(
+          urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          subdomains: const ['a', 'b', 'c'],
+        ),
+        MarkerLayer(
+          markers: [
+            Marker(
+              point: _selectedLocation,
+              child: const Icon(Icons.pin_drop) 
+            ),
+          ],
+        ),
+      ],
+    ),
+  ), 
+),
+
               const Text(
                 'Amenities',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),

@@ -69,7 +69,7 @@ class _HostelListingsPageState extends State<HostelListingsPage> {
             itemBuilder: (context, index) {
               Map<String, dynamic> hostel = hostels[index];
               String hostelName = hostel['name'] ?? 'No Name';
-              String hostelLocation = hostel['location'] ?? 'No Location';
+              // String hostelLocation = hostel['location'] ?? 'No Location';
               String? photoUrl = hostel['images'][0];
 
               return Card(
@@ -83,7 +83,7 @@ class _HostelListingsPageState extends State<HostelListingsPage> {
                     hostelName,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  subtitle: Text(hostelLocation),
+                  // subtitle: Text(hostelLocation),
                   trailing: IconButton(
                     icon: Icon(Icons.edit),
                     onPressed: () {

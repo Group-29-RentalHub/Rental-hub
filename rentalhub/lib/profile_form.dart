@@ -91,39 +91,40 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
   List<Widget> _buildSteps() {
     return [
       _buildStep(
-        question: 'Select your preferred location on the map',
-        child: Container(
-          height: 300,
-          color: Colors.grey[300],
-          child: FlutterMap(
-            options: MapOptions(
-              initialCenter: _selectedLocation,
-              initialZoom: 13.0,
-              minZoom: 13.0,
-            ),
-            children: [
-              TileLayer(
-                urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                subdomains: const ['a', 'b', 'c'],
-              ),
-              // MarkerLayer(
-              //   markers: [
-              //     Marker(
-              //       width: 80.0,
-              //       height: 80.0,
-              //       point: _selectedLocation,
-              //       builder: (ctx) => const Icon(
-              //         Icons.location_pin,
-              //         color: Colors.red,
-              //       ),
-              //     ),
-              //   ],
-              // ),
-            ],
-          ),
-        ),
-        icon: Icons.location_on,
+  question: 'Select your preferred location on the map',
+  child: Container(
+    height: 300,
+    color: Colors.grey[300],
+    child: FlutterMap(
+      options: MapOptions(
+        initialCenter: _selectedLocation,
+        initialZoom: 13.0,
+        minZoom: 13.0,
+         onTap: (tapPosition, point) {
+          setState(() {
+            _selectedLocation = point;
+          });
+        },
       ),
+      children: [
+        TileLayer(
+          urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          subdomains: const ['a', 'b', 'c'],
+        ),
+        MarkerLayer(
+          markers: [
+            Marker(
+              point: _selectedLocation,
+              child: const Icon(Icons.pin_drop) 
+            ),
+          ],
+        ),
+      ],
+    ),
+  ),
+  icon: Icons.location_on,
+),
+
       _buildStep(
         question: 'Choose your budget range',
         child: _buildBudgetOptions(),
