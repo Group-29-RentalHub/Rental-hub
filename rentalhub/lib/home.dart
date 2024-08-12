@@ -6,7 +6,7 @@ import 'package:halls/chatpage.dart';
 import 'package:halls/explore.dart';
 import 'package:halls/models/detailspage.dart';
 import '/models/house_model.dart';
-
+import 'dart:math';
 class ForYouPage extends StatelessWidget {
   Future<House> getHouse(String houseId) async {
     DocumentSnapshot doc = await FirebaseFirestore.instance
@@ -16,7 +16,7 @@ class ForYouPage extends StatelessWidget {
     if (doc.exists) {
       return House.fromFirestore(doc);
     } else {
-      throw Exception('House not found');
+      throw Exception('Hostel not found');
     }
   }
 
@@ -373,23 +373,76 @@ class ForYouPage extends StatelessWidget {
       'parking': hostel['Parking'],
       'security': hostel['Security'],
     };
+    // for (String amenity in userAmenities.keys) {
+    //   var userValue = userAmenities[amenity];
+    //   var hostelValue = hostelAmenities[amenity];
+
+    //   if (userValue == null) {
+    //     userValue = false;
+    //   }
+    //   if (hostelValue == null) {
+    //     hostelValue = false;
+    //   } 
+    //   if (userValue == hostelValue) {
+    //     matchCount++;
+    //   }
+    //   totalCount++;
+    // }
 
     for (String amenity in userAmenities.keys) {
-      var userValue = userAmenities[amenity];
-      var hostelValue = hostelAmenities[amenity];
+  // Get user and hostel values
+  var userValue = userAmenities[amenity] ?? false;
+  var hostelValue = hostelAmenities.containsKey(amenity)
+      ? hostelAmenities[amenity]
+      : false;
 
-      if (userValue == null) {
-        userValue = false;
-      }
-      if (hostelValue == null) {
-        hostelValue = false;
-      }
+  // Check if they match and count them
+  if (userValue == hostelValue) {
+    matchCount++;
+  }
+  totalCount++;
+}
+// Function to calculate distance between two locations (Haversine formula)
+double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+  const R = 6371e3; // Earth's radius in meters
+  final phi1 = lat1 * pi / 180;
+  final phi2 = lat2 * pi / 180;
+  final deltaPhi = (lat2 - lat1) * pi / 180;
+  final deltaLambda = (lon2 - lon1) * pi / 180;
 
-      if (userValue == hostelValue) {
-        matchCount++;
-      }
-      totalCount++;
-    }
+  final a = sin(deltaPhi / 2) * sin(deltaPhi / 2) +
+      cos(phi1) * cos(phi2) * sin(deltaLambda / 2) * sin(deltaLambda / 2);
+  final c = 2 * atan2(sqrt(a), sqrt(1 - a));
+
+  return R * c; // Distance in meters
+} 
+ 
+
+ // Default location to Kampala, Uganda if not a GeoPoint
+  const defaultLocation = GeoPoint(0.3476, 32.5825);
+
+  // Match location within 2km
+  GeoPoint userLocation = userPrefs['location'] is GeoPoint 
+    ? userPrefs['location'] 
+    : defaultLocation;
+
+  GeoPoint hostelLocation = hostel['location'] is GeoPoint 
+    ? hostel['location'] 
+    : defaultLocation;
+
+double userLat = userLocation.latitude;
+double userLon = userLocation.longitude;
+
+double hostelLat = hostelLocation.latitude;
+double hostelLon = hostelLocation.longitude;
+
+double distance = calculateDistance(userLat, userLon, hostelLat, hostelLon);
+
+if (distance <= 2000) {
+  matchCount++;
+} 
+
+totalCount++;
 
     return (totalCount > 0) ? (matchCount / totalCount) * 100 : 0;
   }
