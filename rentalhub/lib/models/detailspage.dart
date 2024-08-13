@@ -1,20 +1,30 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:halls/chat_service.dart';
 import 'package:halls/chatpage.dart';
 import 'package:halls/models/booking.dart';
 import 'package:halls/models/house_model.dart';
-import 'package:intl/intl.dart'; // Import intl for date formatting
+import 'package:halls/models/reviewform.dart';
+import 'package:intl/intl.dart';
 
 class DetailPage extends StatelessWidget {
   final House house;
 
-  const DetailPage({super.key, required this.house})
-      : assert(house != null, 'House cannot be null');
+  const DetailPage({Key? key, required this.house}) : super(key: key);
+
+  Future<List<Map<String, dynamic>>> _fetchReviews() async {
+    final reviewsRef = FirebaseFirestore.instance.collection('reviews');
+    final querySnapshot =
+        await reviewsRef.where('hostel_id', isEqualTo: house.id).get();
+    return querySnapshot.docs
+        .map((doc) => doc.data() as Map<String, dynamic>)
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final BookingService bookingService = BookingService(); // Initialize the BookingService
+    final BookingService bookingService = BookingService();
 
     Future<void> _bookNow() async {
       final TextEditingController detailsController = TextEditingController();
@@ -44,8 +54,10 @@ class DetailPage extends StatelessWidget {
                   );
                   if (pickedDate != null && pickedDate != selectedDate) {
                     selectedDate = pickedDate;
-                    // Update the state to refresh the UI
-                    Navigator.of(context).setState(() {});
+                    // Refresh the UI to show the selected date
+                    if (context.mounted) {
+                      Navigator.of(context).setState(() {});
+                    }
                   }
                 },
                 child: Text(
@@ -68,17 +80,22 @@ class DetailPage extends StatelessWidget {
                 Navigator.of(context).pop(); // Close the dialog
                 try {
                   await bookingService.bookHostel(
-                    hostelId: house.id, // Assuming house.id is the hostel ID
+                    hostelId: house.id,
+                    hostelName: house.name,
                     bookingDate: selectedDate,
                     additionalDetails: detailsController.text,
                   );
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Booking successful!')),
-                  );
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Booking successful!')),
+                    );
+                  }
                 } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Failed to book the hostel. Please try again.')),
-                  );
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Failed to book the hostel: $e')),
+                    );
+                  }
                 }
               },
               child: const Text('Book Now'),
@@ -88,14 +105,22 @@ class DetailPage extends StatelessWidget {
       );
     }
 
-    // Debug: Print the received house object
-    print('Received House: $house');
+    Future<void> _showReviewDialog() async {
+      showDialog(
+          context: context,
+          builder: (context) => ReviewForm(
+                hostelImage: house.images.isNotEmpty
+                    ? house.images[0]
+                    : 'https://via.placeholder.com/600x400',
+                hostelId: house.id,
+              ));
+    }
 
     return Scaffold(
       appBar: AppBar(
         title: Text(house.name, style: const TextStyle(color: Colors.white)),
         backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -107,7 +132,9 @@ class DetailPage extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(16.0),
                 child: Image.network(
-                  house.images.isNotEmpty ? house.images[0] : 'https://via.placeholder.com/600x400',
+                  house.images.isNotEmpty
+                      ? house.images[0]
+                      : 'https://via.placeholder.com/600x400',
                   fit: BoxFit.cover,
                   width: double.infinity,
                   height: 250,
@@ -124,7 +151,9 @@ class DetailPage extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16.0),
                         child: Image.network(
-                          house.images.length > 1 ? house.images[1] : 'https://via.placeholder.com/300x200',
+                          house.images.length > 1
+                              ? house.images[1]
+                              : 'https://via.placeholder.com/300x200',
                           fit: BoxFit.cover,
                           height: 150,
                         ),
@@ -135,7 +164,9 @@ class DetailPage extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16.0),
                         child: Image.network(
-                          house.images.length > 2 ? house.images[2] : 'https://via.placeholder.com/300x200',
+                          house.images.length > 2
+                              ? house.images[2]
+                              : 'https://via.placeholder.com/300x200',
                           fit: BoxFit.cover,
                           height: 150,
                         ),
@@ -154,7 +185,9 @@ class DetailPage extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16.0),
                         child: Image.network(
-                          house.images.length > 3 ? house.images[3] : 'https://via.placeholder.com/300x200',
+                          house.images.length > 3
+                              ? house.images[3]
+                              : 'https://via.placeholder.com/300x200',
                           fit: BoxFit.cover,
                           height: 150,
                         ),
@@ -165,7 +198,9 @@ class DetailPage extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16.0),
                         child: Image.network(
-                          house.images.length > 4 ? house.images[4] : 'https://via.placeholder.com/300x200',
+                          house.images.length > 4
+                              ? house.images[4]
+                              : 'https://via.placeholder.com/300x200',
                           fit: BoxFit.cover,
                           height: 150,
                         ),
@@ -184,24 +219,14 @@ class DetailPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8.0),
-              Text(
-                house.location,
-                style: const TextStyle(
-                  fontSize: 16.0,
-                  color: Colors.grey,
-                ),
-              ),
+              // Text(
+              //   house.location,
+              //   style: const TextStyle(
+              //     fontSize: 16.0,
+              //     color: Colors.grey,
+              //   ),
+              // ),
               const SizedBox(height: 8.0),
-              const Row(
-                children: [
-                  Icon(Icons.star, color: Colors.yellow),
-                  Icon(Icons.star, color: Colors.yellow),
-                  Icon(Icons.star, color: Colors.yellow),
-                  Icon(Icons.star, color: Colors.yellow),
-                  Icon(Icons.star_border, color: Colors.yellow),
-                ],
-              ),
-              const SizedBox(height: 16.0),
 
               // Description
               const Text(
@@ -232,9 +257,10 @@ class DetailPage extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: house.amenities.entries
-                  .where((entry) => entry.value) // Only display amenities that are true
-                  .map((entry) => Text('- ${entry.key}'))
-                  .toList(),
+                    .where((entry) =>
+                        entry.value) // Only display amenities that are true
+                    .map((entry) => Text('- ${entry.key}'))
+                    .toList(),
               ),
               const SizedBox(height: 16.0),
 
@@ -271,123 +297,129 @@ class DetailPage extends StatelessWidget {
                   Text('- Valid ID'),
                   Text('- Security Deposit'),
                   Text('- Minimum Stay of 2 nights'),
-                  Text('- No Smoking in Rooms'),
+                  Text('- Proof of Income'),
                 ],
               ),
               const SizedBox(height: 16.0),
-
-              // Ratings
-              const Text(
-                'Ratings:',
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
               const SizedBox(height: 8.0),
-              const RatingBar(label: 'Cleanliness', rating: 4.5),
-              const RatingBar(label: 'Hospitality', rating: 4.0),
-              const RatingBar(label: 'Facilities', rating: 4.2),
+              FutureBuilder<List<Map<String, dynamic>>>(
+                future: _fetchReviews(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Text('No reviews available.');
+                  } else {
+                    final reviews = snapshot.data!;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: reviews.map((review) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                review['user_name'] ?? 'Anonymous',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 4.0),
+                              Row(
+                                children: List.generate(5, (index) {
+                                  return Icon(
+                                    index < (review['rating'] ?? 0)
+                                        ? Icons.star
+                                        : Icons.star_border,
+                                    color: Colors.amber,
+                                    size: 20,
+                                  );
+                                }),
+                              ),
+                              const SizedBox(height: 4.0),
+                              Text(
+                                review['comment'] ?? 'No comment',
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    );
+                  }
+                },
+              ),
               const SizedBox(height: 16.0),
-
-              // Action Buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+              // Book Now Button
+              Center(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   ElevatedButton(
-                    onPressed: _bookNow, // Call the booking function
+                    onPressed: _bookNow,
+                    child: const Text('Book Now',
+                        style: const TextStyle(color: Colors.white)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
                     ),
-                    child: const Text('Book Now'),
                   ),
-
-                  //chat
                   ElevatedButton(
-                  onPressed: () async {
-                    final currentUser = FirebaseAuth.instance.currentUser;
-                    if (currentUser != null) {
-                      final chatService = ChatService();
-                      bool isCurrentUserOwner = await chatService.isUserIdOwner(currentUser.uid);
-                      String otherUserId = isCurrentUserOwner ? 'userId${house.id}' : house.id;
+                    onPressed: _showReviewDialog,
+                    child: const Text('Leave a Review'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final currentUser = FirebaseAuth.instance.currentUser;
+                      if (currentUser != null) {
+                        final chatService = ChatService();
+                        bool isCurrentUserOwner =
+                            await chatService.isUserIdOwner(currentUser.uid);
+                        String otherUserId =
+                            isCurrentUserOwner ? 'userId${house.id}' : house.id;
 
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ChatScreen(
-                            // currentUserId: currentUser.uid,
-                            // otherUserId: otherUserId,
-                            hostelId: house.id,
-                            ownerId: 'userId${house.id}',
-                            userId: FirebaseAuth.instance.currentUser!.uid,
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ChatScreen(
+                              // currentUserId: currentUser.uid,
+                              // otherUserId: otherUserId,
+                              hostelId: house.id,
+                              ownerId: 'userId${house.id}',
+                              userId: FirebaseAuth.instance.currentUser!.uid,
+                            ),
                           ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Please log in to chat')),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
+                      elevation: 3.0,
+                      textStyle: const TextStyle(color: Colors.white),
+                    ),
+                    child: const Row(
+                      children: [
+                        Icon(Icons.chat, size: 20, color: Colors.white),
+                        SizedBox(width: 4.0),
+                        Text(
+                          'Chat',
+                          style: TextStyle(color: Colors.white),
                         ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Please log in to chat')),
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
-                    elevation: 3.0,
-                    textStyle: const TextStyle(color: Colors.white),
+                      ],
+                    ),
                   ),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.chat, size: 20, color: Colors.white),
-                      SizedBox(width: 4.0),
-                      Text(
-                        'Chat',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
-                  
                 ],
-              ),
+              )),
+              const SizedBox(height: 16.0),
             ],
           ),
         ),
       ),
-    );
-  }
-}
-
-// Dummy BookingService class
-class BookingService {
-  Future<void> bookHostel({
-    required String hostelId,
-    required DateTime bookingDate,
-    required String additionalDetails,
-  }) async {
-    // Implement booking logic here
-  }
-}
-
-// Dummy RatingBar widget
-class RatingBar extends StatelessWidget {
-  final String label;
-  final double rating;
-
-  const RatingBar({
-    Key? key,
-    required this.label,
-    required this.rating,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(
-          '$label: ',
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        Text(rating.toStringAsFixed(1)), // Show rating with 1 decimal place
-      ],
     );
   }
 }

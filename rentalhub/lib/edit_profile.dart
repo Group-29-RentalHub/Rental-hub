@@ -116,7 +116,7 @@ class _EditProfileState extends State<EditProfile> {
                   children: [
                     const CircularProgressIndicator(),
                     const SizedBox(height: 16),
-                    const Text('Updating Profile...'),
+                    const Text('Updating Profile....'),
                   ],
                 ),
               )

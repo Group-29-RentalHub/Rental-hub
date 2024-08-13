@@ -105,10 +105,10 @@ class HouseCard extends StatelessWidget {
                       size: 20,
                     ),
                     const SizedBox(width: 4.0),
-                    Text(house.location,
-                        style: const TextStyle(
-                          color: Colors.grey,
-                        )),
+                    // Text(house.location,
+                    //     style: const TextStyle(
+                    //       color: Colors.grey,
+                    //     )),
                   ],
                 ),
                 const SizedBox(height: 4.0),

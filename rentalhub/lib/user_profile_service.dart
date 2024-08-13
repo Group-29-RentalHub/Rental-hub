@@ -21,7 +21,7 @@ class UserProfileService {
     try {
       await _firestore.collection('user_profiles').doc(userProfile.id).set(userProfile.toMap());
     } catch (e) {
-      throw Exception('Failed to update user profile, try again or later: $e');
+      throw Exception('Failed to update user profile, try again later: $e');
     }
   }
 }

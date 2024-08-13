@@ -35,53 +35,54 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
   String? _errorMessage;
 
   // Method to save data to Firestore
- Future<void> _saveToFirestore() async {
-  User? user = FirebaseAuth.instance.currentUser;
+  Future<void> _saveToFirestore() async {
+    User? user = FirebaseAuth.instance.currentUser;
 
-  if (user != null) {
-    try {
-      setState(() {
-        _isSubmitting = true;
-        _errorMessage = null;
-      });
+    if (user != null) {
+      try {
+        setState(() {
+          _isSubmitting = true;
+          _errorMessage = null;
+        });
 
-      await FirebaseFirestore.instance.collection('user_hostel_prefs').add({
-        'location': GeoPoint(_selectedLocation.latitude, _selectedLocation.longitude),
-        'budget': _selectedBudget,
-        'house_type': _selectedHouseType,
-        'hostel_type': _selectedHostelType,
-        'nationality': _selectedNationality,
-        'name': _name,
-        'year_of_study': _yearOfStudy,
-        'wifi': _wifi,
-        'laundry_services': _laundryServices,
-        'cafeteria': _cafeteria,
-        'parking': _parking,
-        'security': _security,
-        'user_id': user.uid,  // Added user ID
-      });
+        await FirebaseFirestore.instance.collection('user_hostel_prefs').add({
+          'location':
+              GeoPoint(_selectedLocation.latitude, _selectedLocation.longitude),
+          'budget': _selectedBudget,
+          'house_type': _selectedHouseType,
+          'hostel_type': _selectedHostelType,
+          'nationality': _selectedNationality,
+          'name': _name,
+          'year_of_study': _yearOfStudy,
+          'wifi': _wifi,
+          'laundry_services': _laundryServices,
+          'cafeteria': _cafeteria,
+          'parking': _parking,
+          'security': _security,
+          'user_id': user.uid, // Added user ID
+        });
 
-      // Optionally show a success message or navigate to another screen
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile submitted successfully!')),
-      );
-    } catch (e) {
-      // Handle errors and show an error message
+        // Optionally show a success message or navigate to another screen
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile submitted successfully!')),
+        );
+      } catch (e) {
+        // Handle errors and show an error message
+        setState(() {
+          _errorMessage = 'Failed to submit profile. Please try again.';
+        });
+        print('Error saving profile: $e');
+      } finally {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
+    } else {
       setState(() {
-        _errorMessage = 'Failed to submit profile. Please try again.';
-      });
-      print('Error saving profile: $e');
-    } finally {
-      setState(() {
-        _isSubmitting = false;
+        _errorMessage = 'User not logged in.';
       });
     }
-  } else {
-    setState(() {
-      _errorMessage = 'User not logged in.';
-    });
   }
-}
 
   void _handleSubmit() async {
     await _saveToFirestore();
@@ -100,25 +101,36 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
               initialCenter: _selectedLocation,
               initialZoom: 13.0,
               minZoom: 13.0,
+              onTap: (tapPosition, point) {
+                setState(() {
+                  _selectedLocation = point;
+                });
+              },
             ),
             children: [
               TileLayer(
-                urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                urlTemplate:
+                    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                 subdomains: const ['a', 'b', 'c'],
               ),
-              // MarkerLayer(
-              //   markers: [
-              //     Marker(
-              //       width: 80.0,
-              //       height: 80.0,
-              //       point: _selectedLocation,
-              //       builder: (ctx) => const Icon(
-              //         Icons.location_pin,
-              //         color: Colors.red,
-              //       ),
-              //     ),
-              //   ],
-              // ),
+              MarkerLayer(
+                markers: [
+                  Marker(
+                      point: _selectedLocation,
+                      child: const Icon(Icons.pin_drop)),
+                ],
+              ),
+              CircleLayer(
+                circles: [
+                  CircleMarker(
+                    point: _selectedLocation,
+                    color: Colors.blue.withOpacity(0.3),
+                    borderStrokeWidth: 2.0,
+                    borderColor: Colors.blue,
+                    radius: 500, // Radius in meters (2 km)
+                  ),
+                ],
+              )
             ],
           ),
         ),
@@ -156,7 +168,9 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
       ),
       _buildStep(
         question: 'Select amenities',
-        child: _buildAmenitiesCheckboxes(),
+        child: SingleChildScrollView(
+          child: _buildAmenitiesCheckboxes(),
+        ),
         icon: Icons.check,
       ),
     ];
@@ -366,11 +380,11 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         margin: const EdgeInsets.symmetric(vertical: 4.0),
         decoration: BoxDecoration(
-          color: isSelected ? const Color.fromRGBO(70, 0, 119, 1) : Colors.white,
+          color:
+              isSelected ? const Color.fromRGBO(70, 0, 119, 1) : Colors.white,
           border: Border.all(
-            color: isSelected
-                ? const Color.fromRGBO(70, 0, 119, 1)
-                : Colors.grey,
+            color:
+                isSelected ? const Color.fromRGBO(70, 0, 119, 1) : Colors.grey,
             width: 2,
           ),
           borderRadius: BorderRadius.circular(8.0),
@@ -435,8 +449,12 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile Form', style: TextStyle(color: Colors.white),),
+        title: const Text(
+          'Profile Form',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: const Color.fromRGBO(70, 0, 119, 1),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Center(
         child: Column(
@@ -497,7 +515,7 @@ class _ProfileFormPageState extends State<ProfileFormPage> {
             ),
           ],
         ),
-),
-);
-}
+      ),
+    );
+  }
 }

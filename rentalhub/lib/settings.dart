@@ -58,7 +58,7 @@ class SettingsPage extends StatelessWidget {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.info),
-            title: const Text('About'),
+            title: const Text('About Us'),
             onTap: () {
               // Navigate to about page
             },

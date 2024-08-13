@@ -17,6 +17,7 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
 
   bool _obscurePassword = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -26,6 +27,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _login() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     try {
       UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
@@ -36,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
       if (user != null) {
         // Retrieve user data from Firestore
         DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-        
+
         if (!userDoc.exists) {
           // Create a new user document if it does not exist
           await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
@@ -60,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
       } else if (e.code == 'wrong-password') {
         message = 'Wrong password provided.';
       } else {
-        message = 'An error occurred. Please try again .';
+        message = 'An error occurred. Please try again later...';
       }
       // Show error message
       showDialog(
@@ -78,6 +83,10 @@ class _LoginPageState extends State<LoginPage> {
           ],
         ),
       );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -93,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Center(
           child: Container(
             width: double.infinity,
-            constraints: BoxConstraints(maxWidth: 400),
+            constraints: const BoxConstraints(maxWidth: 400),
             child: Form(
               key: _formKey,
               child: Column(
@@ -176,19 +185,21 @@ class _LoginPageState extends State<LoginPage> {
                     },
                   ),
                   const SizedBox(height: 20.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState?.validate() ?? false) {
-                        _login();
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurple,
-                      foregroundColor: Colors.white,
-                      minimumSize: Size(double.infinity, 50),
-                    ),
-                    child: const Text('Login'),
-                  ),
+                  _isLoading
+                      ? const CircularProgressIndicator() // Show loading indicator while loading
+                      : ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              _login();
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.deepPurple,
+                            foregroundColor: Colors.white,
+                            minimumSize: const Size(double.infinity, 50),
+                          ),
+                          child: const Text('Login'),
+                        ),
                   const SizedBox(height: 20.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
