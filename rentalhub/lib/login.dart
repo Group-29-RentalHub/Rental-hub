@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Login Failed'),
+          title: const Text('Login Failed '),
           content: Text(message),
           actions: [
             TextButton(
